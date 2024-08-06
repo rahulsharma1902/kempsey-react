@@ -1,0 +1,263 @@
+@import url('./fonts.css');
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+body{ 
+    font-family: 'Satoshi-Regular';
+    font-size: 18px;
+    font-weight: normal;
+    color: #727272;
+}
+body p{
+    line-height: 1.5;
+}
+h1,h2,h3,h4,h5,h6{
+    font-family: 'Bremlin';
+    line-height: 1.5;
+}
+img{
+    max-width: 100%;
+}
+.light{
+    color:#000000;
+}
+.dark{
+    color:#ffffff;
+}
+.size40 {
+    font-size: 40px;
+    margin: 0px 0px 10px;
+}
+body a, body button{
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+.cta_sq_green {
+    background-color: #0F2D2F;
+    width: 100%;
+    border: 1px solid #0F2D2F;
+    color: #ffffff;
+    padding: 17px 20px;
+    border-radius: 0px;
+    font-size: 22px;
+    line-height: 1.5;
+    cursor: pointer;
+}
+.cta_sq_green:hover{
+    background-color:  #65B5AF;
+    border-color:  #65B5AF;
+}
+.d-flex {
+    display: flex;
+}
+.container_full {
+    width: 100%;
+    max-width: 1920px;
+    padding-left: 60px;
+    padding-right: 60px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container.container_small {
+    width: 100%;
+    max-width: 1295px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+.p-140 {
+    padding: 140px 0px;
+}
+
+.login_header {
+    text-align: center;
+    margin: 0px 0px 30px;
+}
+.login_wrapper .inner_wrapper {
+    border: 1px solid #EEEEEE;
+    box-shadow: 0px 30px 40px 0px rgba(0, 0, 0, 0.07);
+    margin: auto;
+    padding: 90px 80px;
+}
+.form_control {
+    border: 1px solid #EEEEEE;
+    width: 100%;
+    font-size: 18px;
+    line-height: 1.5;
+    font-family: 'Satoshi-Regular';
+    color: #727272;
+    padding: 20px 20px;
+}
+.form_group.field_with_icon {
+    position: relative;
+}
+.field_with_icon .field_icon {
+    position: absolute;
+    left: 20px;
+    top: 25px;
+    line-height: 0;
+}
+.form_group.field_with_icon .form_control {
+    padding-left: 50px;
+}
+.form_group {
+    width: 100%;
+    margin-bottom: 22px;
+}
+
+.form_control:focus {
+    outline: none;
+    border-color: #65B5AF;
+}
+.check_box_row {margin: 20px 0px;}
+
+.form_check {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #727272;
+    margin: 10px 0px;
+}
+.form_check input[type="checkbox"] {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    opacity: 0;
+}
+
+.form_check input[type="checkbox"] ~ .check_custom {
+    height: 24px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #65B5AF;
+    color: #65B5AF;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    font-size: 0px;
+}
+
+.form_check input[type="checkbox"]:checked ~ .check_custom {font-size: 18px;}
+
+.flex_row.d-flex {
+    align-items: center;
+    justify-content: space-between;
+}
+.form_wrapper a {
+    color: #65B5AF;
+    text-decoration: none;
+}
+/* Add this to your CSS file */
+
+.password_group {
+    position: relative;
+}
+
+.password_toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+}
+
+.password_toggle:hover {
+    color: #666;
+}
+.page_link_text {
+    margin: 20px 0px;
+    text-align: center;
+}
+.page_link_text p a {
+    margin-left: 10px;
+}
+.top_bar {
+    background-color: #65B5AF;
+    text-align: center;
+    padding: 9px 10px;
+}
+.top_bar p {
+    margin: 0px;
+    color: #ffffff;
+    font-size: 14px;
+}
+.top_bar p a {
+    color: inherit;
+    text-decoration: none;
+}
+.top_navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+.site_search {
+    width: 100%;
+}
+.site_search .search_wrap {
+    width: 100%;
+    max-width: 630px;
+    width: 630px;
+    position: relative;
+    background-color: rgba(101, 181, 175, 0.03);
+    border: 1px solid rgba(101, 181, 175, 0.11);
+    border-radius: 50px;
+    overflow: hidden;
+}
+.site_search input.search_input {
+    border: 0px;
+    font-size: 14px;
+    padding: 18px 20px;
+    height: 100%;
+    width: 100%;
+}
+.site_search .search_wrap button.search_button {
+    position: absolute;
+    right: 8px;
+    top: 0px;
+    height: 100%;
+    padding: 0px;
+    width: 40px;
+    background-color: transparent;
+    border: 0px;
+    font-size: 15px;
+}
+.site_search input.search_input:focus {
+    outline: none;
+    border: 0px;
+    box-shadow: none;
+}
+.workshop_links .links_wrap {
+    display: flex;
+    gap: 70px;
+    align-items: center;
+}
+a.icon_text_link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #000000;
+    font-size: 16px;
+    text-decoration: none;
+}
+.icon_links_col .icon_links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+}
+.middle_header {
+    padding: 10px 0px;
+}
+
+
+
+
