@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Bannerslider from '../components/Bannerslider.js';
 import innbanner from '../images/inn_banner_img.png';
+import kempspattern from '../images/kemps_pattern.png';
 const HomePage = () => {
 
     return (
@@ -19,6 +20,8 @@ const HomePage = () => {
                                 <div className='button_wrap mt-30'><Link to="/" className="cta cta_dark"> Contact Us</Link></div>
                             </div>
                         </div>
+                        <img src={kempspattern} alt="banner image" className='abs_right'/>
+                        
                     </div>
                 </div>
                 <div className='inn_banner_section dark'>
