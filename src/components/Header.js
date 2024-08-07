@@ -9,6 +9,7 @@ import carticon from '../images/icon_cart.svg';
 
 const Header = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [navOpen, setNavOpen] = useState(false);
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -20,6 +21,10 @@ const Header = () => {
         console.log('Search query:', searchQuery);
     };
 
+    const toggleNavigation = () => {
+        setNavOpen(!navOpen);
+    };
+
     return (
         <div>
             <header className='site_header'>
@@ -29,8 +34,15 @@ const Header = () => {
                 <div className='middle_header'>
                     <div className='container_full'>
                         <div className='top_navigation'>
+                            <div class="mobile_toggle_col">
+                                <button className="navigation_toggle" onClick={toggleNavigation}>
+                                    <span className='bar bar1'></span>
+                                    <span className='bar bar2'></span>
+                                    <span className='bar bar3'></span>
+                                </button>
+                            </div>
                             <div className='logo_col'>
-                                <Link className='site_brand' to="/login"><img src={logo} alt="logo" /></Link>
+                                <Link className='site_brand' to="/"><img src={logo} alt="logo" /></Link>
                             </div>
                             <div className='search_col'>
                                 <form className='site_search' onSubmit={handleSearchSubmit}>
@@ -58,9 +70,49 @@ const Header = () => {
                             </div>
                             <div className='icon_links_col'>
                                 <div className='icon_links'>
-                                    <Link to="/" className="icon_link"><img src={usericon} alt="icon" /></Link>
-                                    <Link to="/" className="icon_link"><img src={hearticon} alt="icon" /></Link>
-                                    <Link to="/" className="icon_link"><img src={carticon} alt="icon" /></Link>
+                                    <Link to="/login" className="icon_link"><img src={usericon} alt="icon" /></Link>
+                                    <Link to="/" className="icon_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link>
+                                    <Link to="/" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span> </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className= {`navigation_header ${navOpen ? 'open' : ''}`}>
+                    <div className='container'>
+                        <div className='main_navigation'>
+                            
+                            <div className="navigation_wrap ">
+                                <div className='header_nav'>
+                                    <ul className='navigation'>                                                                                                
+                                        <li className='list_item'>
+                                            <Link  to="/" className='nav_link'>Home</Link>
+                                        </li>
+                                        <li className='list_item'>
+                                            <Link  to="/" className='nav_link'>Camping</Link>
+                                        </li>
+                                        <li className='list_item'>
+                                            <Link  to="/" className='nav_link'>Fishing</Link>
+                                        </li>
+                                        <li className='list_item'>
+                                            <Link  to="/" className='nav_link'>Bike shop</Link>
+                                        </li>
+                                        <li className='list_item'>
+                                            <Link  to="/" className='nav_link'>Gun Shop</Link>
+                                        </li>
+                                        <li className='list_item'>
+                                            <Link  to="/" className='nav_link'>About Us</Link>
+                                        </li>
+                                        <li className='list_item'>
+                                            <Link  to="/" className='nav_link'> FAQ</Link>
+                                        </li>
+                                        <li className='list_item'>
+                                            <Link  to="/" className='nav_link'> Customer Service</Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div className='navigation_button_col'>
+                                    <Link to="/" className='blue_link'>Gift Certificate</Link>
                                 </div>
                             </div>
                         </div>

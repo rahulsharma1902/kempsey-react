@@ -1,0 +1,145 @@
+
+
+@media (min-width: 576px) {
+    .container-sm, .container {
+      max-width: 540px;
+    }
+  }
+  @media (min-width: 768px) {
+    .container-md, .container-sm, .container {
+      max-width: 720px;
+    }
+  }
+  @media (min-width: 992px) {
+    .container-lg, .container-md, .container-sm, .container {
+      max-width: 960px;
+    }
+  }
+@media (min-width: 1200px) {
+    .container-xl, .container-lg, .container-md, .container-sm, .container {
+      max-width: 1140px;
+    }
+  }
+  @media (min-width: 1540px) {
+    .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
+      max-width: 1440px;
+    }
+  }
+
+
+  @media(max-width:1539px){
+
+    .container_full {
+      padding-left: 30px;
+      padding-right: 30px;
+  }
+  a.icon_text_link {
+      font-size: 14px;
+  }
+  .site_search .search_wrap {
+      max-width: inherit;
+      width: 400px;
+  }
+  .navigation .nav_link {
+      font-size: 15px;
+      padding: 12px 0px;
+  }
+  .header_nav .navigation {
+      gap: 40px;
+  }
+  .workshop_links .links_wrap {
+      gap: 40px;
+  }
+
+  }
+
+
+  @media(max-width:1199px){
+
+  .site_search .search_wrap {
+    width: 330px;
+}
+.top_navigation {
+    gap: 10px;
+}
+}
+
+@media(max-width:991px){
+  .top_navigation {
+    flex-wrap: wrap;
+    gap: 10px 0px;
+}
+.top_navigation .mobile_toggle_col {
+    display: block;
+    order: 1;
+    width: 40%;
+}
+.navigation_toggle {
+    display: block;
+}
+
+.top_navigation .logo_col {
+    order: 2;
+    width: 20%;
+    text-align: center;
+}
+.top_navigation .header_icons_col {
+    display: none;
+}
+
+.top_navigation .icon_links_col {
+    order: 3;
+    width: 40%;
+}
+.top_navigation .search_col {
+    width: 100%;
+    order: 4;
+}
+
+.site_search .search_wrap {
+    width: 100%;
+}
+.site_header .navigation_header {
+    display: none;
+}
+.site_header {
+  background-color: #65b5af;
+}
+.top_bar {
+  background-color: #0F2D2F;
+}
+.icon_link span.value .value_text {
+  background-color: #0f2d2f;
+  border: 4px solid #65B5AF;
+}
+
+}
+
+@media(max-width:767px){
+  .icon_link span.value .value_text {
+    background-color: #0f2d2f;
+    border: 4px solid #65B5AF;
+}
+
+.container_full {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.site_header a.site_brand {
+    width: 100%;
+    text-align: center;
+    max-width: 80px;
+    display: inline-block;
+}
+.top_bar p {
+    font-size: 12px;
+}
+.site_search input.search_input {
+    font-size: 13px;
+    padding: 12px 20px;
+}
+.icon_links_col .icon_links {
+    gap: 5px;
+}
+}
