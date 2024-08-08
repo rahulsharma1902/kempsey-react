@@ -9,10 +9,15 @@ import card6 from '../images/card6.png';
 import card7 from '../images/card7.png';
 import chat from '../images/chat.png';
 import easy from '../images/easy.png';
+import Instagrammodule from '../components/Instagrammodule';
+import Newsletter from '../components/Newsletter'
+
 
 const Footer = () => {
     return (
         <footer>
+            <Newsletter />
+            <Instagrammodule />
             <div className="footer-content">
                 <div className="footer_links">
                     <div className="container">
@@ -74,25 +79,25 @@ const Footer = () => {
                                     </ul>
                                     <ul className="cards">
                                         <li>
-                                            <Link to="#"><img src={card1} alt="Card 1" /></Link>
+                                            <img src={card1} alt="Card 1" />
                                         </li>
                                         <li>
-                                            <Link to="#"><img src={card2} alt="Card 2" /></Link>
+                                            <img src={card2} alt="Card 2" />
                                         </li>
                                         <li>
-                                            <Link to="#"><img src={card3} alt="Card 3" /></Link>
+                                            <img src={card3} alt="Card 3" />
                                         </li>
                                         <li>
-                                            <Link to="#"><img src={card4} alt="Card 4" /></Link>
+                                            <img src={card4} alt="Card 4" />
                                         </li>
                                         <li>
-                                            <Link to="#"><img src={card5} alt="Card 5" /></Link>
+                                            <img src={card5} alt="Card 5" />
                                         </li>
                                         <li>
-                                            <Link to="#"><img src={card6} alt="Card 6" /></Link>
+                                            <img src={card6} alt="Card 6" />
                                         </li>
                                         <li>
-                                            <Link to="#"><img src={card7} alt="Card 7" /></Link>
+                                            <img src={card7} alt="Card 7" />
                                         </li>
                                     </ul>
                                 </div>
