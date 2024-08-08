@@ -19,17 +19,16 @@ export const fetchData = async (endpoint) => {
     }
 };
 
-export const activeParentCategories = () => fetchData('active-parent-categories');
-export const parentCategories = () => fetchData('parent-categories');
-export const childCategories = () => fetchData('child-categories');
-export const getCategoryById = (id) => fetchData(`get-category/${id}`);
+export const Brands = () => fetchData('brands');
+
+export const getBrandById = (id) => fetchData(`get-brand/${id}`);
 
 
 
-export const addCategory = async (formData) => {
+export const addBrand = async (formData) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.post(`${API_URL}/categories/add`, formData, {
+        const response = await axios.post(`${API_URL}/brand/add`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
@@ -40,16 +39,16 @@ export const addCategory = async (formData) => {
         return response.data;
     } catch (error) {
         
-        const errorMessage = error.response?.data?.message || 'Failed to add category.';
+        const errorMessage = error.response?.data?.message || 'Failed to add brands.';
         // toast.error(errorMessage);
         throw new Error(errorMessage);
     }
 };
 
-export const removeCategory = async (id) => {
+export const removeBrand = async (id) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.post(`${API_URL}/category/remove/${id}`, {},
+        const response = await axios.post(`${API_URL}/brand/remove/${id}`, {},
             {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -60,7 +59,7 @@ export const removeCategory = async (id) => {
         return response.data;
     } catch (error) {
         console.log(error);
-        const errorMessage = error.response?.data?.message || 'Failed to remove category.';
+        const errorMessage = error.response?.data?.message || 'Failed to remove brand.';
         // toast.error(errorMessage);
         throw new Error(errorMessage);
     }

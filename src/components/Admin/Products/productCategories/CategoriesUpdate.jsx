@@ -1,49 +1,100 @@
 import React, { useEffect, useState } from 'react';
-import AdminLayout from '.././../AdminLayout';
+import AdminLayout from '../../AdminLayout';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { addCategory, activeParentCategories } from '../../../../api/apiCategories'; // Correct import statements
+import { activeParentCategories, getCategoryById, addCategory } from '../../../../api/apiCategories';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const CategoriesAdd = () => {
+const CategoriesUpdate = () => {
+    const { id } = useParams();  // Extract id from URL parameters
     const [ParentCategories, setParentCategories] = useState([]);
-
-    useEffect(() => {
-        const getParentCategory = async () => {
-            try {
-                const response = await activeParentCategories();
-                if (Array.isArray(response.data)) {
-                    setParentCategories(response.data);
-                } else {
-                    setParentCategories([]);
-                    console.error('Unexpected response format:', response.data);
-                }
-            } catch (error) {
-                console.error('Failed to fetch Parent Categories:', error.message);
-            }
-        };
-        getParentCategory();
-    }, []);
-
     const [formData, setFormData] = useState({
+        id: '',
         name: '',
         slug: '',
         parent_id: '',
         image: null,
         description: '',
+        visibility:'',
     });
-
-    const [error, setError] = useState('');
     const [validationErrors, setValidationErrors] = useState({});
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const getParentCategory = async () => {
+            try {
+                const response = await activeParentCategories();
+                if (response.data && Array.isArray(response.data)) {
+                    setParentCategories(response.data);
+                } else {
+                    setParentCategories([]);
+                    console.error('Unexpected response format:', response);
+                }
+            } catch (error) {
+                console.error('Failed to fetch Parent Categories:', error.message);
+                toast.error('Failed to fetch parent categories.');
+            }
+        };
+        getParentCategory();
+    }, []);
+
+    useEffect(() => {
+        // Fetch parent categories
+        const getParentCategory = async () => {
+            try {
+                const response = await activeParentCategories();
+                if (response.data && Array.isArray(response.data)) {
+                    setParentCategories(response.data);
+                } else {
+                    setParentCategories([]);
+                    console.error('Unexpected response format:', response);
+                }
+            } catch (error) {
+                console.error('Failed to fetch Parent Categories:', error.message);
+                toast.error('Failed to fetch parent categories.');
+            }
+        };
+    
+        // Fetch category details if an ID is provided
+        const fetchCategory = async () => {
+            if (id) {
+                try {
+                    const response = await getCategoryById(id);
+                    if (response.data) {
+                        setFormData({
+                            id: response.data.id,
+                            name: response.data.name,
+                            slug: response.data.slug,
+                            parent_id: response.data.parent_id || '',
+                            image: null,
+                            description: response.data.description || '',
+                            visibility: response.data.visibility || 'enabled',
+                        });
+                    } else {
+                        toast.error('Failed to fetch category details.');
+                    }
+                } catch (error) {
+                    toast.error('Failed to fetch category details.');
+                }
+            }
+            setLoading(false);
+        };
+    
+        getParentCategory();
+        fetchCategory();
+    }, [id]);
+    
 
     const generateSlug = (name) => {
         return name
             .toLowerCase()
             .trim()
-            .replace(/[^\w\s-]/g, '-') // Remove special characters
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-'); // Remove duplicate hyphens
+            .replace(/[^\w\s-]/g, '-')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
     };
 
     const handleChange = (e) => {
@@ -65,58 +116,60 @@ const CategoriesAdd = () => {
         setFormData({ ...formData, description: data });
     };
 
+    const handleVisibilityChange = (e) => {
+        setFormData({ ...formData, visibility: e.target.checked ? 'enabled' : 'disabled' });
+    };
     const handleSubmit = async (e) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    const errors = {};
+        const errors = {};
 
-    if (!formData.name.trim()) {
-        errors.name = 'Category name is required';
-    }
+        if (!formData.name.trim()) {
+            errors.name = 'Category name is required';
+        }
 
-    if (Object.keys(errors).length > 0) {
-        setValidationErrors(errors);
-        return;
-    }
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
 
-    const form = new FormData();
-    form.append('name', formData.name);
-    form.append('slug', formData.slug);
-    form.append('parent_id', formData.parent_id);
-    form.append('description', formData.description);
+        const form = new FormData();
+        form.append('id', formData.id);
+        form.append('name', formData.name);
+        form.append('slug', formData.slug);
+        form.append('parent_id', formData.parent_id);
+        form.append('description', formData.description);
+        form.append('visibility', formData.visibility);  // Append visibility as 'enabled' or 'disabled'
 
-    if (formData.image) {
-        form.append('image', formData.image);
-    }
 
-    try {
-        const response = await addCategory(form);
-        console.log(response);
-        
-        // Clear form data
-        setFormData({
-            name: '',
-            slug: '',
-            parent_id: '',
-            image: null,  // Set to null instead of ''
-            description: '',
-        });
+        if (formData.image) {
+            form.append('image', formData.image);
+        }
 
-        // Clear file input
-        document.getElementById('image').value = '';
-
-        toast.success(response.message);
-        // Clear validation errors
-        setValidationErrors({});
-    } catch (err) {
-        toast.error(err.message || 'Error adding category');
-    }
-};
-
-    
+        try {
+            const response = await addCategory(form);
+            if (response && response.message) {
+                // navigate('/admin-dashboard/products/categories');
+                toast.success(response.message);
+            } else {
+                console.error('Unexpected response format:', response);
+                toast.error('Failed to update category.');
+            }
+        } catch (err) {
+            console.error('Error updating category:', err.message);
+            toast.error(err.message || 'Error updating category');
+        }
+    };
 
     return (
         <AdminLayout>
+            {loading ? (
+                <div className="text-center">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : (
             <div className="card card-bordered">
                 <div className="card-inner">
                     <div className="card-head">
@@ -125,7 +178,7 @@ const CategoriesAdd = () => {
                     <div className="row">
                         <div className="col-lg-12">
                             <form onSubmit={handleSubmit} encType="multipart/form-data">
-                                <input type="hidden" name="id" value="" />
+                                <input type="hidden" name="id" value={formData.id} />
                                 <div className="d-flex">
                                     <div className="col-lg-6 p-2">
                                         <div className="form-group">
@@ -166,7 +219,7 @@ const CategoriesAdd = () => {
                                     <div className="col-lg-6 p-2">
                                         <div className="form-group">
                                             <label className="form-label" htmlFor="parent-category">Parent Category</label>
-                                            <div className="form-control-wrap  p-2">
+                                            <div className="form-control-wrap p-2">
                                                 <select
                                                     name="parent_id"
                                                     className="form-control"
@@ -210,6 +263,25 @@ const CategoriesAdd = () => {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="col-lg-12 p-3">
+                                    <div className="form-group">
+                                        <label className="form-label" htmlFor="visibility">
+                                            {formData.visibility === 'enabled' ? 'Hide Category' : 'Show Category'}
+                                        </label>
+                                        <div className="form-control-wrap p-2">
+                                            <input
+                                                type="checkbox"
+                                                id="visibility"
+                                                checked={formData.visibility === 'enabled'}
+                                                onChange={handleVisibilityChange}
+                                            />
+                                            <label htmlFor="visibility" className="ml-2">
+                                                {formData.visibility === 'enabled' ? 'Category is visible' : 'Category is hidden'}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div className="form-group mt-3 p-3">
                                     <button type="submit" className="btn btn-lg btn-dark">Save Category</button>
                                 </div>
@@ -218,8 +290,10 @@ const CategoriesAdd = () => {
                     </div>
                 </div>
             </div>
+            )}
+            <ToastContainer />
         </AdminLayout>
     );
 };
 
-export default CategoriesAdd;
+export default CategoriesUpdate;

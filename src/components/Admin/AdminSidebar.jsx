@@ -28,7 +28,7 @@ const Sidebar = () => {
                 </h6>
               </li>
               <li className="nk-menu-item has-sub">
-                <a href="#" className="nk-menu-link nk-menu-toggle">
+                <a href="/admin-dashboard/products/categories" className="nk-menu-link nk-menu-toggle">
                   <span className="nk-menu-icon"><em className="icon ni ni-card-view"></em></span>
                   <span className="nk-menu-text">Products</span>
                 </a>
