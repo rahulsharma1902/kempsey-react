@@ -1,6 +1,8 @@
-import React from 'react';
-
+import React, { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 const Header = () => {
+  const { user } = useContext(AuthContext);
+
   return (
     <div className="nk-header nk-header-fixed is-light">
       <div className="container-fluid">
@@ -25,7 +27,7 @@ const Header = () => {
                       <div className="user-status">Administrator</div>
                       <div className="user-name dropdown-indicator">
                         {/* Replace with dynamic user info */}
-                        User Name
+                        {user.first_name} {user.last_name}
                       </div>
                     </div>
                   </div>
@@ -37,8 +39,8 @@ const Header = () => {
                         <span>AB</span>
                       </div>
                       <div className="user-info">
-                        <span className="lead-text">User Name</span>
-                        <span className="sub-text">user@example.com</span>
+                        <span className="lead-text">{user.first_name}</span>
+                        <span className="sub-text">{user.email}</span>
                       </div>
                     </div>
                   </div>

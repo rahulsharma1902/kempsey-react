@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import emailicon from '../images/ic_outline-email.svg';
+import Layout  from '../components/Layout';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -16,6 +17,7 @@ const ForgotPassword = () => {
     };
 
     return (
+        <Layout>
         <div className='body_inner'>
             <div className='page'>
                 <div className='login_wrapper p-140'>
@@ -54,6 +56,7 @@ const ForgotPassword = () => {
                 </div>
             </div>
         </div>
+        </Layout>
     );
 };
 

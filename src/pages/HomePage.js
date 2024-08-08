@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import Bannerslider from '../components/Bannerslider.js';
 import innbanner from '../images/inn_banner_img.png';
 import kempspattern from '../images/kemps_pattern.png';
+import Layout from '../components/Layout.jsx';
 const HomePage = () => {
 
     return (
+        <Layout>
         <div className='body_inner'>
             <div className='page'>
                 <div className='banner_section'>
@@ -34,6 +36,7 @@ const HomePage = () => {
                 </div>
             </div>
         </div>
+        </Layout>
     );
 };
 
