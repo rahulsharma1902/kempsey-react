@@ -4,6 +4,15 @@ import Bannerslider from '../components/Bannerslider.js';
 import innbanner from '../images/inn_banner_img.png';
 import kempspattern from '../images/kemps_pattern.png';
 import Layout from '../components/Layout.jsx';
+import Newarrivalmodule from '../components/Newarrivalmodule.jsx';
+import Newproductmodule from '../components/Newproductmodule.jsx';
+import Categorysection from '../components/Categoryslider.jsx';
+import CategoryMarquee from '../components/CategoryMarquee.jsx';
+import Aboutsection from '../components/Aboutsection.jsx';
+import CategorySection from '../components/CategorySection.jsx';
+import Reviewsection from '../components/Reviewsection.jsx';
+
+
 const HomePage = () => {
 
     return (
@@ -13,6 +22,8 @@ const HomePage = () => {
                 <div className='banner_section'>
                     <Bannerslider />
                 </div>
+                <Categorysection />
+                <CategoryMarquee />
                 <div className='closet_section light'>
                     <div className='closet_module p-130'>
                         <div className='container'>
@@ -34,6 +45,11 @@ const HomePage = () => {
                         </div>
                    </div>
                 </div>
+                <CategorySection />
+                <Newarrivalmodule />
+                <Newproductmodule />
+                <Reviewsection />
+                <Aboutsection />
             </div>
         </div>
         </Layout>
