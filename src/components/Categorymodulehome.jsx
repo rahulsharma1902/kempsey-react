@@ -23,8 +23,8 @@ const products = [
 
 const Categorymodulehome = () => {
   return (
-    <div className="category_products_wrapper">
-      <h3>This Week's Must-Haves</h3>
+    <div className="category_products_wrapper light">
+      <h2 className='size46'>This Week's Must-Haves</h2>
       <div className="prdt_list">
         {products.map(product => (
           <a key={product.id} className="prdt">

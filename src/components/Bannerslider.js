@@ -3,7 +3,11 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import Homebanner from '../images/banner_1920.png';
+import Homebannerslide1 from '../images/banner_1920.png';
+import Homebannerslide1mobile from '../images/banner_1920mobile.png';
+import Homebannerslide2 from '../images/banner_1920v2.png';
+import Homebannerslide2mobile from '../images/banner_1920v2mobile.png';
+
 
 const bannerData = [
     {
@@ -11,14 +15,16 @@ const bannerData = [
         mainHead: 'Cozy Up Anywhere, Anytime',
         description: 'Discover the latest collection of Kempsey Outdoors',
         buttonText: 'Shop Now',
-        image: Homebanner
+        image: Homebannerslide1,
+        imagemobile: Homebannerslide1mobile,
     },
     {
         subHead: 'Kempsey Outdoors',
         mainHead: 'Cozy Up Anywhere, Anytime',
         description: 'Discover the latest collection of Kempsey Outdoors',
         buttonText: 'Shop Now',
-        image: Homebanner
+        image: Homebannerslide2,
+        imagemobile: Homebannerslide2mobile
     }
 ];
 
@@ -31,7 +37,7 @@ const Bannerslider = () => {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        autoplay: true,
+        autoplay: false,
         autoplaySpeed: 3000,
         arrows: true,
     };
@@ -41,7 +47,8 @@ const Bannerslider = () => {
             {bannerData.map((banner, index) => (
                 <div className='banner_slide' key={index}>
                     <div className='banner dark'>
-                        <img src={banner.image} alt="banner image" className='banner_image'/>
+                        <img src={banner.image} alt="banner image" className='banner_image desktop_image'/>
+                        <img src={banner.imagemobile} alt="banner image" className='banner_image mobileimage'/>
                         <div className='banner_inner'>
                             <div className='container'>
                                 <div className='banner_content text-center'>

@@ -18,7 +18,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        {/* <Header /> */}
+        {/* <Header /> */}npm
         <Routes>
           <Route path="/admin-dashboard/*" element={<AdminRoutes />} />
           {/* <Route path="/*" element={<FrontRoutes />} /> */}
