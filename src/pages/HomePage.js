@@ -17,7 +17,7 @@ const HomePage = () => {
 
     return (
         <Layout>
-        <div className='body_inner'>
+        <div className='body_inner '>
             <div className='page'>
                 <div className='banner_section'>
                     <Bannerslider />
