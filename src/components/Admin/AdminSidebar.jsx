@@ -35,12 +35,17 @@ const Sidebar = () => {
                 <ul className="nk-menu-sub">
                   <li className="nk-menu-item">
                     <a href="/admin-dashboard/products/categories" className="nk-menu-link">
-                      <span className="nk-menu-text">Categories</span>
+                      <span className="nk-menu-text">Product Categories</span>
                     </a>
                   </li>
                   <li className="nk-menu-item">
                     <a href="/admin-dashboard/products/brands" className="nk-menu-link">
-                      <span className="nk-menu-text">Brands</span>
+                      <span className="nk-menu-text">Product Brands</span>
+                    </a>
+                  </li>
+                  <li className="nk-menu-item">
+                    <a href="/admin-dashboard/products/filters" className="nk-menu-link">
+                      <span className="nk-menu-text">Product Filtering</span>
                     </a>
                   </li>
                 </ul>

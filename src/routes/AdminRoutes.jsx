@@ -10,6 +10,11 @@ import BrandsList from '../components/Admin/Products/productBrands/BrandsList';
 import BrandsAdd from '../components/Admin/Products/productBrands/BrandsAdd';
 import BrandsUpdate from '../components/Admin/Products/productBrands/BrandUpdate';
 
+
+import FilterList from '../components/Admin/Products/productFiltering/FiltersList';
+import FilterAdd from '../components/Admin/Products/productFiltering/FiltersAdd';
+import FiltersUpdate from '../components/Admin/Products/productFiltering/FiltersUpdate';
+
 const AdminRoutes = () => {
     return (
         <Routes>
@@ -73,6 +78,35 @@ const AdminRoutes = () => {
             />
 
             {/* brands routes end here */}
+
+
+            {/* filter routes are come here  */}
+
+            <Route 
+                path="/products/filters" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FilterList />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/products/filters/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FilterAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/products/filters/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FiltersUpdate />
+                        </PrivateRoute>
+                } 
+            />
+            {/* filter's routes are end here */}
         </Routes>
     );
 };
