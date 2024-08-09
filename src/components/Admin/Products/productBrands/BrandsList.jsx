@@ -1,41 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Import Link for navigation
 import AdminLayout from '../../AdminLayout';
-import { parentCategories,removeCategory } from '../../../../api/apiCategories';
-import ChildCategoriesList from './ChildCategoriesList';
+import { Brands,removeBrand } from '../../../../api/apiBrands';
+import { toast } from 'react-toastify';
 
-const CategoriesList = () => {
-  const [ParentCategories, setParentCategories] = useState([]);
+const BrandsList = () => {
+  const [BrandsData, setBrandsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const getParentCategory = async () => {
+    const getBrandsData = async () => {
       try {
-        const response = await parentCategories();
+        const response = await Brands();
         if (Array.isArray(response.data)) {
-          setParentCategories(response.data);
+            setBrandsData(response.data);
         } else {
-          setParentCategories([]);
+            setBrandsData([]);
           console.error('Unexpected response format:', response.data);
         }
       } catch (error) {
-        console.error('Failed to fetch Parent Categories:', error.message);
+        console.error('Failed to fetch Brands:', error.message);
       } finally {
         setLoading(false);
       }
     };
-    getParentCategory();
+    getBrandsData();
   }, []);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredCategories = ParentCategories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCategories = BrandsData.filter((brand) =>
+  brand.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -52,14 +52,14 @@ const CategoriesList = () => {
   const handleNextPage = () => {
     if (currentPage < totalPages) paginate(currentPage + 1);
   };
-  const handleRemoveCategory = async (id) => {
-    if (window.confirm('Are you sure you want to remove this category?')) {
+  const handleRemoveBrand = async (id) => {
+    if (window.confirm('Are you sure you want to remove this brand?')) {
         try {
-            await removeCategory(id);
-            // toast.success('Category removed successfully');
-            setParentCategories(prevCategories => prevCategories.filter(category => category.id !== id));
+            await removeBrand(id);
+            toast.success('Brand removed successfully');
+            setBrandsData(prevBrands => prevBrands.filter(brand => brand.id !== id));
         } catch (error) {
-            // toast.error('Failed to remove category');
+            toast.error('Failed to remove brand');
         }
     }
 };
@@ -78,7 +78,7 @@ const CategoriesList = () => {
         <div className="nk-block-head nk-block-head-sm">
           <div className="nk-block-between">
             <div className="nk-block-head-content">
-              <h3 className="nk-block-title page-title">Categories</h3>
+              <h3 className="nk-block-title page-title">Brands</h3>
             </div>
             <div className="nk-block-head-content">
               <div className="toggle-wrap nk-block-tools-toggle">
@@ -91,7 +91,7 @@ const CategoriesList = () => {
                     <li className="nk-block-tools-opt">
                     <Link to={`add`}  className="btn btn-dark d-none d-md-inline-flex">
                         <em className="icon ni ni-plus"></em>
-                        <span>Add Category</span>
+                        <span>Add Brands</span>
                        </Link>
                     </li>
                   </ul>
@@ -112,7 +112,7 @@ const CategoriesList = () => {
                 onChange={handleSearchChange}
               />
             </div>
-            <h4>Parent Categories</h4>
+            <h4>Brands</h4>
             <div className="card card-bordered card-preview">
               <table className="table datatable-init nowrap nk-tb-list nk-tb-ulist" data-auto-responsive="false">
                 <thead className='table-dark'>
@@ -120,14 +120,13 @@ const CategoriesList = () => {
                     <th className="nk-tb-col">Sno.</th>
                     <th className="nk-tb-col"><span className="sub-text">NAME</span></th>
                     <th className="nk-tb-col"><span className="sub-text">SLUG</span></th>
-                    <th className="nk-tb-col tb-col-lg"><span className="sub-text">VISIBILITY</span></th>
                     <th className="nk-tb-col tb-tnx-action"><span>ACTION</span></th>
                   </tr>
                 </thead>
                 <tbody>
                 {currentItems.length > 0 ? (
-                  currentItems.map((category, index) => (
-                    <tr className="nk-tb-item" key={category.id}>
+                  currentItems.map((brand, index) => (
+                    <tr className="nk-tb-item" key={brand.id}>
                       <td className="nk-tb-col">
                         <div className="user-card">
                           <div className="user-info">
@@ -138,19 +137,14 @@ const CategoriesList = () => {
                       <td className="nk-tb-col">
                         <div className="user-card">
                           <div className="user-info">
-                            <span className="tb-lead">{category.name}</span>
+                            <span className="tb-lead">{brand.name}</span>
                           </div>
                         </div>
                       </td>
                       <td className="nk-tb-col tb-col-mb">
-                        <span className="tb-amount">{category.slug}</span>
+                        <span className="tb-amount">{brand.slug}</span>
                       </td>
-                      <td className="nk-tb-col tb-col-md p-3">
-                      <span className={`badge ${category.visibility === 'enabled' ? 'bg-success' : 'bg-warning'}`}>
-                          {category.visibility}
-                      </span>
-
-                      </td>
+                      
                       <td className="nk-tb-col nk-tb-col-tools">
                         <ul className="nk-tb-actions gx-1">
                           <li>
@@ -161,13 +155,13 @@ const CategoriesList = () => {
                               <div className="dropdown-menu dropdown-menu-end">
                                 <ul className="link-list-opt no-bdr">
                                   <li>
-                                    <Link to={`edit/${category.id}`} className="dropdown-item">
+                                    <Link to={`edit/${brand.id}`} className="dropdown-item">
                                       <em className="icon ni ni-eye"></em>
                                       <span>Edit</span>
                                     </Link>
                                   </li>
                                   <li>
-                                      <a className="delete dropdown-item" onClick={() => handleRemoveCategory(category.id)}>
+                                      <a className="delete dropdown-item" onClick={() => handleRemoveBrand(brand.id)}>
                                           <em className="icon ni ni-trash-fill"></em>
                                           <span>Remove</span>
                                       </a>
@@ -185,7 +179,7 @@ const CategoriesList = () => {
                 ) : (
                     <tr>
                       <td colSpan="6" className="text-center">
-                        No categories found.
+                        No Brand found.
                       </td>
                     </tr>
                 )}
@@ -218,10 +212,9 @@ const CategoriesList = () => {
             </div>
           </div>
         </div>
-        <ChildCategoriesList />
       </div>
     </AdminLayout>
   );
 };
 
-export default CategoriesList;
+export default BrandsList;
