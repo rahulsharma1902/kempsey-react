@@ -5,7 +5,6 @@ import instacard3 from '../images/insta_post5.png';
 import instacard4 from '../images/insta_post4.png';
 import instacard5 from '../images/insta_post3.png';
 import instacard6 from '../images/insta_post2.png';
-import instacard7 from '../images/insta_post1.png';
 
 const instagramPosts = [
     instacard1,
@@ -14,7 +13,6 @@ const instagramPosts = [
     instacard4,
     instacard5,
     instacard6,
-    instacard7
 ];
 
 const Instagrammodule = () => {
