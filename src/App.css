@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+.form_control.is-invalid {
+  border-color: red;
+}
+
+.error-text {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
