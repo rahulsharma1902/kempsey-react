@@ -87,9 +87,15 @@ const FiltersAdd = () => {
         if (!formData.category_id.trim()) {
             errors.category_id = 'Filter Category is required';
         }
-        const hasValidOptions = options.some(option => option.trim() !== '');
-        if (!hasValidOptions) {
-            errors.option = 'At least one valid option is required';
+    
+        // Check if options is defined and is an array
+        if (Array.isArray(options)) {
+            const invalidOptions = options.filter(option => !option.trim());
+            if (invalidOptions.length > 0) {
+                errors.option = 'All options must have a valid name';
+            }
+        } else {
+            errors.option = 'Options are not defined properly';
         }
     
         if (Object.keys(errors).length > 0) {
@@ -119,6 +125,7 @@ const FiltersAdd = () => {
             toast.error(err.message || 'Error adding filter');
         }
     };
+    
 
     return (
         <AdminLayout>

@@ -15,6 +15,10 @@ import FilterList from '../components/Admin/Products/productFiltering/FiltersLis
 import FilterAdd from '../components/Admin/Products/productFiltering/FiltersAdd';
 import FiltersUpdate from '../components/Admin/Products/productFiltering/FiltersUpdate';
 
+
+import ProductsList from '../components/Admin/Products/ProductsList';
+import ProductsAdd from '../components/Admin/Products/ProductsAdd';
+
 const AdminRoutes = () => {
     return (
         <Routes>
@@ -107,6 +111,31 @@ const AdminRoutes = () => {
                 } 
             />
             {/* filter's routes are end here */}
+
+
+
+            {/* products route start from here ProductsList ProductAdd*/}
+            
+            <Route 
+                path="/products" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ProductsList />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/products/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ProductsAdd />
+                        </PrivateRoute>
+                } 
+            />
+
+            {/* products routes are end here */}
+
+
         </Routes>
     );
 };
