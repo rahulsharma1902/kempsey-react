@@ -27,6 +27,7 @@
     .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
       max-width: 1440px;
     }
+
   }
 
 
@@ -55,6 +56,9 @@
   }
   .footer_marquee .marq-img img {
     max-width: 2000px;
+}
+.login_wrapper .container {
+  width: 60%;
 }
   }
 
@@ -150,6 +154,28 @@ body, .front_page {
 }
 .category-content .categry-rgt {
   flex: 0 0 65%;
+}
+.size40 {
+  font-size: 34px;
+}
+
+.login_wrapper .inner_wrapper {
+  padding: 40px;
+}
+.cta_sq_green {
+  font-size: 18px;
+  padding: 12px 10px;
+}
+.form_control {
+  font-size: 15px;
+  padding: 15px 15px;
+}
+.field_with_icon .field_icon {
+  top: 16px;
+}
+.form_check input[type="checkbox"] ~ .check_custom {
+  height: 18px;
+  width: 18px;
 }
 }
 
@@ -513,6 +539,13 @@ body, .front_page {
   padding-left: 10px;
   padding-right: 0px;
 }
+.login_wrapper .inner_wrapper {
+  padding: 30px;
+}
+
+.login_wrapper .container {
+  width: 90%;
+}
 }
 
 @media(max-width:575px){
@@ -552,7 +585,11 @@ body, .front_page {
   margin-left: 0px;
   margin-right: 0px;
 }
-.product_box {
- 
+.check_box_row.flex_row {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
 }
+
 }

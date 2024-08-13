@@ -2,12 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const categories = [
-  { id: 1, name: 'Camping', link: '/camping' },
-  { id: 2, name: 'Fishing', link: '/fishing' },
-  { id: 3, name: 'Bike shop', link: '/bike-shop' },
-  { id: 4, name: 'Gun Shop', link: '/gun-shop' },
-  { id: 5, name: 'Accessories', link: '/accessories' },
-  { id: 6, name: 'Workshop', link: '/workshop' },
+  { id: 1, name: 'Camping', link: '/shop-camping' },
+  { id: 2, name: 'Fishing', link: '/shop-camping' },
+  { id: 3, name: 'Bike shop', link: '/shop-camping' },
+  { id: 4, name: 'Gun Shop', link: '/shop-camping' },
+  { id: 5, name: 'Accessories', link: '/shop-camping' },
+  { id: 6, name: 'Workshop', link: '/shop-camping' },
 ];
 
 const CategorySidebar = () => {
