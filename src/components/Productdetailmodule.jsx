@@ -62,6 +62,16 @@ const Productdetailmodule = () => {
                     </div>
                 </div>
             </div>
+            <div className='share_product'>
+                <label>Share:</label>
+                <div className='share_icons'>
+                    <Link to="/"><i class="fa-brands fa-facebook-f"></i></Link>
+                    <Link to="/"><i class="fa-brands fa-instagram"></i></Link>
+                    <Link to="/"><i class="fa-brands fa-twitter"></i></Link>
+                    <Link to="/"><i class="fa-brands fa-pinterest-p"></i></Link>
+                </div>
+            </div>
+
         </div>
     );
 };
