@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 
 const Sidebar = () => {
   return (
@@ -33,19 +34,29 @@ const Sidebar = () => {
                   <span className="nk-menu-text">Products</span>
                 </a>
                 <ul className="nk-menu-sub">
+                <li className="nk-menu-item">
+                    <a href="/admin-dashboard/products" className="nk-menu-link">
+                      <span className="nk-menu-text">View</span>
+                    </a>
+                  </li>
+                  <li className="nk-menu-item mb-4">
+                    <a href="/admin-dashboard/products/add" className="nk-menu-link">
+                      <span className="nk-menu-text">Add</span>
+                    </a>
+                  </li>
                   <li className="nk-menu-item">
                     <a href="/admin-dashboard/products/categories" className="nk-menu-link">
                       <span className="nk-menu-text">Product Categories</span>
                     </a>
                   </li>
                   <li className="nk-menu-item">
-                    <a href="/admin-dashboard/products/brands" className="nk-menu-link">
-                      <span className="nk-menu-text">Product Brands</span>
+                    <a href="/admin-dashboard/products/filters" className="nk-menu-link">
+                      <span className="nk-menu-text">Product Filtering</span>
                     </a>
                   </li>
                   <li className="nk-menu-item">
-                    <a href="/admin-dashboard/products/filters" className="nk-menu-link">
-                      <span className="nk-menu-text">Product Filtering</span>
+                    <a href="/admin-dashboard/products/brands" className="nk-menu-link">
+                      <span className="nk-menu-text">Brands</span>
                     </a>
                   </li>
                 </ul>

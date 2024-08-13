@@ -105,7 +105,7 @@ const Footer = () => {
                         </div>
                     </div>
                     <div className="chat_box">
-                        <Link to="#"><img src={chat} alt="Chat" /></Link>
+                        {/* <Link to="#"><img src={chat} alt="Chat" /></Link> */}
                     </div>
                 </div>
                 <div className="footer_marquee">

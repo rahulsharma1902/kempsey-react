@@ -10,6 +10,7 @@ import carticon from '../images/icon_cart.svg';
 const Header = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [navOpen, setNavOpen] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false); // State for search bar toggle
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -25,6 +26,10 @@ const Header = () => {
         setNavOpen(!navOpen);
     };
 
+    const toggleSearch = () => {
+        setSearchOpen(!searchOpen);
+    };
+
     return (
         <div>
             <header className='site_header'>
@@ -34,17 +39,23 @@ const Header = () => {
                 <div className='middle_header'>
                     <div className='container_full'>
                         <div className='top_navigation'>
-                            <div class="mobile_toggle_col">
-                                <button className="navigation_toggle" onClick={toggleNavigation}>
+                            <div className="mobile_toggle_col">
+                                <button 
+                                    className={`navigation_toggle ${navOpen ? 'open' : ''}`} 
+                                    onClick={toggleNavigation}
+                                >
                                     <span className='bar bar1'></span>
                                     <span className='bar bar2'></span>
                                     <span className='bar bar3'></span>
+                                </button>
+                                <button className={`search_toggle ${searchOpen ? 'open' : ''}`} onClick={toggleSearch}>
+                                    <i className="fa-solid fa-magnifying-glass"></i>
                                 </button>
                             </div>
                             <div className='logo_col'>
                                 <Link className='site_brand' to="/"><img src={logo} alt="logo" /></Link>
                             </div>
-                            <div className='search_col'>
+                            <div className={`search_col ${searchOpen ? 'open' : ''}`}>
                                 <form className='site_search' onSubmit={handleSearchSubmit}>
                                     <div className='search_wrap'>
                                         <input
@@ -55,7 +66,7 @@ const Header = () => {
                                             onChange={handleSearchChange}
                                         />
                                         <button type="submit" className="search_button">
-                                            <i className="fas fa-search"></i> {/* Use Font Awesome or your own icon */}
+                                            <i className="fas fa-search"></i>
                                         </button>
                                     </div>
                                 </form>
@@ -71,43 +82,42 @@ const Header = () => {
                             <div className='icon_links_col'>
                                 <div className='icon_links'>
                                     <Link to="/login" className="icon_link"><img src={usericon} alt="icon" /></Link>
-                                    <Link to="/" className="icon_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link>
+                                    <Link to="/" className="icon_link fav_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link>
                                     <Link to="/" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span> </Link>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className= {`navigation_header ${navOpen ? 'open' : ''}`}>
+                <div className={`navigation_header ${navOpen ? 'open' : ''}`}>
                     <div className='container'>
                         <div className='main_navigation'>
-                            
                             <div className="navigation_wrap ">
                                 <div className='header_nav'>
-                                    <ul className='navigation'>                                                                                                
+                                    <ul className='navigation'>
                                         <li className='list_item'>
-                                            <Link  to="/" className='nav_link'>Home</Link>
+                                            <Link to="/" className='nav_link'>Home</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link  to="/" className='nav_link'>Camping</Link>
+                                            <Link to="/shop-camping" className='nav_link'>Camping</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link  to="/" className='nav_link'>Fishing</Link>
+                                            <Link to="/shop-camping" className='nav_link'>Fishing</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link  to="/" className='nav_link'>Bike shop</Link>
+                                            <Link to="/shop-camping" className='nav_link'>Bike shop</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link  to="/" className='nav_link'>Gun Shop</Link>
+                                            <Link to="/shop-camping" className='nav_link'>Gun Shop</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link  to="/" className='nav_link'>About Us</Link>
+                                            <Link to="/" className='nav_link'>About Us</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link  to="/" className='nav_link'> FAQ</Link>
+                                            <Link to="/" className='nav_link'>FAQ</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link  to="/" className='nav_link'> Customer Service</Link>
+                                            <Link to="/" className='nav_link'>Customer Service</Link>
                                         </li>
                                     </ul>
                                 </div>

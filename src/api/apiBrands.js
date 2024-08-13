@@ -13,6 +13,7 @@ export const fetchData = async (endpoint) => {
         });
         return response.data;
     } catch (error) {
+        console.log(error);
         const errorMessage = error.response?.data?.message || 'Failed to fetch data.';
         toast.error(errorMessage);
         throw new Error(errorMessage);

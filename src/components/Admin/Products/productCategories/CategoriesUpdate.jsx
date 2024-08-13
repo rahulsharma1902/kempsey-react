@@ -229,8 +229,11 @@ const CategoriesUpdate = () => {
                                                 >
                                                     <option value="">--NONE--</option>
                                                     {ParentCategories.map(category => (
-                                                        <option key={category.id} value={category.id}>{category.name}</option>
+                                                        category.id !== formData.id && (
+                                                            <option key={category.id} value={category.id}>{category.name}</option>
+                                                        )
                                                     ))}
+
                                                 </select>
                                             </div>
                                         </div>

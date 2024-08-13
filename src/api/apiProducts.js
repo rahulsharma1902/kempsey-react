@@ -34,6 +34,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
         const token = localStorage.getItem('token');
         const headers = {
             'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
         };
         if (isMultipart) {
             headers['Content-Type'] = 'multipart/form-data';
@@ -52,7 +53,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 
 
-export const addFilter = (formData) => postData('filter/add', formData, true);
+export const addProduct = (formData) => postData('product/add', formData, true);
 
 export const updateFilter = (formData) => postData('filter/update', formData, true);
 

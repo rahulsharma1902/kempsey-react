@@ -22,6 +22,7 @@ export const fetchData = async (endpoint) => {
 export const activeParentCategories = () => fetchData('active-parent-categories');
 export const parentCategories = () => fetchData('parent-categories');
 export const childCategories = () => fetchData('child-categories');
+export const categories = () => fetchData('categories');
 export const getCategoryById = (id) => fetchData(`get-category/${id}`);
 
 

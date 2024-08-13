@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Import Link for navigation
 import AdminLayout from '../../AdminLayout';
-import { Filters,removefilter } from '../../../../api/apiFilters';
+import { Filters,removeFilter } from '../../../../api/apiFilters';
 import { toast } from 'react-toastify';
 
 const FiltersList = () => {
@@ -55,7 +55,7 @@ const FiltersList = () => {
   const handleRemoveFilter = async (id) => {
     if (window.confirm('Are you sure you want to remove this filter?')) {
         try {
-            await removefilter(id);
+            await removeFilter(id);
             toast.success('filter removed successfully');
             setFiltersData(prevFilters => prevFilters.filter(filter => filter.id !== id));
         } catch (error) {
