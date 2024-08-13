@@ -10,6 +10,7 @@ import carticon from '../images/icon_cart.svg';
 const Header = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [navOpen, setNavOpen] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false); // State for search bar toggle
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -23,6 +24,10 @@ const Header = () => {
 
     const toggleNavigation = () => {
         setNavOpen(!navOpen);
+    };
+
+    const toggleSearch = () => {
+        setSearchOpen(!searchOpen);
     };
 
     return (
@@ -43,12 +48,14 @@ const Header = () => {
                                     <span className='bar bar2'></span>
                                     <span className='bar bar3'></span>
                                 </button>
-                                <button className='search_toggle'><i class="fa-solid fa-magnifying-glass"></i></button>
+                                <button className={`search_toggle ${searchOpen ? 'open' : ''}`} onClick={toggleSearch}>
+                                    <i className="fa-solid fa-magnifying-glass"></i>
+                                </button>
                             </div>
                             <div className='logo_col'>
                                 <Link className='site_brand' to="/"><img src={logo} alt="logo" /></Link>
                             </div>
-                            <div className='search_col'>
+                            <div className={`search_col ${searchOpen ? 'open' : ''}`}>
                                 <form className='site_search' onSubmit={handleSearchSubmit}>
                                     <div className='search_wrap'>
                                         <input
@@ -59,7 +66,7 @@ const Header = () => {
                                             onChange={handleSearchChange}
                                         />
                                         <button type="submit" className="search_button">
-                                            <i className="fas fa-search"></i> {/* Use Font Awesome or your own icon */}
+                                            <i className="fas fa-search"></i>
                                         </button>
                                     </div>
                                 </form>
@@ -92,16 +99,16 @@ const Header = () => {
                                             <Link to="/" className='nav_link'>Home</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>Camping</Link>
+                                            <Link to="/shop-camping" className='nav_link'>Camping</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>Fishing</Link>
+                                            <Link to="/shop-camping" className='nav_link'>Fishing</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>Bike shop</Link>
+                                            <Link to="/shop-camping" className='nav_link'>Bike shop</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>Gun Shop</Link>
+                                            <Link to="/shop-camping" className='nav_link'>Gun Shop</Link>
                                         </li>
                                         <li className='list_item'>
                                             <Link to="/" className='nav_link'>About Us</Link>

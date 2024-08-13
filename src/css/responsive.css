@@ -120,9 +120,7 @@ body, .front_page {
   flex: 0 0 50%;
 }
 .footer-content .footer_col:last-child {flex: 0 0 50%;}
-.category-content .categry-rgt .prdt_list {
-  grid-template-columns: repeat(2, 1fr);
-}
+
 .product_thumb {
   padding: 40px;
 }
@@ -141,6 +139,17 @@ body, .front_page {
 }
 .about_grid .aboutext_col {
   padding-right: 50px;
+}
+.productssection_head {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.prdt_list .product_box {
+  width: 50%;
+}
+.category-content .categry-rgt {
+  flex: 0 0 65%;
 }
 }
 
@@ -232,8 +241,8 @@ body, .front_page {
   padding: 0px 2px;
 }
 .insta_flex {
-  margin-left: -2px;
-  margin-right: -2px;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 .insta_head p {
   font-size: 24px;
@@ -330,6 +339,33 @@ header.site_header {
 
 .site_header .icon_link.fav_link {
   display: none;
+}
+
+.top_navigation .search_col {
+  position: absolute;
+  display: block;
+  top: 100%;
+  left: 0px;
+
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+}
+.top_navigation .search_col.open {
+  max-height: 100px;
+}
+.top_navigation .site_search{
+  background-color: #ffffff;
+  padding: 10px;
+}
+.site_search .search_wrap {
+  border-radius: 10px;
+}
+.category-content .categry-lft {
+  max-width: 265px;
+}
+.category-content .categry-rgt {
+  flex: 0 0 64%;
 }
 
 }
@@ -458,6 +494,25 @@ body, .front_page {
 .footer_marquee .marq-img img {
   max-width: 800px;
 }
+.insta_flex .insta_post {
+  flex: 0 0 33.33%;
+  padding: 0px;
+}
+.category-content .categry-lft {
+  max-width: 100%;
+}
+
+.category-content .categry-rgt {
+  padding: 0px;
+}
+.prdt_list {
+  margin-left: -10px;
+  margin-right: -10px;
+}
+.prdt_list .product_box {
+  padding-left: 10px;
+  padding-right: 0px;
+}
 }
 
 @media(max-width:575px){
@@ -487,5 +542,17 @@ body, .front_page {
 }
 .footer-content .footer_contnt ul a, .footer_contnt ul li {
   font-size: 16px;
+}
+.prdt_list .product_box {
+  width: 100%;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+.prdt_list {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.product_box {
+ 
 }
 }
