@@ -8,8 +8,8 @@ const LoginPage = () => {
         <Layout>
             <div className='body_inner'>
                 <div className='page'>
-                    <div className='login_wrapper p-140'>
-                        <div className='container container_small'>
+                    <div className='login_wrapper p-130'>
+                        <div className='container'>
                             <div className='inner_wrapper light'>
                                 <div className='login_header'>
                                     <h2 className='size40'>Login To Your Account</h2>
