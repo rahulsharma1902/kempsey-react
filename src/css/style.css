@@ -1596,6 +1596,28 @@ h2.product_title {
 .fav_button:hover img {
     filter: invert(1);
 }
+label {
+    font-family: 'Satoshi-Medium';
+    color: #000000;
+}
+.share_product {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0px 20px;
+}
+.share_icons {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.share_icons a {
+    font-size: 18px;
+    color: #65b5af;
+}
+.quantity_cart_wrapper {
+    margin: 20px 0px;
+}
 
 
 
