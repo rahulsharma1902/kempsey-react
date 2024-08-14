@@ -83,7 +83,7 @@ const Header = () => {
                                 <div className='icon_links'>
                                     <Link to="/login" className="icon_link"><img src={usericon} alt="icon" /></Link>
                                     <Link to="/" className="icon_link fav_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link>
-                                    <Link to="/" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span> </Link>
+                                    <Link to="/cart" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span> </Link>
                                 </div>
                             </div>
                         </div>
