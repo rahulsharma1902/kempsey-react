@@ -114,7 +114,7 @@ const Header = () => {
                                             <Link to="/" className='nav_link'>About Us</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>FAQ</Link>
+                                            <Link to="/Faq" className='nav_link'>FAQ</Link>
                                         </li>
                                         <li className='list_item'>
                                             <Link to="/" className='nav_link'>Customer Service</Link>
@@ -122,7 +122,7 @@ const Header = () => {
                                     </ul>
                                 </div>
                                 <div className='navigation_button_col'>
-                                    <Link to="/" className='blue_link'>Gift Certificate</Link>
+                                    <Link to="/GiftCertificates" className='blue_link'>Gift Certificate</Link>
                                 </div>
                             </div>
                         </div>
