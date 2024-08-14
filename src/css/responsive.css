@@ -208,6 +208,13 @@ body, .front_page {
 .cart_content .amnt_detail {
   margin: 20px 0px 20px;
 }
+.faq_section button.tab-button {
+  font-size: 16px;
+}
+
+.faq_section button.accordion-title {
+  font-size: 23px;
+}
 }
 
 @media(max-width:991px){
@@ -444,6 +451,22 @@ header.site_header {
 .cart-container > div {
   flex-basis: 100%;
   width: 100%;
+}
+.faq_section button.tab-button {
+  font-size: 14px;
+  padding: 13px 32px;
+  line-height: 1.5;
+}
+
+.faq_section .tabs {
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+}
+
+.certificates_section form {
+  padding: 30px;
 }
 
 }
@@ -715,6 +738,22 @@ h2.product_title {
   flex-direction: column;
   align-items: flex-end;
 }
+.faq_section button.accordion-title {
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.certificates_section form .form_btnn button {
+  font-size: 16px;
+}
+.tab-content .d-flex {
+  flex-direction: column;
+  gap: 0px;
+}
+.tab-content .form_group.w-50{
+  width: 100% !important;
+  max-width: 100% !important;
+}
 
 }
 
@@ -729,6 +768,52 @@ h2.product_title {
 .banner p {
   font-size: 14px;
   max-width: 320px;
+}
+
+.faq_section .tab-content {
+  margin-top: 40px;
+}
+
+.faq_section button.accordion-title {
+  font-size: 18px;
+  line-height: 1.3;
+  padding: 22px;
+}
+
+.faq_section .accordion-item {
+  margin-bottom: 20px;
+}
+
+.faq_section .accordion-item p {
+  padding: 20px;
+  font-size: 18px;
+  line-height: 28px;
+  padding-top: 0px !important;
+}
+
+.certificates_section form .form_btnn {
+  flex-direction: column;
+}
+
+.certificates_section form .form_btnn button {
+  text-align: center;
+}
+
+.certificates_section form .form_btnn {
+  padding-top: 40px;
+}
+
+.certificate_form button.tab-button {
+  font-size: 14px !important;
+  padding: 13px 32px !important;
+}
+
+.custom-radio .form_group {
+  margin-bottom: 10px;
+}
+.certificates_section form {
+  padding: 20px;
+  border-radius: 10px;
 }
 }
 
