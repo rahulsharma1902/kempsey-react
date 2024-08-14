@@ -1,6 +1,6 @@
 import React from 'react';
 import shobanerdesktop from '../images/shop_camping_banner_desk.png';
-import Homebannerslide1mobile from '../images/banner_1920mobile.png';
+import Homebannerslide1mobile from '../images/Camping_mobile.png';
 
 
 const InnerpageBanner = () => {

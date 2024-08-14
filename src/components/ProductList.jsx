@@ -28,11 +28,11 @@ const ProductList = () => {
         {products.map(product => (
             <div key={product.id} className='product_box'>
                 <div className="prdt">
-                    <Link to="/" className="prdt-img">
+                    <Link to="/shop-camping-detail" className="prdt-img">
                     <img src={product.imgSrc} alt={product.description} />
                     </Link>
                     <div className="prdt-info">
-                    <h6><Link to="/">{product.description}</Link></h6>
+                    <h6><Link to="/shop-camping-detail">{product.description}</Link></h6>
                     <div className="btm-info">
                         <div className='prodcut_category'>{product.category}</div>
                         <div className='price'>{product.price}</div>
