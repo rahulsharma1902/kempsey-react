@@ -1,72 +1,41 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Sidebar, Menu, MenuItem, SubMenu, ProSidebarProvider } from 'react-pro-sidebar';
+import { Link } from 'react-router-dom';
+import { FaTachometerAlt, FaList, FaFilter, FaTags, FaPlusCircle } from 'react-icons/fa';
+import '../../assets/Admin.css';
 
-const Sidebar = () => {
+const SidebarComponent = () => {
   return (
-    <div className="nk-sidebar nk-sidebar-fixed is-dark" data-content="sidebarMenu">
-      <div className="nk-sidebar-element nk-sidebar-head">
-        <div className="nk-menu-trigger">
-          <a href="#" className="nk-nav-toggle nk-quick-nav-icon d-xl-none" data-target="sidebarMenu">
-            <em className="icon ni ni-arrow-left"></em>
-          </a>
-          <a href="#" className="nk-nav-compact nk-quick-nav-icon d-none d-xl-inline-flex" data-target="sidebarMenu">
-            <em className="icon ni ni-menu"></em>
-          </a>
+    <ProSidebarProvider>
+      <Sidebar style={{ height: '100vh', position: '', width: '250px' }}>
+        <div style={{ padding: '24px', fontSize: '18px', color: 'white' }}>
+          <Link to="/admin-dashboard" className="text-light" style={{ textDecoration: 'none' }}>kempsey</Link>
         </div>
-        <div className="nk-sidebar-brand">
-          <a href="/admin-dashboard" className="logo-link nk-sidebar-logo">
-            <h4 className="text-light">kempsey</h4>
-          </a>
-        </div>
-      </div>
-      <div className="nk-sidebar-element nk-sidebar-body">
-        <div className="nk-sidebar-content">
-          <div className="nk-sidebar-menu" data-simplebar>
-            <ul className="nk-menu">
-              <li className="nk-menu-heading">
-                <h6 className="overline-title text-primary-alt">
-                  <a href="/admin-dashboard">Dashboard</a>
-                </h6>
-              </li>
-              <li className="nk-menu-item has-sub">
-                <a href="/admin-dashboard/products/categories" className="nk-menu-link nk-menu-toggle">
-                  <span className="nk-menu-icon"><em className="icon ni ni-card-view"></em></span>
-                  <span className="nk-menu-text">Products</span>
-                </a>
-                <ul className="nk-menu-sub">
-                <li className="nk-menu-item">
-                    <a href="/admin-dashboard/products" className="nk-menu-link">
-                      <span className="nk-menu-text">View</span>
-                    </a>
-                  </li>
-                  <li className="nk-menu-item mb-4">
-                    <a href="/admin-dashboard/products/add" className="nk-menu-link">
-                      <span className="nk-menu-text">Add</span>
-                    </a>
-                  </li>
-                  <li className="nk-menu-item">
-                    <a href="/admin-dashboard/products/categories" className="nk-menu-link">
-                      <span className="nk-menu-text">Product Categories</span>
-                    </a>
-                  </li>
-                  <li className="nk-menu-item">
-                    <a href="/admin-dashboard/products/filters" className="nk-menu-link">
-                      <span className="nk-menu-text">Product Filtering</span>
-                    </a>
-                  </li>
-                  <li className="nk-menu-item">
-                    <a href="/admin-dashboard/products/brands" className="nk-menu-link">
-                      <span className="nk-menu-text">Brands</span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+        <Menu iconShape="circle">
+          <MenuItem icon={<FaTachometerAlt />}>
+            <Link to="/admin-dashboard">Dashboard</Link>
+          </MenuItem>
+          <SubMenu label="Products" icon={<FaList />} >
+            <MenuItem >
+              <Link to="/admin-dashboard/products">View</Link>
+            </MenuItem>
+            <MenuItem>
+              <Link to="/admin-dashboard/products/add">Add</Link>
+            </MenuItem>
+            <MenuItem>
+              <Link to="/admin-dashboard/products/categories">Product Categories</Link>
+            </MenuItem>
+            <MenuItem>
+              <Link to="/admin-dashboard/products/filters">Product Filtering</Link>
+            </MenuItem>
+            <MenuItem>
+              <Link to="/admin-dashboard/products/brands">Brands</Link>
+            </MenuItem>
+          </SubMenu>
+        </Menu>
+      </Sidebar>
+    </ProSidebarProvider>
   );
 };
 
-export default Sidebar;
+export default SidebarComponent;

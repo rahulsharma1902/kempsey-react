@@ -4,16 +4,18 @@ import { getFilterById, updateFilter } from '../../../../api/apiFilters';
 import { activeParentCategories } from '../../../../api/apiCategories';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Button, TextField, Container, Card, CardContent, Typography, Grid, MenuItem, CircularProgress } from '@mui/material';
+
 
 const FiltersUpdate = () => {
-    const { id } = useParams();  // Extract id from URL parameters
+    const { id } = useParams();
     const [ParentCategories, setParentCategories] = useState([]);
     const [formData, setFormData] = useState({
         id: '',
         name: '',
         slug: '',
         category_id: '',
-        options: [], // Add options field
+        options: [],
     });
     const [validationErrors, setValidationErrors] = useState({});
     const navigate = useNavigate();
@@ -41,7 +43,7 @@ const FiltersUpdate = () => {
                     const response = await getFilterById(id);
                     if (response.data) {
                         const optionsWithFlags = response.data.filter_options.map(option => ({
-                            id: option.id || null, // Ensure id is included
+                            id: option.id || null,
                             name: option.name,
                             fromDatabase: true
                         }));
@@ -50,7 +52,7 @@ const FiltersUpdate = () => {
                             name: response.data.name,
                             slug: response.data.slug,
                             category_id: response.data.category_id || '',
-                            options: optionsWithFlags, // Set existing options with flags
+                            options: optionsWithFlags,
                         });
                     } else {
                         toast.error('Failed to fetch filter details.');
@@ -125,7 +127,6 @@ const FiltersUpdate = () => {
             errors.category_id = 'Filter Category is required';
         }
     
-        // Validate that all options have a non-empty name
         const invalidOptions = formData.options.filter(option => !option.name.trim());
         if (invalidOptions.length > 0) {
             errors.option = 'All options must have a valid name';
@@ -142,15 +143,15 @@ const FiltersUpdate = () => {
         form.append('slug', formData.slug);
         form.append('category_id', formData.category_id);
         form.append('options', JSON.stringify(formData.options.map(option => ({
-            id: option.id || null, // Ensure id is included and can be null
+            id: option.id || null,
             name: option.name,
-        })))); // Convert options to JSON string with id
+        }))));
     
         try {
-            const response = await updateFilter(form); // Update function
+            const response = await updateFilter(form);
             if (response && response.message) {
                 toast.success(response.message);
-                navigate('/admin-dashboard/products/filters'); // Adjust redirection path
+                navigate('/admin-dashboard/products/filters');
             } else {
                 console.error('Unexpected response format:', response);
                 toast.error('Failed to update filter.');
@@ -160,125 +161,129 @@ const FiltersUpdate = () => {
             toast.error(err.message || 'Error updating filter');
         }
     };
-    
 
     return (
         <AdminLayout>
             {loading ? (
                 <div className="text-center">
-                    <div className="spinner-border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
+                    <CircularProgress />
                 </div>
             ) : (
-                <div className="card card-bordered">
-                    <div className="card-inner">
-                        <div className="card-head">
-                            <h5 className="card-title">Filter Details</h5>
-                        </div>
-                        <div className="row">
-                            <div className="col-lg-12">
-                                <form onSubmit={handleSubmit} encType="multipart/form-data">
-                                    <input type="hidden" name="id" value={formData.id} />
-                                    <div className="d-flex">
-                                        <div className="col-lg-6 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label" htmlFor="name">Filter Name</label>
-                                                <div className="form-control-wrap p-2">
-                                                    <input
-                                                        type="text"
-                                                        name="name"
-                                                        className="form-control"
-                                                        id="name"
-                                                        value={formData.name}
-                                                        onChange={handleChange}
-                                                        placeholder="Enter filter name"
+                <Container maxWidth="md">
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h5" component="h2" gutterBottom>
+                                Filter Details
+                            </Typography>
+                            <form onSubmit={handleSubmit} encType="multipart/form-data">
+                                <input type="hidden" name="id" value={formData.id} />
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Filter Name"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            error={!!validationErrors.name}
+                                            helperText={validationErrors.name}
+                                            variant="outlined"
+                                            margin="normal"
+                                        />
+                                    </Grid>
+                                    <input
+                                        type="hidden"
+                                        name="slug"
+                                        value={formData.slug}
+                                    />
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            label="Category"
+                                            name="category_id"
+                                            value={formData.category_id}
+                                            onChange={handleChange}
+                                            error={!!validationErrors.category_id}
+                                            helperText={validationErrors.category_id}
+                                            variant="outlined"
+                                            margin="normal"
+                                        >
+                                            <MenuItem value="" disabled>
+                                                --NONE--
+                                            </MenuItem>
+                                            {ParentCategories.map(category => (
+                                                <MenuItem key={category.id} value={category.id}>
+                                                    {category.name}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography variant="subtitle1" gutterBottom>
+                                            Options
+                                        </Typography>
+                                        {formData.options.map((option, index) => (
+                                            <Grid container spacing={1} key={index} alignItems="center">
+                                                <Grid item xs={10}>
+                                                    <TextField
+                                                        fullWidth
+                                                        value={option.name}
+                                                        onChange={(e) => handleOptionChange(index, e.target.value)}
+                                                        placeholder={`Option ${index + 1}`}
+                                                        variant="outlined"
+                                                        margin="normal"
                                                     />
-                                                </div>
-                                                {validationErrors.name && <span className="text text-danger">{validationErrors.name}</span>}
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label" htmlFor="slug">Slug</label>
-                                                <div className="form-control-wrap p-2">
-                                                    <input
-                                                        type="text"
-                                                        name="slug"
-                                                        className="form-control"
-                                                        id="slug"
-                                                        value={formData.slug}
-                                                        onChange={handleChange}
-                                                        placeholder="Slug"
-                                                        readOnly
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="d-flex">
-                                        <div className="col-lg-6 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label" htmlFor="category_id">Category</label>
-                                                <div className="form-control-wrap p-2">
-                                                    <select
-                                                        name="category_id"
-                                                        className="form-control"
-                                                        id="category_id"
-                                                        value={formData.category_id}
-                                                        onChange={handleChange}
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                <Button
+                                                    variant="contained"
+                                                    color={option.fromDatabase ? 'warning' : 'error'}
+                                                    onClick={() => removeOption(index)}
+                                                    disabled={formData.options.length === 1}
+                                                    style={{ marginTop: '8px' }}
                                                     >
-                                                        <option value="">--NONE--</option>
-                                                        {ParentCategories.map(category => (
-                                                            <option key={category.id} value={category.id}>{category.name}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                {validationErrors.category_id && <span className="text text-danger">{validationErrors.category_id}</span>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="d-flex flex-column">
-                                        <div className="col-lg-12 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label">Options</label>
-                                                <div className="form-control-wrap p-2">
-                                                    {formData.options.map((option, index) => (
-                                                        <div key={index} className="row mb-2">
-                                                            <div className="col">
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    value={option.name}
-                                                                    onChange={(e) => handleOptionChange(index, e.target.value)}
-                                                                    placeholder={`Option ${index + 1}`}
-                                                                />
-                                                            </div>
-                                                            <div className="col-auto">
-                                                                <button
-                                                                    type="button"
-                                                                    className={`btn ${option.fromDatabase ? 'btn-danger' : 'btn-outline-danger'}`}
-                                                                    onClick={() => removeOption(index)}
-                                                                >
-                                                                    Remove
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                    <button type="button" className="btn btn-dark" onClick={addOption}>Add Option</button>
-                                                </div>
-                                                {validationErrors.option && <span className="text text-danger">{validationErrors.option}</span>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="form-control-wrap p-2">
-                                        <button type="submit" className="btn btn-dark">Update Filter</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                                    Remove
+                                                </Button>
+                                               
+
+
+                                                </Grid>
+                                            </Grid>
+                                        ))}
+                                        
+                                        {validationErrors.option && (
+                                            <Typography color="error" variant="caption">
+                                                {validationErrors.option}
+                                            </Typography>
+                                        )}
+                                        <br />
+                                        <Button
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={addOption}
+                                            style={{ marginTop: '16px' }}
+                                        >
+                                            Add New Option
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                            fullWidth
+                                            style={{ marginTop: '16px' }}
+                                        >
+                                            Update Filter
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </Container>
             )}
         </AdminLayout>
     );

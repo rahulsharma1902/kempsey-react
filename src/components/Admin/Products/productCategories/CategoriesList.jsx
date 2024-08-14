@@ -1,225 +1,201 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Import Link for navigation
 import AdminLayout from '../../AdminLayout';
-import { parentCategories,removeCategory } from '../../../../api/apiCategories';
-import ChildCategoriesList from './ChildCategoriesList';
+import { parentCategories, childCategories, removeCategory } from '../../../../api/apiCategories';
+import { Link } from 'react-router-dom';
+import DataTable from 'react-data-table-component';
+import { Menu, MenuItem, IconButton, TextField, Select, MenuItem as MuiMenuItem, InputLabel, FormControl, Button, Grid, Box, Typography } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const CategoriesList = () => {
-  const [ParentCategories, setParentCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [filterType, setFilterType] = useState('all'); // State for filter type
+
+  // State for managing menu anchor and selected category
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
   useEffect(() => {
-    const getParentCategory = async () => {
+    const getCategories = async () => {
       try {
-        const response = await parentCategories();
-        if (Array.isArray(response.data)) {
-          setParentCategories(response.data);
-        } else {
-          setParentCategories([]);
-          console.error('Unexpected response format:', response.data);
-        }
+        const parentResponse = await parentCategories();
+        const childResponse = await childCategories();
+        
+        const parentData = Array.isArray(parentResponse.data) ? parentResponse.data : [];
+        const childData = Array.isArray(childResponse.data) ? childResponse.data : [];
+        
+        setCategories([...parentData, ...childData]);
+        setFilteredCategories([...parentData, ...childData]);
       } catch (error) {
-        console.error('Failed to fetch Parent Categories:', error.message);
+        console.error('Failed to fetch categories:', error.message);
       } finally {
         setLoading(false);
       }
     };
-    getParentCategory();
+
+    getCategories();
   }, []);
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const filteredCategories = ParentCategories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredCategories.slice(indexOfFirstItem, indexOfLastItem);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) paginate(currentPage - 1);
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) paginate(currentPage + 1);
-  };
-  const handleRemoveCategory = async (id) => {
-    if (window.confirm('Are you sure you want to remove this category?')) {
-        try {
-            await removeCategory(id);
-            // toast.success('Category removed successfully');
-            setParentCategories(prevCategories => prevCategories.filter(category => category.id !== id));
-        } catch (error) {
-            // toast.error('Failed to remove category');
-        }
-    }
-};
-
-  if (loading) {
-    return (
-      <AdminLayout>
-        <div>Loading...</div>
-      </AdminLayout>
+  useEffect(() => {
+    const filtered = categories.filter(category => {
+      if (filterType === 'all') return true;
+      if (filterType === 'parent') return !category.parent;
+      if (filterType === 'child') return category.parent;
+      return true;
+    }).filter(category =>
+      category.name.toLowerCase().includes(searchTerm)
     );
-  }
+    setFilteredCategories(filtered);
+  }, [searchTerm, filterType, categories]);
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value.toLowerCase());
+  };
+
+  const handleFilterChange = (event) => {
+    setFilterType(event.target.value);
+  };
+
+  const handleClick = (event, id) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedCategoryId(id);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedCategoryId(null);
+  };
+
+  const handleEdit = () => {
+    handleClose();
+  };
+
+  const handleRemove = async () => {
+    if (window.confirm('Are you sure you want to remove this category?')) {
+      try {
+        await removeCategory(selectedCategoryId);
+        setCategories(prevCategories => prevCategories.filter(category => category.id !== selectedCategoryId));
+        setFilteredCategories(prevCategories => prevCategories.filter(category => category.id !== selectedCategoryId));
+      } catch (error) {
+        console.error('Failed to remove category:', error.message);
+      }
+    }
+    handleClose();
+  };
+
+  const columns = [
+    {
+      name: 'Sno.',
+      selector: (row, index) => index + 1,
+      sortable: true,
+    },
+    {
+      name: 'Name',
+      selector: row => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Parent Category',
+      selector: row => row.parent ? row.parent.name : 'N/A',
+      sortable: true,
+    },
+    {
+      name: 'Visibility',
+      selector: row => row.visibility,
+      cell: row => (
+        <span className={`badge ${row.visibility === 'enabled' ? 'bg-success' : 'bg-warning'}`}>
+          {row.visibility}
+        </span>
+      ),
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      cell: (row) => (
+        <div>
+          <IconButton onClick={(event) => handleClick(event, row.id)}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl) && selectedCategoryId === row.id}
+            onClose={handleClose}
+          >
+            <MenuItem component={Link} to={`edit/${row.id}`} onClick={handleClose}>
+              Edit
+            </MenuItem>
+            <MenuItem onClick={handleRemove}>
+              Remove
+            </MenuItem>
+          </Menu>
+        </div>
+      ),
+    }
+  ];
 
   return (
     <AdminLayout>
-      <div className="nk-block nk-block-lg">
-        <div className="nk-block-head nk-block-head-sm">
-          <div className="nk-block-between">
-            <div className="nk-block-head-content">
-              <h3 className="nk-block-title page-title">Categories</h3>
-            </div>
-            <div className="nk-block-head-content">
-              <div className="toggle-wrap nk-block-tools-toggle">
-                <a href="#" className="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu">
-                  <em className="icon ni ni-more-v"></em>
-                </a>
-                <div className="toggle-expand-content" data-content="pageMenu">
-                  <ul className="nk-block-tools g-3">
-                  
-                    <li className="nk-block-tools-opt">
-                    <Link to={`add`}  className="btn btn-dark d-none d-md-inline-flex">
-                        <em className="icon ni ni-plus"></em>
-                        <span>Add Category</span>
-                       </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+      <Box sx={{ flexGrow: 1, mb: 3 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h5">Category</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Grid container spacing={2} justifyContent="flex-end">
+              <Grid item>
+                <TextField
+                  label="Search"
+                  variant="outlined"
+                  size="small"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+              </Grid>
+              <Grid item>
+                <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    value={filterType}
+                    onChange={handleFilterChange}
+                    label="Category"
+                  >
+                    <MuiMenuItem value={'all'}>
+                      All Categories
+                    </MuiMenuItem>
+                    <MuiMenuItem value={'parent'}>
+                        Parent Categories
+                    </MuiMenuItem>
+                    <MuiMenuItem value={'child'}>
+                      Child Categories
+                    </MuiMenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" color="primary" component={Link} to="add">
+                  Add Category
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Box>
+
+        <div className="card-inner">
+          <div className="card card-bordered card-preview">
+            <DataTable
+              columns={columns}
+              data={filteredCategories}
+              progressPending={loading}
+              pagination
+              paginationPerPage={10}
+              paginationRowsPerPageOptions={[10, 20, 30]}
+              paginationComponentOptions={{ rowsPerPageText: 'Rows per page:' }}
+            />
           </div>
         </div>
-
-        <div className="card card-bordered card-preview border-dark">
-          <div className="card-inner">
-            <div className="search-bar my-4">
-              <input
-                type="text"
-                className="form-control border-dark"
-                placeholder="Search categories..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
-            <h4>Parent Categories</h4>
-            <div className="card card-bordered card-preview">
-              <table className="table datatable-init nowrap nk-tb-list nk-tb-ulist" data-auto-responsive="false">
-                <thead className='table-dark'>
-                  <tr className="nk-tb-item nk-tb-head">
-                    <th className="nk-tb-col">Sno.</th>
-                    <th className="nk-tb-col"><span className="sub-text">NAME</span></th>
-                    <th className="nk-tb-col"><span className="sub-text">SLUG</span></th>
-                    <th className="nk-tb-col tb-col-lg"><span className="sub-text">VISIBILITY</span></th>
-                    <th className="nk-tb-col tb-tnx-action"><span>ACTION</span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                {currentItems.length > 0 ? (
-                  currentItems.map((category, index) => (
-                    <tr className="nk-tb-item" key={category.id}>
-                      <td className="nk-tb-col">
-                        <div className="user-card">
-                          <div className="user-info">
-                            <span className="tb-lead">{indexOfFirstItem + index + 1}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="nk-tb-col">
-                        <div className="user-card">
-                          <div className="user-info">
-                            <span className="tb-lead">{category.name}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="nk-tb-col tb-col-mb">
-                        <span className="tb-amount">{category.slug}</span>
-                      </td>
-                      <td className="nk-tb-col tb-col-md p-3">
-                      <span className={`badge ${category.visibility === 'enabled' ? 'bg-success' : 'bg-warning'}`}>
-                          {category.visibility}
-                      </span>
-
-                      </td>
-                      <td className="nk-tb-col nk-tb-col-tools">
-                        <ul className="nk-tb-actions gx-1">
-                          <li>
-                            <div className="dropdown">
-                              <a href="#" className="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown">
-                                <em className="icon ni ni-more-h"></em>
-                              </a>
-                              <div className="dropdown-menu dropdown-menu-end">
-                                <ul className="link-list-opt no-bdr">
-                                  <li>
-                                    <Link to={`edit/${category.id}`} className="dropdown-item">
-                                      <em className="icon ni ni-eye"></em>
-                                      <span>Edit</span>
-                                    </Link>
-                                  </li>
-                                  <li>
-                                      <a className="delete dropdown-item" onClick={() => handleRemoveCategory(category.id)}>
-                                          <em className="icon ni ni-trash-fill"></em>
-                                          <span>Remove</span>
-                                      </a>
-                                  </li>
-
-                                </ul>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-                  ))
-                  
-                ) : (
-                    <tr>
-                      <td colSpan="6" className="text-center">
-                        No categories found.
-                      </td>
-                    </tr>
-                )}
-                </tbody>
-              </table>
-              <nav className='border-top'>
-                <ul className="pagination">
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" aria-label="Prev" onClick={handlePrevPage}>
-                      <span aria-hidden="true">&laquo;</span>
-                    </a>
-                  </li>
-                  {[...Array(totalPages).keys()].map(number => (
-                    <li
-                      key={number}
-                      className={`page-item ${currentPage === number + 1 ? 'active' : ''}`}
-                    >
-                      <a className="page-link" href="#" onClick={() => paginate(number + 1)}>
-                        {number + 1}
-                      </a>
-                    </li>
-                  ))}
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" aria-label="Next" onClick={handleNextPage}>
-                      <span aria-hidden="true">&raquo;</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-        <ChildCategoriesList />
-      </div>
     </AdminLayout>
   );
 };

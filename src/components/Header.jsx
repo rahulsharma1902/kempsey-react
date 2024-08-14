@@ -83,7 +83,7 @@ const Header = () => {
                                 <div className='icon_links'>
                                     <Link to="/login" className="icon_link"><img src={usericon} alt="icon" /></Link>
                                     <Link to="/" className="icon_link fav_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link>
-                                    <Link to="/" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span> </Link>
+                                    <Link to="/cart" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span> </Link>
                                 </div>
                             </div>
                         </div>
@@ -114,7 +114,7 @@ const Header = () => {
                                             <Link to="/" className='nav_link'>About Us</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>FAQ</Link>
+                                            <Link to="/Faq" className='nav_link'>FAQ</Link>
                                         </li>
                                         <li className='list_item'>
                                             <Link to="/" className='nav_link'>Customer Service</Link>
@@ -122,7 +122,7 @@ const Header = () => {
                                     </ul>
                                 </div>
                                 <div className='navigation_button_col'>
-                                    <Link to="/" className='blue_link'>Gift Certificate</Link>
+                                    <Link to="/GiftCertificates" className='blue_link'>Gift Certificate</Link>
                                 </div>
                             </div>
                         </div>
