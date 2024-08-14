@@ -7,13 +7,17 @@ import AdminRoutes from './routes/AdminRoutes';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPassword from './pages/ForgotPassword';
-import HomePage from './pages/HomePage';
-import Header from './components/Header';
+// import HomePage from './pages/HomePage';
+// import Header from './components/Header';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import Logout from './components/Auth/Logout';
-import Footer from './components/Footer';
+// import Footer from './components/Footer';
 import Home from './pages/HomePage';
+import ShopCamping from './pages/ShopCamping';
+import ShopDetail from './pages/ShopDetail';
+
+
 function App() {
   return (
     <AuthProvider>
@@ -26,7 +30,11 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path="/sign-up" element={<RegisterPage />} />
           <Route path="/reset-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/" element={<Home />} /> 
+          <Route path="/shop-camping" element={<ShopCamping />} />
+          <Route path="/shop-camping-detail" element={<ShopDetail />} />  
+          
         </Routes>
       </Router>
 

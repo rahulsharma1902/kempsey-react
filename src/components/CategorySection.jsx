@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Categorymodulehome from '../components/Categorymodulehome.jsx';
-
+import CategorySidebar from '../components/CategorySidebar.jsx';
 
 const CategorySection = () => {
   return (
@@ -8,39 +8,9 @@ const CategorySection = () => {
       <div className="container">
         <div className="category-content">
           <div className="categry-lft">
-            <h4>Categories</h4>
-            <ul className="categories">
-              <li>
-                <a href="#" className="dwn_arw">
-                  Camping <i className="fa-solid fa-chevron-right"></i>
-                </a>
-              </li>
-              <li>
-                <a href="#" className="dwn_arw">
-                  Fishing <i className="fa-solid fa-chevron-right"></i>
-                </a>
-              </li>
-              <li>
-                <a href="#" className="dwn_arw" >
-                  Bike shop <i className="fa-solid fa-chevron-right"></i>
-                </a>
-              </li>
-              <li>
-                <a href="#" className="dwn_arw">
-                  Gun Shop <i className="fa-solid fa-chevron-right"></i>
-                </a>
-              </li>
-              <li>
-                <a href="#" className="dwn_arw">
-                  Accessories <i className="fa-solid fa-chevron-right"></i>
-                </a>
-              </li>
-              <li>
-                <a href="#" className="dwn_arw">
-                  Workshop
-                </a>
-              </li>
-            </ul>
+            <div className='sidebar'>
+              <CategorySidebar />
+            </div>
           </div>
           <div className="categry-rgt">
             <Categorymodulehome />

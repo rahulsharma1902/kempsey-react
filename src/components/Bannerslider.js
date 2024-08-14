@@ -56,7 +56,7 @@ const Bannerslider = () => {
                                     <h1 className='size86'>{banner.mainHead}</h1>
                                     <p>{banner.description}</p>
                                     <div className='button_wrap mt-30'>
-                                        <Link to="/" className="cta cta_square cta_light"> {banner.buttonText}</Link>
+                                        <Link to="/shop-camping" className="cta cta_square cta_light"> {banner.buttonText}</Link>
                                     </div>
                                 </div>
                             </div>
