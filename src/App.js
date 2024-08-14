@@ -16,7 +16,9 @@ import Logout from './components/Auth/Logout';
 import Home from './pages/HomePage';
 import ShopCamping from './pages/ShopCamping';
 import ShopDetail from './pages/ShopDetail';
-
+import CartPage from './pages/CartPage';
+import Faq from './pages/Faq';
+import GiftCertificates from './pages/GiftCertificates';
 
 function App() {
   return (
@@ -33,7 +35,11 @@ function App() {
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/" element={<Home />} /> 
           <Route path="/shop-camping" element={<ShopCamping />} />
-          <Route path="/shop-camping-detail" element={<ShopDetail />} />  
+          <Route path="/shop-camping-detail" element={<ShopDetail />} />
+          <Route path="/cart" element={<CartPage />} /> 
+          <Route path="/Faq" element={<Faq/>}/>
+          <Route path="/GiftCertificates" element={<GiftCertificates/>}/>
+           
           
         </Routes>
       </Router>
