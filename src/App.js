@@ -15,6 +15,8 @@ import Logout from './components/Auth/Logout';
 // import Footer from './components/Footer';
 import Home from './pages/HomePage';
 import ShopCamping from './pages/ShopCamping';
+import ShopDetail from './pages/ShopDetail';
+
 
 function App() {
   return (
@@ -30,7 +32,8 @@ function App() {
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/" element={<Home />} /> 
-          <Route path="/shop-camping" element={<ShopCamping />} /> 
+          <Route path="/shop-camping" element={<ShopCamping />} />
+          <Route path="/shop-camping-detail" element={<ShopDetail />} />  
           
         </Routes>
       </Router>
