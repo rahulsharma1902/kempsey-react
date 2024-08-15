@@ -1,83 +1,84 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
-const Header = () => {
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+import { Link } from 'react-router-dom';
+
+const AdminHeader = () => {
   const { user } = useContext(AuthContext);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <div className="nk-header nk-header-fixed is-light">
-      <div className="container-fluid">
-        <div className="nk-header-wrap">
-          <div className="nk-menu-trigger d-xl-none ms-n1">
-            <a href="#" className="nk-nav-toggle nk-quick-nav-icon" data-target="sidebarMenu">
-              <em className="icon ni ni-menu"></em>
-            </a>
-          </div>
-          <div className="nk-header-brand d-xl-none">
-            {/* Brand Logo */}
-          </div>
-          <div className="nk-header-tools">
-            <ul className="nk-quick-nav">
-              <li className="dropdown user-dropdown">
-                <a href="#" className="dropdown-toggle" data-bs-toggle="dropdown">
-                  <div className="user-toggle">
-                    <div className="user-avatar sm">
-                      <em className="icon ni ni-user-alt"></em>
-                    </div>
-                    <div className="user-info d-none d-md-block">
-                      <div className="user-status">Administrator</div>
-                      <div className="user-name dropdown-indicator">
-                        {/* Replace with dynamic user info */}
-                        {user.first_name} {user.last_name}
-                      </div>
-                    </div>
-                  </div>
-                </a>
-                <div className="dropdown-menu dropdown-menu-md dropdown-menu-end dropdown-menu-s1">
-                  <div className="dropdown-inner user-card-wrap bg-lighter d-none d-md-block">
-                    <div className="user-card">
-                      <div className="user-avatar">
-                        <span>AB</span>
-                      </div>
-                      <div className="user-info">
-                        <span className="lead-text">{user.first_name}</span>
-                        <span className="sub-text">{user.email}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="dropdown-inner">
-                    <ul className="link-list">
-                      <li>
-                        <a href="/admin-dashboard/setting">
-                          <em className="icon ni ni-setting-alt"></em>
-                          <span>Account Setting</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dark-switch" href="#">
-                          <em className="icon ni ni-moon"></em>
-                          <span>Dark Mode</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="dropdown-inner">
-                    <ul className="link-list">
-                      <li>
-                        <a href="/logout">
-                          <em className="icon ni ni-signout"></em>
-                          <span>Sign out</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
+    <AppBar position="fixed" style={{ backgroundColor: '#0f2d2f' }}>
+      <Toolbar>
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          onClick={() => {
+            document.querySelector('.nk-nav-toggle').click();
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" style={{ flexGrow: 1, color:'#fff'}}>
+          {/* Replace with dynamic brand name or logo */}
+          KEMPSEY
+        </Typography>
+        <div>
+          <IconButton
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>
+              <Link to="/admin-dashboard/setting" style={{ textDecoration: 'none', color: 'inherit' }}>
+                Account Setting
+              </Link>
+            </MenuItem>
+            <MenuItem onClick={handleClose}>
+              <Link to="/logout" style={{ textDecoration: 'none', color: 'inherit' }}>
+                Sign out
+              </Link>
+            </MenuItem>
+          </Menu>
         </div>
-      </div>
-    </div>
+      </Toolbar>
+    </AppBar>
   );
 };
 
-export default Header;
+export default AdminHeader;

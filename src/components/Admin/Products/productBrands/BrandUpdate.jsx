@@ -1,33 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../AdminLayout';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { getBrandById, addBrand } from '../../../../api/apiBrands';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { TextField, Button, Container, Card, CardContent, Typography, Grid, CircularProgress } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const BrandUpdate = () => {
-    const { id } = useParams();  // Extract id from URL parameters
-    const [BrandData, setBrandData] = useState([]);
+    const { id } = useParams(); // Extract id from URL parameters
     const [formData, setFormData] = useState({
         id: '',
         name: '',
         slug: '',
-        parent_id: '',
-        image: null,
-        description: '',
-        visibility:'',
     });
     const [validationErrors, setValidationErrors] = useState({});
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-
-   
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Fetch parent categories
-      
         // Fetch brand details if an ID is provided
         const fetchBrand = async () => {
             if (id) {
@@ -38,7 +28,6 @@ const BrandUpdate = () => {
                             id: response.data.id,
                             name: response.data.name,
                             slug: response.data.slug,
-                           
                         });
                     } else {
                         toast.error('Failed to fetch brand details.');
@@ -49,18 +38,17 @@ const BrandUpdate = () => {
             }
             setLoading(false);
         };
-    
+
         fetchBrand();
     }, [id]);
-    
 
     const generateSlug = (name) => {
         return name
             .toLowerCase()
             .trim()
-            .replace(/[^\w\s-]/g, '-')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-');
+            .replace(/[^\w\s-]/g, '-') // Remove special characters
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-'); // Remove duplicate hyphens
     };
 
     const handleChange = (e) => {
@@ -72,7 +60,6 @@ const BrandUpdate = () => {
         setFormData(newFormData);
         setValidationErrors({ ...validationErrors, [name]: '' });
     };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -92,15 +79,13 @@ const BrandUpdate = () => {
         form.append('id', formData.id);
         form.append('name', formData.name);
         form.append('slug', formData.slug);
-      
-
-
 
         try {
             const response = await addBrand(form);
             if (response && response.message) {
-                // navigate('/admin-dashboard/products/categories');
                 toast.success(response.message);
+                // Optionally navigate to another page
+                // navigate('/admin-dashboard/products/brands');
             } else {
                 console.error('Unexpected response format:', response);
                 toast.error('Failed to update brand.');
@@ -113,68 +98,59 @@ const BrandUpdate = () => {
 
     return (
         <AdminLayout>
-            {loading ? (
-                <div className="text-center">
-                <div className="spinner-border" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-              </div>
-            ) : (
-            <div className="card card-bordered">
-                <div className="card-inner">
-                    <div className="card-head">
-                        <h5 className="card-title">Brand Details</h5>
+            <Container maxWidth="md">
+                {loading ? (
+                    <div className="text-center">
+                        <CircularProgress />
                     </div>
-                    <div className="row">
-                        <div className="col-lg-12">
+                ) : (
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h5" component="h2" gutterBottom>
+                                Brand Details
+                            </Typography>
                             <form onSubmit={handleSubmit} encType="multipart/form-data">
-                                <input type="hidden" name="id" value={formData.id} />
-                                <div className="d-flex">
-                                    <div className="col-lg-6 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="name">Brand Name</label>
-                                            <div className="form-control-wrap p-2">
-                                                <input
-                                                    type="text"
-                                                    name="name"
-                                                    className="form-control"
-                                                    id="name"
-                                                    value={formData.name}
-                                                    onChange={handleChange}
-                                                    placeholder="Enter brand name"
-                                                />
-                                            </div>
-                                            {validationErrors.name && <span className="text text-danger">{validationErrors.name}</span>}
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-6 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="slug">Slug</label>
-                                            <div className="form-control-wrap p-2">
-                                                <input
-                                                    type="text"
-                                                    name="slug"
-                                                    className="form-control"
-                                                    id="slug"
-                                                    value={formData.slug}
-                                                    onChange={handleChange}
-                                                    placeholder="Slug"
-                                                    readOnly
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                              
-                                <div className="form-group mt-3 p-3">
-                                    <button type="submit" className="btn btn-lg btn-dark">Update Brand</button>
-                                </div>
+                                <input
+                                    type="hidden"
+                                    name="id"
+                                    value={formData.id}
+                                />
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Brand Name"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            error={!!validationErrors.name}
+                                            helperText={validationErrors.name}
+                                            variant="outlined"
+                                            margin="normal"
+                                        />
+                                    </Grid>
+                                    {/* Slug field is now hidden */}
+                                    <input
+                                        type="hidden"
+                                        name="slug"
+                                        value={formData.slug}
+                                    />
+                                </Grid>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    fullWidth
+                                    style={{ marginTop: '16px' }}
+                                >
+                                    Update Brand
+                                </Button>
                             </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            )}
+                        </CardContent>
+                    </Card>
+                )}
+            </Container>
             <ToastContainer />
         </AdminLayout>
     );

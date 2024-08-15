@@ -3,17 +3,28 @@ import AdminLayout from '../../AdminLayout';
 import { addFilter } from '../../../../api/apiFilters';
 import { activeParentCategories } from '../../../../api/apiCategories';
 import { toast } from 'react-toastify';
-
+import {
+    TextField,
+    Button,
+    Container,
+    Card,
+    CardContent,
+    Typography,
+    Grid,
+    MenuItem,
+    CircularProgress
+} from '@mui/material';
 
 const FiltersAdd = () => {
     const [ParentCategories, setParentCategories] = useState([]);
-    const [options, setOptions] = useState(['']);  // Initialize with one empty option
+    const [options, setOptions] = useState(['']); // Initialize with one empty option
     const [formData, setFormData] = useState({
         name: '',
         slug: '',
         category_id: '',
     });
     const [validationErrors, setValidationErrors] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getParentCategory = async () => {
@@ -28,6 +39,7 @@ const FiltersAdd = () => {
             } catch (error) {
                 console.error('Failed to fetch Parent Categories:', error.message);
             }
+            setLoading(false);
         };
         getParentCategory();
     }, []);
@@ -84,18 +96,17 @@ const FiltersAdd = () => {
         if (!formData.name.trim()) {
             errors.name = 'Filter name is required';
         }
-        if (!formData.category_id.trim()) {
+    
+        if (!String(formData.category_id).trim()) {
             errors.category_id = 'Filter Category is required';
         }
     
-        // Check if options is defined and is an array
-        if (Array.isArray(options)) {
-            const invalidOptions = options.filter(option => !option.trim());
-            if (invalidOptions.length > 0) {
-                errors.option = 'All options must have a valid name';
-            }
-        } else {
-            errors.option = 'Options are not defined properly';
+        // Check if there is at least one valid option
+        const validOptions = options.filter(option => option.trim());
+        if (validOptions.length === 0) {
+            errors.option = 'At least one option is required';
+        } else if (validOptions.length < options.length) {
+            errors.option = 'All options must have a valid name';
         }
     
         if (Object.keys(errors).length > 0) {
@@ -117,7 +128,7 @@ const FiltersAdd = () => {
                 slug: '',
                 category_id: '',
             });
-            setOptions(['']);  // Reset options to have one empty string
+            setOptions(['']); // Reset options to have one empty string
             toast.success(response.message);
     
             setValidationErrors({});
@@ -126,124 +137,123 @@ const FiltersAdd = () => {
         }
     };
     
-
+    
     return (
         <AdminLayout>
-            <div className="card card-bordered">
-                <div className="card-inner">
-                    <div className="card-head">
-                        <h5 className="card-title">Filter Details</h5>
+            <Container maxWidth="md">
+                {loading ? (
+                    <div className="text-center">
+                        <CircularProgress />
                     </div>
-                    <div className="row">
-                        <div className="col-lg-12">
+                ) : (
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h5" component="h2" gutterBottom>
+                                Filter Details
+                            </Typography>
                             <form onSubmit={handleSubmit} encType="multipart/form-data">
-                                <div className="d-flex">
-                                    <div className="col-lg-6 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="name">Filter Name</label>
-                                            <div className="form-control-wrap p-2">
-                                                <input
-                                                    type="text"
-                                                    name="name"
-                                                    className="form-control"
-                                                    id="name"
-                                                    value={formData.name}
-                                                    onChange={handleChange}
-                                                    placeholder="Enter filter name"
-                                                />
-                                            </div>
-                                            {validationErrors.name && <span className="text text-danger">{validationErrors.name}</span>}
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-6 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="slug">Slug</label>
-                                            <div className="form-control-wrap p-2">
-                                                <input
-                                                    type="text"
-                                                    name="slug"
-                                                    className="form-control"
-                                                    id="slug"
-                                                    value={formData.slug}
-                                                    onChange={handleChange}
-                                                    placeholder="Slug"
-                                                    readOnly
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="d-flex">
-                                    <div className="col-lg-6 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="category_id">Category</label>
-                                            <div className="form-control-wrap p-2">
-                                                <select
-                                                    name="category_id"
-                                                    className="form-control"
-                                                    id="category_id"
-                                                    value={formData.category_id}
-                                                    onChange={handleChange}
-                                                >
-                                                    <option value="" disabled>--select category for filter--</option>
-                                                    {ParentCategories.map(category => (
-                                                        <option key={category.id} value={category.id}>{category.name}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            {validationErrors.category_id && <span className="text text-danger">{validationErrors.category_id}</span>}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="d-flex flex-column">
-                                    <div className="col-lg-12 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label">Options</label>
-                                            <div className="form-control-wrap p-2">
-                                                {options.map((option, index) => (
-                                                    <div key={index} className="row mb-2">
-                                                        <div className="col">
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                value={option}
-                                                                onChange={(e) => handleOptionChange(index, e.target.value)}
-                                                                placeholder={`Option ${index + 1}`}
-                                                            />
-                                                        </div>
-                                                        <div className="col-auto">
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-dark"
-                                                                onClick={() => removeOption(index)}
-                                                                disabled={options.length === 1}  // Disable remove if only one option left
-                                                            >
-                                                                Remove
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Filter Name"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            error={!!validationErrors.name}
+                                            helperText={validationErrors.name}
+                                            variant="outlined"
+                                            margin="normal"
+                                        />
+                                    </Grid>
+                                    <input
+                                        type="hidden"
+                                        name="slug"
+                                        value={formData.slug}
+                                    />
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            label="Category"
+                                            name="category_id"
+                                            value={formData.category_id}
+                                            onChange={handleChange}
+                                            error={!!validationErrors.category_id}
+                                            helperText={validationErrors.category_id}
+                                            variant="outlined"
+                                            margin="normal"
+                                        >
+                                            <MenuItem value="" disabled>
+                                                --select category for filter--
+                                            </MenuItem>
+                                            {ParentCategories.map(category => (
+                                                <MenuItem key={category.id} value={category.id}>
+                                                    {category.name}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
 
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-secondary mt-2"
-                                                    onClick={addOption}
-                                                >
-                                                    Add New Option
-                                                </button>
-                                            </div>
-                                            {validationErrors.option && <span className="text text-danger">{validationErrors.option}</span>}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="form-group mt-3 p-3">
-                                    <button type="submit" className="btn btn-lg btn-dark">Save Filter</button>
-                                </div>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography variant="subtitle1" gutterBottom>
+                                            Options
+                                        </Typography>
+                                        {options.map((option, index) => (
+                                            <Grid container spacing={1} key={index} alignItems="center">
+                                                <Grid item xs={10}>
+                                                    <TextField
+                                                        fullWidth
+                                                        value={option}
+                                                        onChange={(e) => handleOptionChange(index, e.target.value)}
+                                                        placeholder={`Option ${index + 1}`}
+                                                        variant="outlined"
+                                                        margin="normal"
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Button
+                                                        variant="contained"
+                                                        color="error"
+                                                        onClick={() => removeOption(index)}
+                                                        disabled={options.length === 1}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                </Grid>
+                                            </Grid>
+                                        ))}
+                                        {validationErrors.option && (
+                                            <Typography color="error" variant="body2" style={{ marginTop: '8px' }}>
+                                                {validationErrors.option}
+                                            </Typography>
+                                        )}
+                                        <Button
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={addOption}
+                                            style={{ marginTop: '16px' }}
+                                        >
+                                            Add New Option
+                                        </Button>
+                                    </Grid>
+
+                                </Grid>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    fullWidth
+                                    style={{ marginTop: '16px' }}
+                                >
+                                    Save Filter
+                                </Button>
                             </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        </CardContent>
+                    </Card>
+                )}
+            </Container>
         </AdminLayout>
     );
 };

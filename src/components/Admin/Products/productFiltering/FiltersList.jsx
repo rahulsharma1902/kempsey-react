@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Link } from 'react-router-dom';
 import AdminLayout from '../../AdminLayout';
-import { Filters,removeFilter } from '../../../../api/apiFilters';
+import { Filters, removeFilter } from '../../../../api/apiFilters';
 import { toast } from 'react-toastify';
+import DataTable from 'react-data-table-component';
+import { Menu, MenuItem, IconButton, TextField, Select, MenuItem as MuiMenuItem, InputLabel, FormControl, Button, Grid, Box, Typography } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const FiltersList = () => {
-  const [FiltersData, setFiltersData] = useState([]);
+  const [filtersData, setFiltersData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedFilterId, setSelectedFilterId] = useState(null);
 
   useEffect(() => {
     const getFiltersData = async () => {
       try {
         const response = await Filters();
         if (Array.isArray(response.data)) {
-            setFiltersData(response.data);
+          setFiltersData(response.data);
         } else {
-            setFiltersData([]);
+          setFiltersData([]);
           console.error('Unexpected response format:', response.data);
         }
       } catch (error) {
@@ -34,203 +38,147 @@ const FiltersList = () => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredCategories = FiltersData.filter((filters) =>
-  filters.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredCategories.slice(indexOfFirstItem, indexOfLastItem);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) paginate(currentPage - 1);
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
   };
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) paginate(currentPage + 1);
-  };
-  const handleRemoveFilter = async (id) => {
-    if (window.confirm('Are you sure you want to remove this filter?')) {
-        try {
-            await removeFilter(id);
-            toast.success('filter removed successfully');
-            setFiltersData(prevFilters => prevFilters.filter(filter => filter.id !== id));
-        } catch (error) {
-            toast.error('Failed to remove filter');
-        }
-    }
-};
-
-  if (loading) {
+  // Custom filter function
+  const filteredFilters = filtersData.filter((filter) => {
+    const searchTermLower = searchTerm.toLowerCase();
     return (
-      <AdminLayout>
-        <div>Loading...</div>
-      </AdminLayout>
-    );
-  }
+      filter.name.toLowerCase().includes(searchTermLower) ||
+      filter.categorie.name.toLowerCase().includes(searchTermLower) ||
+      filter.filter_options.some(option =>
+        option.name.toLowerCase().includes(searchTermLower)
+      )
+    ) && (selectedCategory ? filter.categorie.name === selectedCategory : true);
+  });
+
+  const handleClick = (event, id) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedFilterId(id);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedFilterId(null);
+  };
+
+  const handleRemove = async () => {
+    if (window.confirm('Are you sure you want to remove this filter?')) {
+      try {
+        await removeFilter(selectedFilterId);
+        toast.success('Filter removed successfully');
+        setFiltersData((prevFilters) => prevFilters.filter((filter) => filter.id !== selectedFilterId));
+      } catch (error) {
+        toast.error('Failed to remove filter');
+      }
+    }
+    handleClose();
+  };
+
+  const columns = [
+    {
+      name: 'Sno.',
+      selector: (row, index) => index + 1,
+      sortable: true,
+    },
+    {
+      name: 'Name',
+      selector: (row) => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Category',
+      selector: (row) => row.categorie.name,
+      sortable: true,
+    },
+    {
+      name: 'Total Options',
+      selector: (row) => row.filter_options.length,
+      sortable: true,
+    },
+    {
+      name: 'Action',
+      cell: (row) => (
+        <div>
+          <IconButton onClick={(event) => handleClick(event, row.id)}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl) && selectedFilterId === row.id}
+            onClose={handleClose}
+          >
+            <MenuItem component={Link} to={`edit/${row.id}`} onClick={handleClose}>
+              Edit
+            </MenuItem>
+            <MenuItem onClick={handleRemove}>
+              Remove
+            </MenuItem>
+          </Menu>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <AdminLayout>
-      <div className="nk-block nk-block-lg">
-        <div className="nk-block-head nk-block-head-sm">
-          <div className="nk-block-between">
-            <div className="nk-block-head-content">
-              <h3 className="nk-block-title page-title">Filters</h3>
-            </div>
-            <div className="nk-block-head-content">
-              <div className="toggle-wrap nk-block-tools-toggle">
-                <a href="#" className="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu">
-                  <em className="icon ni ni-more-v"></em>
-                </a>
-                <div className="toggle-expand-content" data-content="pageMenu">
-                  <ul className="nk-block-tools g-3">
-                  
-                    <li className="nk-block-tools-opt">
-                    <Link to={`add`}  className="btn btn-dark d-none d-md-inline-flex">
-                        <em className="icon ni ni-plus"></em>
-                        <span>Add Filters</span>
-                       </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+        <Box sx={{ flexGrow: 1, mb: 3 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h5">Filters</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Grid container spacing={2} justifyContent="flex-end">
+              <Grid item>
+                <TextField
+                  label="Search"
+                  variant="outlined"
+                  size="small"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+              </Grid>
+              <Grid item>
+                <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    value={selectedCategory}
+                    onChange={handleCategoryChange}
+                    label="Category"
+                  >
+                    <MuiMenuItem value="">All Categories</MuiMenuItem>
+                    {Array.from(new Set(filtersData.map(filter => filter.categorie.name))).map((category) => (
+
+                      <MuiMenuItem key={category} value={category}>
+                                {category}
+                      </MuiMenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" color="primary" component={Link} to="add">
+                  Add Filter
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Box>
+
+        <div className="card-inner">
+          <div className="card card-bordered card-preview">
+            <DataTable
+              columns={columns}
+              data={filteredFilters}
+              progressPending={loading}
+              highlightOnHover
+              pagination
+            />
           </div>
         </div>
-
-        <div className="card card-bordered card-preview border-dark">
-          <div className="card-inner">
-            <div className="search-bar my-4">
-              <input
-                type="text"
-                className="form-control border-dark"
-                placeholder="Search Filter Name..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
-            <h4>Filters</h4>
-            <div className="card card-bordered card-preview">
-              <table className="table datatable-init nowrap nk-tb-list nk-tb-ulist" data-auto-responsive="false">
-                <thead className='table-dark'>
-                  <tr className="nk-tb-item nk-tb-head">
-                    <th className="nk-tb-col">Sno.</th>
-                    <th className="nk-tb-col"><span className="sub-text">NAME</span></th>
-                    <th className="nk-tb-col"><span className="sub-text">SLUG</span></th>
-                    <th className="nk-tb-col"><span className="sub-text">CATEGORY</span></th>
-                    <th className="nk-tb-col"><span className="sub-text">TOTAL OPTIONS</span></th>
-                    <th className="nk-tb-col tb-tnx-action"><span>ACTION</span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                {currentItems.length > 0 ? (
-                  currentItems.map((filter, index) => (
-                    <tr className="nk-tb-item" key={filter.id}>
-                      <td className="nk-tb-col">
-                        <div className="user-card">
-                          <div className="user-info">
-                            <span className="tb-lead">{indexOfFirstItem + index + 1}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="nk-tb-col">
-                        <div className="user-card">
-                          <div className="user-info">
-                            <span className="tb-lead">{filter.name}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="nk-tb-col tb-col-mb">
-                        <span className="tb-amount">{filter.slug}</span>
-                      </td>
-                      <td className="nk-tb-col tb-col-mb">
-                        <span className="tb-amount">{filter.categorie.name}</span>
-                      </td>
-                      <td className="nk-tb-col tb-col-mb">
-                        <span
-                            className="d-inline-block"
-                            tabindex="0"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title={filter.filter_options.map(option => option.name).join(', ')}
-                        >
-                            <button className="btn btn-dark" type="button" disabled="">
-                                {filter.filter_options.length}
-                            </button>
-                        </span>
-                    </td>
-
-                      <td className="nk-tb-col nk-tb-col-tools">
-                        <ul className="nk-tb-actions gx-1">
-                          <li>
-                            <div className="dropdown">
-                              <a href="#" className="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown">
-                                <em className="icon ni ni-more-h"></em>
-                              </a>
-                              <div className="dropdown-menu dropdown-menu-end">
-                                <ul className="link-list-opt no-bdr">
-                                  <li>
-                                    <Link to={`edit/${filter.id}`} className="dropdown-item">
-                                      <em className="icon ni ni-eye"></em>
-                                      <span>Edit</span>
-                                    </Link>
-                                  </li>
-                                  <li>
-                                      <a className="delete dropdown-item" onClick={() => handleRemoveFilter(filter.id)}>
-                                          <em className="icon ni ni-trash-fill"></em>
-                                          <span>Remove</span>
-                                      </a>
-                                  </li>
-
-                                </ul>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-                  ))
-                  
-                ) : (
-                    <tr>
-                      <td colSpan="6" className="text-center">
-                        No filter found.
-                      </td>
-                    </tr>
-                )}
-                </tbody>
-              </table>
-              <nav className='border-top'>
-                <ul className="pagination">
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" aria-label="Prev" onClick={handlePrevPage}>
-                      <span aria-hidden="true">&laquo;</span>
-                    </a>
-                  </li>
-                  {[...Array(totalPages).keys()].map(number => (
-                    <li
-                      key={number}
-                      className={`page-item ${currentPage === number + 1 ? 'active' : ''}`}
-                    >
-                      <a className="page-link" href="#" onClick={() => paginate(number + 1)}>
-                        {number + 1}
-                      </a>
-                    </li>
-                  ))}
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" aria-label="Next" onClick={handleNextPage}>
-                      <span aria-hidden="true">&raquo;</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
     </AdminLayout>
   );
 };
