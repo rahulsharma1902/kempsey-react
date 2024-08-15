@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../AdminLayout';
-import { addProduct } from '../../../api/apiProducts';
+import { getProductById,addProduct } from '../../../api/apiProducts';
 import { categories } from '../../../api/apiCategories';
 import { Brands } from '../../../api/apiBrands';
 import { toast } from 'react-toastify';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useNavigate, useParams } from 'react-router-dom';
+
 import {
     Container,
     Grid,
@@ -22,12 +24,15 @@ import {
 } from '@mui/material';
 
 const ProductUpdate = () => {
+    const { id } = useParams();
     const [ParentCategories, setParentCategories] = useState([]);
     const [BrandsData, setBrandsData] = useState([]);
     const [filters, setFilters] = useState([]); // Initialize as an empty array
+    const [loading, setLoading] = useState(true);
 
     const [selectedOptions, setSelectedOptions] = useState({});
     const [formData, setFormData] = useState({
+        id: '',
         name: '',
         slug: '',
         category_id: '',
@@ -76,6 +81,84 @@ const ProductUpdate = () => {
         };
         getBrandsData();
     }, []);
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            if (id) {
+                try {
+                    const response = await getProductById(id);
+                    if (response.data) {
+                        console.log(response);
+                      setFormData({
+                        ...response.data,
+                        // Assuming selected_filters_options is a JSON string
+                        selected_filters_options: JSON.parse(response.data.selected_filters_options || '{}'),
+                    });
+
+                        setSelectedOptions(response.data.selected_filters_options);
+                        selectedFilterChange(response.data.selected_filters_options,response.data.category_id);
+                        console.warn(response.data.selected_filters_options );
+                    } else {
+                        toast.error('Failed to fetch Product details.');
+                    }
+                } catch (error) {
+                    toast.error('Failed to fetch product details.');
+                }
+            }
+            setLoading(false);
+        };
+
+        fetchProduct();
+    }, [id]);
+    const selectedFilterChange = (filterData,categroyID) => {
+        
+        if (categroyID) {
+            const selectedCategory = ParentCategories.find(cat => cat.id === parseInt(categroyID));
+            if (selectedCategory) {
+                let filtersToSet = [];
+    
+                // Check if the selected category has a parent category
+                if (selectedCategory.parent_id) {
+                    const parentCategory = ParentCategories.find(cat => cat.id === selectedCategory.parent_id);
+                    filtersToSet = parentCategory ? parentCategory.filters : selectedCategory.filters;
+                } else {
+                    filtersToSet = selectedCategory.filters;
+                }
+                setFilters(filtersToSet || []); // Ensure it's an array
+                setSelectedOptions((filtersToSet || []).reduce((acc, filter) => {
+                    acc[filter.id] = ''; 
+                    return acc;
+                }, {}));
+            } else {
+                setFilters([]); // Ensure it's an array
+                setSelectedOptions({});
+            }
+        } else {
+            // Clear filters and selected options if no category is selected
+            setFilters([]); // Ensure it's an array
+            setSelectedOptions({});
+        }
+
+        // Parse the JSON string
+        const jsonObject = JSON.parse(filterData);
+        const jsonObject2 = JSON.parse(jsonObject);
+        console.warn(jsonObject2);
+        
+        
+
+    // Iterate through the entries and log the filterId and optionId
+    Object.entries(jsonObject2).forEach(([key, value]) => {
+        setOptionForFilter(key,value)
+    });
+    };
+    const setOptionForFilter = (filterId, optionId) => {
+        setSelectedOptions(prevState => ({
+            ...prevState,
+            [filterId]: optionId
+        }));
+    };
+    
+  
     
 
     const generateSlug = (name) => {
@@ -225,19 +308,19 @@ const ProductUpdate = () => {
             toast.success(response.message);
             console.log(response);
             // Clear form data after successful submission
-            setFormData({
-                name: '',
-                slug: '',
-                category_id: '',
-                brand_id: '',
-                selected_filters_options: '',
-                description: '',
-                details: '',
-                price: '',
-                stock: '',
-                weight: '',
-                images: [] // Clear images as well
-            });
+            // setFormData({
+            //     name: '',
+            //     slug: '',
+            //     category_id: '',
+            //     brand_id: '',
+            //     selected_filters_options: '',
+            //     description: '',
+            //     details: '',
+            //     price: '',
+            //     stock: '',
+            //     weight: '',
+            //     images: [] // Clear images as well
+            // });
             setImagePreviews([]);
             setSelectedThumbnailIndex(null);
             setFilters([]);
@@ -373,15 +456,22 @@ const ProductUpdate = () => {
                                     )}
                                 </Grid>
 
-
                                 <Grid item xs={12}>
-                                    <Typography variant="h6">Product Description</Typography>
+                                <Typography variant="h6">Product Description</Typography>
                                     <CKEditor
                                         editor={ClassicEditor}
                                         data={formData.description}
                                         onChange={handleDescriptionChange}
                                     />
                                 </Grid>
+                                {/* <Grid item xs={12}>
+                                    <Typography variant="h6">Product Description</Typography>
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        data={formData.description}
+                                        onChange={handleDescriptionChange}
+                                    />
+                                </Grid> */}
                                 <Grid item xs={12}>
                                     <Typography variant="h6">Product Details</Typography>
                                     <CKEditor

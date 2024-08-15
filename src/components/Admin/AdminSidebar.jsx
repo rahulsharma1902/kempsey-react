@@ -6,7 +6,7 @@ import '../../assets/Admin.css';
 
 const SidebarComponent = () => {
   return (
-    <ProSidebarProvider>
+    // <ProSidebarProvider>
       <Sidebar style={{ height: '100vh', position: '', width: '250px' }}>
         <div style={{ padding: '24px', fontSize: '18px', color: 'white' }}>
           <Link to="/admin-dashboard" className="text-light" style={{ textDecoration: 'none' }}>kempsey</Link>
@@ -34,7 +34,7 @@ const SidebarComponent = () => {
           </SubMenu>
         </Menu>
       </Sidebar>
-    </ProSidebarProvider>
+    // </ProSidebarProvider>
   );
 };
 
