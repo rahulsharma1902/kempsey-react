@@ -74,8 +74,8 @@ const Header = () => {
                             <div className='header_icons_col'>
                                 <div className='workshop_links'>
                                     <div className="links_wrap">
-                                        <Link to="/" className="icon_text_link"><img src={workshopicon} alt="icon" /> Workshop</Link>
-                                        <Link to="/" className="icon_text_link"><img src={contacticon} alt="icon" /> Contact Us</Link>
+                                        <Link to="/Workshop" className="icon_text_link"><img src={workshopicon} alt="icon" /> Workshop</Link>
+                                        <Link to="/Contact-us" className="icon_text_link"><img src={contacticon} alt="icon" /> Contact Us</Link>
                                     </div>
                                 </div>
                             </div>
@@ -111,13 +111,13 @@ const Header = () => {
                                             <Link to="/shop-camping" className='nav_link'>Gun Shop</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>About Us</Link>
+                                            <Link to="/about-us" className='nav_link'>About Us</Link>
                                         </li>
                                         <li className='list_item'>
                                             <Link to="/Faq" className='nav_link'>FAQ</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>Customer Service</Link>
+                                            <Link to="/customer-services" className='nav_link'>Customer Service</Link>
                                         </li>
                                     </ul>
                                 </div>
