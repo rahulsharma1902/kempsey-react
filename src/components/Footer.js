@@ -36,7 +36,7 @@ const Footer = () => {
                                                     <li><Link to="#">Gun Shop</Link></li>
                                                 </ul>
                                                 <ul className="foter_txt">
-                                                    <li><Link to="#">About Us</Link></li>
+                                                    <li><Link to="/about-us">About Us</Link></li>
                                                     <li><Link to="#">FAQ</Link></li>
                                                     <li><Link to="#">Customer Service</Link></li>
                                                     <li><Link to="#">My Account</Link></li>

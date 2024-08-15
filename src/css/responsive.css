@@ -31,6 +31,31 @@
   }
 
 
+  @media only screen and (max-width: 1599px) {
+    .servicing_table th {
+        padding: 15px 20px;
+    }
+
+    .servicing_table h4 {
+        font-size: 28px;
+        margin: 0;
+    }
+
+    .servicing_table h3 {
+        font-size: 32px;
+        margin-bottom: 17px;
+    }
+
+    .servicing_table th.list-table span {
+        font-size: 18px;
+    }
+
+    .servicing_table th.list-table p {
+        font-size: 18px;
+    }
+}
+
+
   @media(max-width:1539px){
 
     .container_full {
@@ -215,6 +240,23 @@ body, .front_page {
 .faq_section button.accordion-title {
   font-size: 23px;
 }
+.servicing_table th:first-child {
+  width: 26% !important;
+}
+.servicing_table th {
+  padding: 12px;
+}
+.servicing_table tbody th{
+  font-size: 18px;
+}
+.servicing_table h4 {
+  font-size: 24px;
+  margin: 0;
+}
+.servicing_table th.list-table p {
+  font-size: 17px;
+}
+
 }
 
 @media(max-width:991px){
@@ -467,6 +509,42 @@ header.site_header {
 
 .certificates_section form {
   padding: 30px;
+}
+
+th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 99;
+  background-color: #fff;
+}
+
+.servicing_table  {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  overflow: auto;
+}
+
+.servicing_table table {
+  width: 100%;
+  min-width: 900px;
+  margin: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.servicing_table th:first-child {
+  width: 24% !important;
+}
+.servicing_heading a.cta{
+  margin-top: 30px;
+}
+.servicing_table {
+  border-radius: 10px;
+  margin: 50px 0px;
+}
+.servicing_table h3 {
+  font-size: 28px;
+  margin-bottom: 0;
 }
 
 }
@@ -754,6 +832,49 @@ h2.product_title {
   width: 100% !important;
   max-width: 100% !important;
 }
+.hover_box_row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.hover_box_col {
+  width: 100%;
+  padding: 0px;
+}
+.contact_row .contact_col {
+  width: 100%;
+}
+
+.contact_col.address_col {
+  padding-right: 0px;
+}
+
+.contact_row {
+  gap: 40px;
+}
+
+.address_col .section_head {
+  margin-bottom: 20px;
+}
+
+.address_box .addreess_icon {
+  width: 30px;
+  min-width: 30px;
+}
+
+.address_box .address_text {
+  width: calc(100% - 30px);
+}
+
+.address_info {
+  gap: 15px;
+}
+.form_group.w-50 {
+  width: 100% !important;
+}
+.front_page .container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 
 }
 
@@ -815,6 +936,58 @@ h2.product_title {
   padding: 20px;
   border-radius: 10px;
 }
+.workshop_content {
+  padding-bottom: 30px;
+}
+.workshop_content h3.size46 {
+  font-size: 26px;
+}
+.servicing_table tbody th {
+  font-size: 16px;
+}
+.servicing_table h4 {
+  font-size: 22px;
+  margin: 0;
+  line-height: 1.2;
+}
+.servicing_table th.list-table p {
+  font-size: 16px;
+  line-height: 22px;
+}
+.servicing_table th.list-table span {
+  font-size: 16px;
+  line-height: normal;
+}
+.servicing_table h3 {
+  font-size: 25px;
+  margin-bottom: 0;
+  line-height: normal;
+}
+.servicing_table th:first-child {
+  width: 20% !important;
+}
+.servicing_table table {
+  width: 100%;
+  min-width: 750px;
+}
+.workshop_wrapper {
+  padding-top: 0;
+  max-width: 1348px;
+}
+.servicing_table td img {
+  max-width: 15px;
+}
+.privacy_data p {
+  font-size: 18px;
+  line-height: 1.4;
+  margin-bottom: 18px;
+}
+.privacy_data a {
+  font-size: 18px;
+  line-height: 1.4;
+  margin-bottom: 18px;
+}
+
 }
 
 @media(max-width:479px){

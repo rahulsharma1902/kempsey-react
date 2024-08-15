@@ -19,6 +19,12 @@ import ShopDetail from './pages/ShopDetail';
 import CartPage from './pages/CartPage';
 import Faq from './pages/Faq';
 import GiftCertificates from './pages/GiftCertificates';
+import AboutusPage from './pages/AboutusPage';
+import Contact from './pages/Contact';
+import CustomerServices from './pages/CustomerServices';
+import Workshop from './pages/Workshop';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+
 
 function App() {
   return (
@@ -36,10 +42,14 @@ function App() {
           <Route path="/" element={<Home />} /> 
           <Route path="/shop-camping" element={<ShopCamping />} />
           <Route path="/shop-camping-detail" element={<ShopDetail />} />
+          <Route path="/about-us" element={<AboutusPage />} />
           <Route path="/cart" element={<CartPage />} /> 
+          <Route path="/Contact-us" element={<Contact />} /> 
           <Route path="/Faq" element={<Faq/>}/>
           <Route path="/GiftCertificates" element={<GiftCertificates/>}/>
-           
+          <Route path="/customer-services" element={<CustomerServices/>}/>
+          <Route path="/Workshop" element={<Workshop/>}/>
+          <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
           
         </Routes>
       </Router>

@@ -14,7 +14,7 @@ const InnerpageBanner = () => {
                         <div className='container'>
                             <div className='banner_content text-center'>
                                 <h3 className='baner_sub_head'>Kempsey Outdoors</h3>
-                                <h1 className='size86'>sHOP cAMPING</h1>
+                                <h1 className='size86'>Page Title</h1>
                             </div>
                         </div>
                     </div>
