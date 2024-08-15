@@ -6,6 +6,20 @@ import { activeParentCategories, getCategoryById, addCategory } from '../../../.
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+    TextField,
+    Button,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
+    Checkbox,
+    FormControlLabel,
+    FormHelperText,
+    Grid,
+    CircularProgress,
+    Typography
+} from '@mui/material';
 
 const CategoriesUpdate = () => {
     const { id } = useParams();  // Extract id from URL parameters
@@ -42,23 +56,6 @@ const CategoriesUpdate = () => {
     }, []);
 
     useEffect(() => {
-        // Fetch parent categories
-        const getParentCategory = async () => {
-            try {
-                const response = await activeParentCategories();
-                if (response.data && Array.isArray(response.data)) {
-                    setParentCategories(response.data);
-                } else {
-                    setParentCategories([]);
-                    console.error('Unexpected response format:', response);
-                }
-            } catch (error) {
-                console.error('Failed to fetch Parent Categories:', error.message);
-                toast.error('Failed to fetch parent categories.');
-            }
-        };
-    
-        // Fetch category details if an ID is provided
         const fetchCategory = async () => {
             if (id) {
                 try {
@@ -82,11 +79,9 @@ const CategoriesUpdate = () => {
             }
             setLoading(false);
         };
-    
-        getParentCategory();
+
         fetchCategory();
     }, [id]);
-    
 
     const generateSlug = (name) => {
         return name
@@ -119,6 +114,7 @@ const CategoriesUpdate = () => {
     const handleVisibilityChange = (e) => {
         setFormData({ ...formData, visibility: e.target.checked ? 'enabled' : 'disabled' });
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -139,8 +135,7 @@ const CategoriesUpdate = () => {
         form.append('slug', formData.slug);
         form.append('parent_id', formData.parent_id);
         form.append('description', formData.description);
-        form.append('visibility', formData.visibility);  // Append visibility as 'enabled' or 'disabled'
-
+        form.append('visibility', formData.visibility);
 
         if (formData.image) {
             form.append('image', formData.image);
@@ -149,7 +144,6 @@ const CategoriesUpdate = () => {
         try {
             const response = await addCategory(form);
             if (response && response.message) {
-                // navigate('/admin-dashboard/products/categories');
                 toast.success(response.message);
             } else {
                 console.error('Unexpected response format:', response);
@@ -165,134 +159,98 @@ const CategoriesUpdate = () => {
         <AdminLayout>
             {loading ? (
                 <div className="text-center">
-                <div className="spinner-border" role="status">
-                  <span className="visually-hidden">Loading...</span>
+                    <CircularProgress />
                 </div>
-              </div>
             ) : (
-            <div className="card card-bordered">
-                <div className="card-inner">
-                    <div className="card-head">
-                        <h5 className="card-title">Category Details</h5>
-                    </div>
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <form onSubmit={handleSubmit} encType="multipart/form-data">
-                                <input type="hidden" name="id" value={formData.id} />
-                                <div className="d-flex">
-                                    <div className="col-lg-6 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="name">Category Name</label>
-                                            <div className="form-control-wrap p-2">
-                                                <input
-                                                    type="text"
-                                                    name="name"
-                                                    className="form-control"
-                                                    id="name"
-                                                    value={formData.name}
-                                                    onChange={handleChange}
-                                                    placeholder="Enter category name"
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h5">Category Details</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <form onSubmit={handleSubmit} encType="multipart/form-data">
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        name="name"
+                                        label="Category Name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        error={!!validationErrors.name}
+                                        helperText={validationErrors.name}
+                                    />
+                                </Grid>
+                                <input
+                                    type="hidden"
+                                    name="slug"
+                                    onChange={handleChange}
+                                    value={formData.slug}
+                                />
+                                <Grid item xs={12} sm={6}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="parent-category-label">Parent Category</InputLabel>
+                                        <Select
+                                            labelId="parent-category-label"
+                                            name="parent_id"
+                                            value={formData.parent_id}
+                                            onChange={handleChange}
+                                        >
+                                            <MenuItem value="">--NONE--</MenuItem>
+                                            {ParentCategories.map(category => (
+                                                category.id !== formData.id && (
+                                                    <MenuItem key={category.id} value={category.id}>
+                                                        {category.name}
+                                                    </MenuItem>
+                                                )
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <FormControl fullWidth error={!!validationErrors.image}>
+                                        <TextField
+                                            accept="image/*"
+                                            type="file"
+                                            id="image-upload"
+                                            onChange={handleFileChange}
+                                            label="Category Image"
+                                            InputLabelProps={{ shrink: true }}
+                                        />
+                                        {validationErrors.image && (
+                                            <FormHelperText>{validationErrors.image}</FormHelperText>
+                                        )}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl fullWidth>
+                                        {/* <InputLabel id="visibility-label">Visibility</InputLabel> */}
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={formData.visibility === 'enabled'}
+                                                    onChange={handleVisibilityChange}
                                                 />
-                                            </div>
-                                            {validationErrors.name && <span className="text text-danger">{validationErrors.name}</span>}
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-6 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="slug">Slug</label>
-                                            <div className="form-control-wrap p-2">
-                                                <input
-                                                    type="text"
-                                                    name="slug"
-                                                    className="form-control"
-                                                    id="slug"
-                                                    value={formData.slug}
-                                                    onChange={handleChange}
-                                                    placeholder="Slug"
-                                                    readOnly
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="d-flex">
-                                    <div className="col-lg-6 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="parent-category">Parent Category</label>
-                                            <div className="form-control-wrap p-2">
-                                                <select
-                                                    name="parent_id"
-                                                    className="form-control"
-                                                    id="parent-category"
-                                                    value={formData.parent_id}
-                                                    onChange={handleChange}
-                                                >
-                                                    <option value="">--NONE--</option>
-                                                    {ParentCategories.map(category => (
-                                                        category.id !== formData.id && (
-                                                            <option key={category.id} value={category.id}>{category.name}</option>
-                                                        )
-                                                    ))}
-
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-6 p-2">
-                                        <div className="form-group" id="file-input">
-                                            <label className="form-label" htmlFor="image">Category Image</label>
-                                            <div className="form-control-wrap p-2">
-                                                <input
-                                                    type="file"
-                                                    name="image"
-                                                    className="form-control"
-                                                    id="image"
-                                                    onChange={handleFileChange}
-                                                />
-                                            </div>
-                                            {validationErrors.image && <span className="text text-danger">{validationErrors.image}</span>}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-12 p-3">
-                                    <div className="form-group">
-                                        <label className="form-label" htmlFor="description">Description</label>
-                                        <div className="form-control-wrap p-2">
-                                            <CKEditor
-                                                editor={ClassicEditor}
-                                                data={formData.description}
-                                                onChange={handleDescriptionChange}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-12 p-3">
-                                    <div className="form-group">
-                                        <label className="form-label" htmlFor="visibility">
-                                            {formData.visibility === 'enabled' ? 'Hide Category' : 'Show Category'}
-                                        </label>
-                                        <div className="form-control-wrap p-2">
-                                            <input
-                                                type="checkbox"
-                                                id="visibility"
-                                                checked={formData.visibility === 'enabled'}
-                                                onChange={handleVisibilityChange}
-                                            />
-                                            <label htmlFor="visibility" className="ml-2">
-                                                {formData.visibility === 'enabled' ? 'Category is visible' : 'Category is hidden'}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="form-group mt-3 p-3">
-                                    <button type="submit" className="btn btn-lg btn-dark">Save Category</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                            }
+                                            label={formData.visibility === 'enabled' ? 'Category is visible' : 'Category is hidden'}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        data={formData.description}
+                                        onChange={handleDescriptionChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button variant="contained" color="primary" type="submit" fullWidth>
+                                        Save Category
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </form>
+                    </Grid>
+                </Grid>
             )}
             <ToastContainer />
         </AdminLayout>

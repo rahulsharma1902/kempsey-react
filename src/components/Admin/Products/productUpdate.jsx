@@ -21,7 +21,7 @@ import {
     Typography,
 } from '@mui/material';
 
-const ProductsAdd = () => {
+const ProductUpdate = () => {
     const [ParentCategories, setParentCategories] = useState([]);
     const [BrandsData, setBrandsData] = useState([]);
     const [filters, setFilters] = useState([]); // Initialize as an empty array
@@ -252,7 +252,7 @@ const ProductsAdd = () => {
         <AdminLayout>
             <Container>
                 <Card>
-                    <CardHeader title="Product Details" />
+                    <CardHeader title="Product Details Update" />
                     <CardContent>
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
                             <Grid container spacing={2}>
@@ -439,4 +439,4 @@ const ProductsAdd = () => {
     );
 };
 
-export default ProductsAdd;
+export default ProductUpdate;

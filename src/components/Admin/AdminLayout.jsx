@@ -2,10 +2,11 @@ import React from 'react';
 import SidebarComponent from './AdminSidebar';
 import AdminHeader from './AdminHeader';
 import Footer from './AdminFooter';
+import Container from '@mui/material/Container';
 
 // Import CSS files
-import './../../assets/admin/assets/css/dashlite.css?ver=3.1.2';
-import './../../assets/admin/assets/css/theme.css?ver=3.1.2';
+// import './../../assets/admin/assets/css/dashlite.css?ver=3.1.2';
+// import './../../assets/admin/assets/css/theme.css?ver=3.1.2';
 
 const AdminLayout = ({ children }) => {
   return (
@@ -13,9 +14,12 @@ const AdminLayout = ({ children }) => {
       <SidebarComponent />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <AdminHeader />
-        <div className='nk-content' style={{ flex: 1, overflowY: 'auto', marginTop: '100px' }}>
+        <Container
+          component="main"
+          style={{ flex: 1, display: '', flexDirection: '', marginTop: '100px' }}
+        >
           {children}
-        </div>
+        </Container>
         <Footer />
       </div>
     </div>
