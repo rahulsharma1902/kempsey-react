@@ -5,8 +5,8 @@ import Footer from './AdminFooter';
 import Container from '@mui/material/Container';
 
 // Import CSS files
-// import './../../assets/admin/assets/css/dashlite.css?ver=3.1.2';
-// import './../../assets/admin/assets/css/theme.css?ver=3.1.2';
+import './../../assets/admin/assets/css/dashlite.css?ver=3.1.2';
+import './../../assets/admin/assets/css/theme.css?ver=3.1.2';
 
 const AdminLayout = ({ children }) => {
   return (
