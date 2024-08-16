@@ -13,7 +13,7 @@ const Aboutsection = () => {
         <div className='about_section p-130 light'>
             <div className='container'>
                 <div className='about_section_head'>
-                    <h2 className='size76'>Easy and affordable way <br></br>
+                    <h2 className='size76'>Easy and affordable way 
                     for the whole family</h2>
 
                     <img src={greenlogo} className='green_logoe' />
