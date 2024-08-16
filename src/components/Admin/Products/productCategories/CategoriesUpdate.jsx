@@ -6,6 +6,7 @@ import { activeParentCategories, getCategoryById, addCategory } from '../../../.
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useParams } from 'react-router-dom';
+import FormSkeleton from '../../../Animation/FormSkeleton';
 import {
     TextField,
     Button,
@@ -158,9 +159,7 @@ const CategoriesUpdate = () => {
     return (
         <AdminLayout>
             {loading ? (
-                <div className="text-center">
-                    <CircularProgress />
-                </div>
+                <FormSkeleton />
             ) : (
                 <Grid container spacing={3}>
                     <Grid item xs={12}>

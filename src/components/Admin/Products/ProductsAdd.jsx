@@ -6,6 +6,7 @@ import { Brands } from '../../../api/apiBrands';
 import { toast } from 'react-toastify';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import FormSkeleton from '../../Animation/FormSkeleton';
 import {
     Container,
     Grid,
@@ -25,7 +26,7 @@ const ProductsAdd = () => {
     const [ParentCategories, setParentCategories] = useState([]);
     const [BrandsData, setBrandsData] = useState([]);
     const [filters, setFilters] = useState([]); // Initialize as an empty array
-
+    const [loading, setLoading] = useState(true);
     const [selectedOptions, setSelectedOptions] = useState({});
     const [formData, setFormData] = useState({
         name: '',
@@ -75,6 +76,8 @@ const ProductsAdd = () => {
             }
         };
         getBrandsData();
+
+        setLoading(false);
     }, []);
     
 
@@ -251,6 +254,9 @@ const ProductsAdd = () => {
     return (
         <AdminLayout>
             <Container>
+            {loading ? (
+                        <FormSkeleton />
+                ) : (
                 <Card>
                     <CardHeader title="Product Details" />
                     <CardContent>
@@ -434,6 +440,7 @@ const ProductsAdd = () => {
                         </form>
                     </CardContent>
                 </Card>
+                )}
             </Container>
         </AdminLayout>
     );

@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TextField, Button, Container, Card, CardContent, Typography, Grid, CircularProgress } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-
+import FormSkeleton from '../../../Animation/FormSkeleton';
 const BrandUpdate = () => {
     const { id } = useParams(); // Extract id from URL parameters
     const [formData, setFormData] = useState({
@@ -100,9 +100,7 @@ const BrandUpdate = () => {
         <AdminLayout>
             <Container maxWidth="md">
                 {loading ? (
-                    <div className="text-center">
-                        <CircularProgress />
-                    </div>
+                    <FormSkeleton />
                 ) : (
                     <Card>
                         <CardContent>
