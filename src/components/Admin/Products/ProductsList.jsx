@@ -7,7 +7,7 @@ import { Brands } from '../../../api/apiBrands';
 import DataTable from 'react-data-table-component';
 import { Menu, MenuItem, IconButton, TextField, Select, MenuItem as MuiMenuItem, InputLabel, FormControl, Button, Grid, Box, Typography } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
+import FormSkeleton from '../../Animation/FormSkeleton';
 const ProductsList = () => {
   const [Products, setProducts] = useState([]);
   const [Categories, setCategories] = useState([]);
@@ -224,6 +224,7 @@ const ProductsList = () => {
             columns={columns}
             data={filteredProducts}
             progressPending={loading}
+            progressComponent={<FormSkeleton />}
             pagination
             highlightOnHover
           />
