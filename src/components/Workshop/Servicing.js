@@ -21,7 +21,7 @@ const Servicing = () => {
 
                 <div className="servicing_table">
                     <table>
-                        <thead>
+                        <thead> 
                             <tr>
                                 <th style={{ width: "35%" }}><h3>Servicing</h3><p>Buy Club Membership</p></th>
                                 <th className="list-table"><h4>Tune-Up</h4><p>Full Price <b>$99</b></p><span>Club Price <b>$79</b> </span></th>
