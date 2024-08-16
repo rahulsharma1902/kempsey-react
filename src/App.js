@@ -24,6 +24,7 @@ import Contact from './pages/Contact';
 import CustomerServices from './pages/CustomerServices';
 import Workshop from './pages/Workshop';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import WorkshopBooking from './pages/WorkshopBooking';
 
 
 function App() {
@@ -50,7 +51,7 @@ function App() {
           <Route path="/customer-services" element={<CustomerServices/>}/>
           <Route path="/Workshop" element={<Workshop/>}/>
           <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
-          
+          <Route path="/workshop-booking" element={<WorkshopBooking/>}/>
         </Routes>
       </Router>
 

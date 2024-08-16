@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import Layout  from '../components/Layout';
 import LoginForm from '../components/Auth/Login';
 const LoginPage = () => {

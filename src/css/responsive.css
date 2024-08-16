@@ -117,6 +117,9 @@
 .size76 {
   font-size: 52px;
 }
+.size56 {
+  font-size: 36px;
+}
 .size46 {
   font-size: 36px;
 }
@@ -592,6 +595,9 @@ th:first-child {
   font-size: 42px;
 }
 .size46 {
+  font-size: 32px;
+}
+.size56 {
   font-size: 32px;
 }
 .aboutext_col p.size32 {
