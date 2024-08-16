@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../../contexts/AuthContext';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -10,8 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 
-const AdminHeader = () => {
-  const { user } = useContext(AuthContext);
+const AdminHeader = ({ onToggleSidebar }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenu = (event) => {
@@ -29,14 +27,11 @@ const AdminHeader = () => {
           edge="start"
           color="inherit"
           aria-label="menu"
-          onClick={() => {
-            document.querySelector('.nk-nav-toggle').click();
-          }}
+          onClick={onToggleSidebar}
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" style={{ flexGrow: 1, color:'#fff'}}>
-          {/* Replace with dynamic brand name or logo */}
+        <Typography variant="h6" style={{ flexGrow: 1, color:'#fff' }}>
           KEMPSEY
         </Typography>
         <div>

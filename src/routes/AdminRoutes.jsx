@@ -18,6 +18,7 @@ import FiltersUpdate from '../components/Admin/Products/productFiltering/Filters
 
 import ProductsList from '../components/Admin/Products/ProductsList';
 import ProductsAdd from '../components/Admin/Products/ProductsAdd';
+import ProductUpdate from '../components/Admin/Products/productUpdate';
 
 const AdminRoutes = () => {
     return (
@@ -129,6 +130,14 @@ const AdminRoutes = () => {
                 element={
                         <PrivateRoute roles={['admin']}>
                             <ProductsAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/products/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ProductUpdate />
                         </PrivateRoute>
                 } 
             />
