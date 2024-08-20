@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../AdminLayout';
-import { getProductById,addProduct } from '../../../api/apiProducts';
+import { getProductById,updateProduct } from '../../../api/apiProducts';
 import { categories } from '../../../api/apiCategories';
 import { Brands } from '../../../api/apiBrands';
 import { toast } from 'react-toastify';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { useNavigate, useParams } from 'react-router-dom';
+import FormSkeleton from '../../Animation/FormSkeleton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import {
+    IconButton,
     Container,
     Grid,
-    TextField,
+    TextField, 
     FormControl,
     InputLabel,
     Select,
@@ -21,7 +24,10 @@ import {
     CardContent,
     CardHeader,
     Typography,
+    Box,
+    
 } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 
 const ProductUpdate = () => {
     const { id } = useParams();
@@ -44,119 +50,111 @@ const ProductUpdate = () => {
         stock: '',
         weight: '',
         images: [],
+        existingImages:[],
     });
     const [validationErrors, setValidationErrors] = useState({});
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [existingImagePreviews, setExistingImagePreviews] = useState([]);
     const [selectedThumbnailIndex, setSelectedThumbnailIndex] = useState(null);
 
     useEffect(() => {
-        const getParentCategory = async () => {
+        const fetchData = async () => {
             try {
-                const response = await categories();
-                if (Array.isArray(response.data)) {
-                    setParentCategories(response.data);
-                    console.log(ParentCategories);
+                const [categoriesResponse, brandsResponse] = await Promise.all([categories(), Brands()]);
+    
+                if (Array.isArray(categoriesResponse.data)) {
+                    setParentCategories(categoriesResponse.data);
                 } else {
                     setParentCategories([]);
-                    console.error('Unexpected response format:', response.data);
+                    console.error('Unexpected response format:', categoriesResponse.data);
                 }
-            } catch (error) {
-                console.error('Failed to fetch Parent Categories:', error.message);
-            }
-        };
-        getParentCategory();
     
-        const getBrandsData = async () => {
-            try {
-                const response = await Brands();
-                if (Array.isArray(response.data)) {
-                    setBrandsData(response.data);
+                if (Array.isArray(brandsResponse.data)) {
+                    setBrandsData(brandsResponse.data);
                 } else {
                     setBrandsData([]);
-                    console.error('Unexpected response format:', response.data);
+                    console.error('Unexpected response format:', brandsResponse.data);
                 }
+    
             } catch (error) {
-                console.error('Failed to fetch Brands:', error.message);
+                console.error('Failed to fetch data:', error.message);
             }
         };
-        getBrandsData();
+    
+        fetchData();
     }, []);
-
+    
     useEffect(() => {
         const fetchProduct = async () => {
             if (id) {
                 try {
                     const response = await getProductById(id);
                     if (response.data) {
-                        console.log(response);
-                      setFormData({
-                        ...response.data,
-                        // Assuming selected_filters_options is a JSON string
-                        selected_filters_options: JSON.parse(response.data.selected_filters_options || '{}'),
-                    });
-
-                        setSelectedOptions(response.data.selected_filters_options);
-                        selectedFilterChange(response.data.selected_filters_options,response.data.category_id);
-                        console.warn(response.data.selected_filters_options );
+                        setFormData({
+                            ...response.data,
+                            selected_filters_options: JSON.parse(response.data.selected_filters_options || '{}'),
+                            images: [],
+                        });
+                        setExistingImagePreviews(JSON.parse(response.data.images));
+                        handleThumbnailChange('existing', response.data.thumbnail_index);
+                       
+                        const parsedFilters = JSON.parse(response.data.selected_filters_options);
+                        setSelectedOptions(parsedFilters);
+                        selectedFilterChange(parsedFilters, response.data.category_id);
                     } else {
                         toast.error('Failed to fetch Product details.');
                     }
                 } catch (error) {
                     toast.error('Failed to fetch product details.');
                 }
+                setLoading(false);
             }
-            setLoading(false);
         };
-
+    
         fetchProduct();
-    }, [id]);
-    const selectedFilterChange = (filterData,categroyID) => {
-        
-        if (categroyID) {
-            const selectedCategory = ParentCategories.find(cat => cat.id === parseInt(categroyID));
+    }, [id, ParentCategories]);
+    
+    const selectedFilterChange = (filterData, categoryID) => {
+        if (categoryID && ParentCategories.length > 0) {
+            const selectedCategory = ParentCategories.find(cat => cat.id === parseInt(categoryID));
             if (selectedCategory) {
                 let filtersToSet = [];
     
-                // Check if the selected category has a parent category
                 if (selectedCategory.parent_id) {
                     const parentCategory = ParentCategories.find(cat => cat.id === selectedCategory.parent_id);
                     filtersToSet = parentCategory ? parentCategory.filters : selectedCategory.filters;
                 } else {
                     filtersToSet = selectedCategory.filters;
                 }
-                setFilters(filtersToSet || []); // Ensure it's an array
+    
+                setFilters(filtersToSet || []);
                 setSelectedOptions((filtersToSet || []).reduce((acc, filter) => {
-                    acc[filter.id] = ''; 
+                    acc[filter.id] = '';
                     return acc;
                 }, {}));
             } else {
-                setFilters([]); // Ensure it's an array
+                setFilters([]);
                 setSelectedOptions({});
             }
         } else {
-            // Clear filters and selected options if no category is selected
-            setFilters([]); // Ensure it's an array
+            setFilters([]);
             setSelectedOptions({});
         }
-
-        // Parse the JSON string
+    
         const jsonObject = JSON.parse(filterData);
-        const jsonObject2 = JSON.parse(jsonObject);
-        console.warn(jsonObject2);
-        
-        
-
-    // Iterate through the entries and log the filterId and optionId
-    Object.entries(jsonObject2).forEach(([key, value]) => {
-        setOptionForFilter(key,value)
-    });
+        Object.entries(jsonObject).forEach(([key, value]) => {
+            setOptionForFilter(key, value);
+        });
     };
+    
     const setOptionForFilter = (filterId, optionId) => {
         setSelectedOptions(prevState => ({
             ...prevState,
             [filterId]: optionId
         }));
     };
+    
+   
     
   
     
@@ -242,21 +240,34 @@ const ProductUpdate = () => {
         const files = Array.from(e.target.files);
         setFormData(prevFormData => ({
             ...prevFormData,
-            images: files
+            images: [...prevFormData.images, ...files]
         }));
 
         // Generate image previews
         const previews = files.map(file => URL.createObjectURL(file));
-        setImagePreviews(previews);
+        setImagePreviews(prevPreviews => [...prevPreviews, ...previews]);
     };
 
-    const handleThumbnailChange = (index) => {
-        setSelectedThumbnailIndex(index);
+    const handleThumbnailChange = (type, index) => {
+        setSelectedThumbnailIndex({ type, index });
+    };
+
+    const handleImageRemove = (index) => {
+        setImagePreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index));
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            images: prevFormData.images.filter((_, i) => i !== index)
+        }));
+    };
+    const handleExistingImageRemove = (index) => {
+        existingImagePreviews.splice(index, 1);
+        setExistingImagePreviews([...existingImagePreviews]);
+        console.log(existingImagePreviews);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setLoading(true);
         const errors = {};
 
         if (!formData.name.trim()) {
@@ -265,7 +276,7 @@ const ProductUpdate = () => {
         if (!formData.price.trim()) {
             errors.price = 'product price is required';
         }
-        if (!formData.stock.trim()) {
+        if (!formData.stock) {
             errors.stock = 'product stock is required';
         }
         if (!formData.weight.trim()) {
@@ -282,6 +293,7 @@ const ProductUpdate = () => {
 
         const form = new FormData();
         form.append('name', formData.name);
+        form.append('id', id);
         form.append('slug', formData.slug);
         form.append('category_id', formData.category_id);
         form.append('brand_id', formData.brand_id);
@@ -291,49 +303,50 @@ const ProductUpdate = () => {
         form.append('price', formData.price);
         form.append('stock', formData.stock);
         form.append('weight', formData.weight);
+        form.append('existingImages', JSON.stringify(existingImagePreviews));
 
         // Append all selected images to the FormData object
         if (formData.images) {
+            console.warn(formData.images);
             Array.from(formData.images).forEach((file, index) => {
                 form.append(`images[${index}]`, file);
             });
         }
-
+      
         if (selectedThumbnailIndex !== null) {
-            form.append('thumbnail_index', selectedThumbnailIndex);
+            form.append('thumbnail_index', JSON.stringify(selectedThumbnailIndex));
         }
 
         try {
-            const response = await addProduct(form);
+            const response = await updateProduct(form);
             toast.success(response.message);
-            console.log(response);
-            // Clear form data after successful submission
-            // setFormData({
-            //     name: '',
-            //     slug: '',
-            //     category_id: '',
-            //     brand_id: '',
-            //     selected_filters_options: '',
-            //     description: '',
-            //     details: '',
-            //     price: '',
-            //     stock: '',
-            //     weight: '',
-            //     images: [] // Clear images as well
-            // });
+            console.log(response.data);
+           
             setImagePreviews([]);
+            setExistingImagePreviews([])
             setSelectedThumbnailIndex(null);
-            setFilters([]);
-            setSelectedOptions({});
+            setExistingImagePreviews(JSON.parse(response.product.images));
+            handleThumbnailChange('existing', response.product.thumbnail_index);
+            // setFilters([]);
+            // setSelectedOptions({});
             setValidationErrors({});
+            setLoading(false);
         } catch (err) {
+            setLoading(false);
             toast.error(err.message || 'Error adding product');
         }
     };
 
     return (
         <AdminLayout>
+  
+   
+
+
             <Container>
+                {loading ? (
+                        <FormSkeleton />
+                ) : (
                 <Card>
                     <CardHeader title="Product Details Update" />
                     <CardContent>
@@ -429,7 +442,7 @@ const ProductUpdate = () => {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Typography variant="h6">Filters</Typography> {/* Label for Filters */}
+                                    <Typography variant="h6">Filters</Typography>
                                     {filters.length > 0 ? (
                                         filters.map(filter => (
                                             <FormControl fullWidth key={filter.id} margin="normal">
@@ -446,15 +459,16 @@ const ProductUpdate = () => {
                                                             </MenuItem>
                                                         ))
                                                     ) : (
-                                                        <MenuItem disabled>No filter options available</MenuItem> // Message when no options are available
+                                                        <MenuItem disabled>No filter options available</MenuItem>
                                                     )}
                                                 </Select>
                                             </FormControl>
                                         ))
                                     ) : (
-                                        <Typography>No filters available for this category</Typography> // Message when no filters are available
+                                        <Typography>No filters available for this category</Typography>
                                     )}
                                 </Grid>
+
 
                                 <Grid item xs={12}>
                                 <Typography variant="h6">Product Description</Typography>
@@ -480,50 +494,86 @@ const ProductUpdate = () => {
                                         onChange={handleDetailChange}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <input
-                                        accept="image/*"
-                                        id="product-images"
-                                        type="file"
-                                        multiple
-                                        onChange={handleFileChange}
-                                        style={{ display: 'none' }}
-                                    />
-                                    <label htmlFor="product-images">
-                                        <Button variant="outlined"  component="span">
-                                            Upload Images
+                                
+                                    <Grid item xs={12}>
+                                        <Typography variant="h6">Upload New Images</Typography>
+                                        <input
+                                            accept="image/*"
+                                            id="product-images"
+                                            type="file"
+                                            multiple
+                                            onChange={handleFileChange}
+                                            style={{ display: 'none' }}
+                                        />
+                                        <label htmlFor="product-images">
+                                            <Button variant="outlined" component="span">
+                                                Upload New Images
+                                            </Button>
+                                        </label>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography variant="h6">Existing Images:</Typography>
+                                        <Grid container spacing={2}>
+                                            {existingImagePreviews.map((url, index) => (
+                                                <Grid item key={index} xs={4} md={3}>
+                                                    <Card>
+                                                        <CardContent>
+                                                            <img src={url} alt={`Product ${index}`} style={{ width: '100%' }} />
+                                                            <IconButton onClick={() => handleThumbnailChange('existing', index)}>
+                                                                <Typography
+                                                                    variant="body2"
+                                                                    color={
+                                                                        selectedThumbnailIndex.type === 'existing' && selectedThumbnailIndex.index === index
+                                                                            ? 'primary'
+                                                                            : 'inherit'
+                                                                    }
+                                                                >
+                                                                    Set Thumbnail
+                                                                </Typography>
+                                                            </IconButton>
+                                                            <IconButton onClick={() => handleExistingImageRemove(index)}>
+                                                                <DeleteIcon color="error" />
+                                                            </IconButton>
+                                                        </CardContent>
+                                                    </Card>
+                                                </Grid>
+                                            ))}
+                                            {imagePreviews.map((url, index) => (
+                                                <Grid item key={index} xs={4} md={3}>
+                                                    <Card>
+                                                        <CardContent>
+                                                            <img src={url} alt={`Product ${index}`} style={{ width: '100%' }} />
+                                                            <IconButton onClick={() => handleThumbnailChange('new', index)}>
+                                                                <Typography
+                                                                    variant="body2"
+                                                                    color={
+                                                                        selectedThumbnailIndex.type === 'new' && selectedThumbnailIndex.index === index
+                                                                            ? 'primary'
+                                                                            : 'inherit'
+                                                                    }
+                                                                >
+                                                                    Set Thumbnail
+                                                                </Typography>
+                                                            </IconButton>
+                                                            <IconButton onClick={() => handleImageRemove(index)}>
+                                                                <DeleteIcon color="error" />
+                                                            </IconButton>
+                                                        </CardContent>
+                                                    </Card>
+                                                </Grid>
+                                            ))}
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Button variant="contained" color="primary" type="submit" fullWidth>
+                                            Update Product
                                         </Button>
-                                    </label>
-                                    <div>
-                                        {imagePreviews.length > 0 && (
-                                            <div style={{ display: 'flex', marginTop: '10px' }}>
-                                                {imagePreviews.map((preview, index) => (
-                                                    <img
-                                                        key={index}
-                                                        src={preview}
-                                                        alt={`Preview ${index}`}
-                                                        style={{
-                                                            width: '100px',
-                                                            height: '100px',
-                                                            margin: '0 5px',
-                                                            border: index === selectedThumbnailIndex ? '2px solid blue' : '2px solid transparent'
-                                                        }}
-                                                        onClick={() => handleThumbnailChange(index)}
-                                                    />
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Button variant="contained" color="primary" type="submit" fullWidth>
-                                        Save Product
-                                    </Button>
-                                </Grid>
+                                    </Grid>
                             </Grid>
                         </form>
                     </CardContent>
                 </Card>
+                )}
             </Container>
         </AdminLayout>
     );

@@ -3,6 +3,7 @@ import AdminLayout from '../../AdminLayout';
 import { addFilter } from '../../../../api/apiFilters';
 import { activeParentCategories } from '../../../../api/apiCategories';
 import { toast } from 'react-toastify';
+import FormSkeleton from '../../../Animation/FormSkeleton';
 import {
     TextField,
     Button,
@@ -142,9 +143,7 @@ const FiltersAdd = () => {
         <AdminLayout>
             <Container maxWidth="md">
                 {loading ? (
-                    <div className="text-center">
-                        <CircularProgress />
-                    </div>
+                    <FormSkeleton />
                 ) : (
                     <Card>
                         <CardContent>

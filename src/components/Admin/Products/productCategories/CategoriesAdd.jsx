@@ -5,6 +5,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { addCategory, activeParentCategories } from '../../../../api/apiCategories';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FormSkeleton from '../../../Animation/FormSkeleton';
 import {
     Button,
     TextField,
@@ -29,6 +30,7 @@ const CategoriesAdd = () => {
         description: '',
     });
     const [validationErrors, setValidationErrors] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getParentCategory = async () => {
@@ -42,10 +44,14 @@ const CategoriesAdd = () => {
                 }
             } catch (error) {
                 console.error('Failed to fetch Parent Categories:', error.message);
+            } finally {
+                setLoading(false); // Ensure loading is set to false after data fetching attempt
             }
         };
+    
         getParentCategory();
     }, []);
+    
 
     const generateSlug = (name) => {
         return name
@@ -125,6 +131,9 @@ const CategoriesAdd = () => {
 
     return (
         <AdminLayout>
+            {loading ? (
+                <FormSkeleton />
+            ) : (
             <Card>
                 <CardContent>
                     <Typography variant="h5" component="h2" gutterBottom>
@@ -208,6 +217,7 @@ const CategoriesAdd = () => {
                     </form>
                 </CardContent>
             </Card>
+            )}
             <ToastContainer />
         </AdminLayout>
     );

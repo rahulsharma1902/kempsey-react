@@ -43,6 +43,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
         const response = await axios.post(`${API_URL}/${endpoint}`, formData, {
             headers
         });
+        console.log(response);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -55,7 +56,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 
 export const addProduct = (formData) => postData('product/add', formData, true);
-export const updateProduct = (formData) => postData('product/add', formData, true);
+export const updateProduct = (formData) => postData('product/update', formData, true);
 
 export const updateFilter = (formData) => postData('filter/update', formData, true);
 
