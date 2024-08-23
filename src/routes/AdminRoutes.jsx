@@ -19,6 +19,9 @@ import FiltersUpdate from '../components/Admin/Products/productFiltering/Filters
 import ProductsList from '../components/Admin/Products/ProductsList';
 import ProductsAdd from '../components/Admin/Products/ProductsAdd';
 import ProductUpdate from '../components/Admin/Products/productUpdate';
+import HomePageCarousel from '../components/Admin/Storefront/HomePageCarousel';
+import HomeContent from '../components/Admin/Storefront/HomeContent';
+import AboutUsContent from '../components/Admin/Storefront/AboutUsContent';
 
 const AdminRoutes = () => {
     return (
@@ -143,6 +146,35 @@ const AdminRoutes = () => {
             />
 
             {/* products routes are end here */}
+
+            {/* store front routes  */}
+
+            <Route 
+                path="/storefront/carousel" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <HomePageCarousel />
+                        </PrivateRoute>
+                } 
+            />
+
+            <Route 
+                path="/storefront/home-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <HomeContent />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/storefront/about-us-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <AboutUsContent />
+                        </PrivateRoute>
+                } 
+            />
+            {/* store front routes end here */}
 
 
         </Routes>

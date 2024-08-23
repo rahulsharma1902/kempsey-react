@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AdminLayout from '../AdminLayout';
 import { parentCategories, removeCategory } from '../../../api/apiCategories';
-import { products } from '../../../api/apiProducts';
+import { products,removeProduct } from '../../../api/apiProducts';
 import { Brands } from '../../../api/apiBrands';
 import DataTable from 'react-data-table-component';
 import { Menu, MenuItem, IconButton, TextField, Select, MenuItem as MuiMenuItem, InputLabel, FormControl, Button, Grid, Box, Typography } from '@mui/material';
@@ -32,7 +32,7 @@ const ProductsList = () => {
   const handleRemoveProduct = async () => {
     if (window.confirm('Are you sure you want to remove this product?')) {
       try {
-        await removeCategory(selectedProductId);
+        await removeProduct(selectedProductId);
         setProducts((prevProducts) => prevProducts.filter((product) => product.id !== selectedProductId));
       } catch (error) {
         console.error('Failed to remove product:', error.message);

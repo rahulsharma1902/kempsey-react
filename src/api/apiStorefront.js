@@ -22,7 +22,8 @@ const fetchData = async (endpoint) => {
 };
 
 
-export const Filters = () => fetchData('filters');
+export const homecontent = () => fetchData('home-content');
+export const aboutuscontent = () => fetchData('about-us-content');
 
 export const getProductById = (id) => fetchData(`get-product/${id}`);
 export const products = () => fetchData(`products`);
@@ -55,7 +56,8 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 
 
-export const addProduct = (formData) => postData('product/add', formData, true);
+export const addHomeContent = (formData) => postData('home-content/add', formData, true);
+export const addAboutUsContent = (formData) => postData('about-us-content/add', formData, true);
 export const updateProduct = (formData) => postData('product/update', formData, true);
 
 export const removeProduct = (id) => postData(`product/remove/${id}`, {});

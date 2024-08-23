@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
+import Avatar from '@mui/material/Avatar';
+import Divider from '@mui/material/Divider';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 const AdminHeader = ({ onToggleSidebar }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -21,7 +24,7 @@ const AdminHeader = ({ onToggleSidebar }) => {
   };
 
   return (
-    <AppBar position="fixed" style={{ backgroundColor: '#0f2d2f' }}>
+    <AppBar position="fixed" sx={{ backgroundColor: '#0f2d2f', zIndex: 1201 }}>
       <Toolbar>
         <IconButton
           edge="start"
@@ -31,7 +34,7 @@ const AdminHeader = ({ onToggleSidebar }) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" style={{ flexGrow: 1, color:'#fff' }}>
+        <Typography variant="h6" sx={{ flexGrow: 1, color: '#fff' }}>
           KEMPSEY
         </Typography>
         <div>
@@ -42,7 +45,7 @@ const AdminHeader = ({ onToggleSidebar }) => {
             onClick={handleMenu}
             color="inherit"
           >
-            <AccountCircle />
+            <Avatar src="your-avatar-url.jpg" />
           </IconButton>
           <Menu
             id="menu-appbar"
@@ -58,16 +61,36 @@ const AdminHeader = ({ onToggleSidebar }) => {
             }}
             open={Boolean(anchorEl)}
             onClose={handleClose}
+            sx={{ mt: '45px' }} // Adjusted margin for alignment
           >
+            <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center' }}>
+              <Avatar src="your-avatar-url.jpg" />
+              <Box sx={{ ml: 2 }}>
+                <Typography variant="subtitle1">Hi, tec!</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  tecrdx@gmail.com
+                </Typography>
+              </Box>
+            </Box>
+            <Divider />
             <MenuItem onClick={handleClose}>
-              <Link to="/admin-dashboard/setting" style={{ textDecoration: 'none', color: 'inherit' }}>
-                Account Setting
-              </Link>
+              <Button
+                component={Link}
+                to="/admin-dashboard/setting"
+                sx={{ justifyContent: 'flex-start', textTransform: 'none', width: '100%' }}
+              >
+                Manage your Google Account
+              </Button>
             </MenuItem>
+            <Divider />
             <MenuItem onClick={handleClose}>
-              <Link to="/logout" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Button
+                component={Link}
+                to="/logout"
+                sx={{ justifyContent: 'flex-start', textTransform: 'none', width: '100%' }}
+              >
                 Sign out
-              </Link>
+              </Button>
             </MenuItem>
           </Menu>
         </div>
@@ -77,3 +100,4 @@ const AdminHeader = ({ onToggleSidebar }) => {
 };
 
 export default AdminHeader;
+  

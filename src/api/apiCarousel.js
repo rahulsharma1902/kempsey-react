@@ -16,7 +16,6 @@ const fetchData = async (endpoint) => {
     } catch (error) {
         console.log(error);
         const errorMessage = error.response?.data?.message || 'Failed to fetch data.';
-        // toast.error(errorMessage);
         throw new Error(errorMessage);
     }
 };
@@ -25,7 +24,7 @@ const fetchData = async (endpoint) => {
 export const Filters = () => fetchData('filters');
 
 export const getProductById = (id) => fetchData(`get-product/${id}`);
-export const products = () => fetchData(`products`);
+export const fetchCarousels = () => fetchData(`carousels`);
 
 
 
@@ -43,7 +42,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
         const response = await axios.post(`${API_URL}/${endpoint}`, formData, {
             headers
         });
-        console.log(response);
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -55,7 +54,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 
 
-export const addProduct = (formData) => postData('product/add', formData, true);
+export const saveCarousels = (formData) => postData('carousel/add', formData, true);
 export const updateProduct = (formData) => postData('product/update', formData, true);
 
 export const removeProduct = (id) => postData(`product/remove/${id}`, {});
