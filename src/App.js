@@ -25,6 +25,7 @@ import CustomerServices from './pages/CustomerServices';
 import Workshop from './pages/Workshop';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import WorkshopBooking from './pages/WorkshopBooking';
+import Checkout from './pages/Checkout';
 
 
 function App() {
@@ -52,6 +53,8 @@ function App() {
           <Route path="/Workshop" element={<Workshop/>}/>
           <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
           <Route path="/workshop-booking" element={<WorkshopBooking/>}/>
+          <Route path="/checkout" element={<Checkout/>}/>
+          
         </Routes>
       </Router>
 

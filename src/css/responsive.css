@@ -259,7 +259,30 @@ body, .front_page {
 .servicing_table th.list-table p {
   font-size: 17px;
 }
-
+.p-130 {
+  padding: 100px 0;
+}
+.p-130 {
+  padding: 100px 0;
+}
+.CheckoutSection .checkout-express-head {
+  padding-bottom: 50px;
+  margin-bottom: 50px;
+}
+.CheckoutSection-col .checkout-form-list {
+  margin-bottom: 30px;
+}
+.checkout-form-list h4 {
+  font-size: 26px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.form_group {
+  margin-bottom: 15px;
+}
+.checkout-form-list .payment-detail-form .row .form-group {
+  margin-bottom: 0;
+}
 }
 
 @media(max-width:991px){
@@ -550,6 +573,25 @@ th:first-child {
   margin-bottom: 0;
 }
 
+/* new css 23-aug-2024 */
+.p-130 {
+  padding: 70px 0;
+}
+.CheckoutSection .CheckoutSection-row .CheckoutSection-col {
+  flex-basis: calc(50% - 20px);
+}
+.CheckoutSection .checkout-express-head:after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.CheckoutSection .checkout-express-head {
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+}
+.CheckoutSection .CheckoutSection-row {
+  flex-direction: column;
+  gap: 50px;
+}
 }
 
 @media(max-width:767px){
@@ -762,7 +804,9 @@ h2.product_title {
   font-size: 16px;
 }
 
-.rel_products.mt-30 {margin-top: 59px;}
+.rel_products.mt-30 {
+  margin-top: 59px;
+}
 
 .cart_table thead {
   position: absolute;
@@ -881,7 +925,56 @@ h2.product_title {
   padding-left: 15px;
   padding-right: 15px;
 }
-
+.detail-form-box {
+  padding: 30px 20px;
+}
+.detail-form-box .detail-form_row.form_row {
+  flex-wrap: wrap;
+}
+.bikedetail-form-box{
+  padding: 30px 20px;
+}
+.bikedetail-form-btn a{
+  padding: 13px;
+}
+.summary-bill-box{
+  padding: 30px 20px;
+}
+.summary-bill-deatial p ,.summary-bill-box table tr td {
+  font-size: 16px;
+}
+.summary-bill-box table tr.total-price td{
+  font-size: 18px; 
+}
+.booking-confirm-refrence-number h5 {
+  font-size: 20px;
+  line-height: 1.4;
+}
+.booking-confirm-refrence-number p {
+  font-size: 18px;
+  line-height: 1.4;
+}
+.booking-confirm .booking-confirm-text {
+  margin-bottom: 20px;
+}
+.booking-confirm .booking-confirm-img {
+  margin-bottom: 10px;
+}
+.CheckoutSection-col .checkout-form-list p {
+  margin-bottom: 10px;
+}
+.store_wrapper_outer {
+  padding: 30px 20px;
+}
+.servicetoggle_head p {
+  font-size: 20px;
+}
+.service_radio_row .service_radio_col {
+  width: 100%;
+}
+.service_content_wrapp {
+  padding: 20px;
+}
 }
 
 @media(max-width:575px){
@@ -993,7 +1086,43 @@ h2.product_title {
   line-height: 1.4;
   margin-bottom: 18px;
 }
-
+.payment-type-detail .payment-type-img {
+  max-width: 150px;
+}
+.CheckoutSection table.product-detail-paymant tbody tr td {
+  font-size: 16px;
+}
+.CheckoutSection table.product-detail-paymant tbody td.product-price {
+  font-size: 16px;
+}
+.CheckoutSection table.product-detail-paymant tbody tr td {
+  padding: 15px 0;
+}
+.CheckoutSection table.product-detail-paymant tbody tr.product-pp td.product-price {
+  font-size: 14px;
+}
+.checkout-form-list .payment-detail-form .row {
+  flex-direction: column;
+  gap: 20px;
+}
+.CheckoutSection .CheckoutSection-row .CheckoutSection-col form .form_row {
+  flex-wrap: wrap;
+}
+.footer-content .footer_contnt.mt_ft li {
+  padding-bottom: 10px;
+}
+.CheckoutSection table.product-detail-paymant tbody td:first-child {
+  width: 80px;
+}
+.CheckoutSection table.product-detail-paymant tbody tr td.product-img span.product-items-number {
+  width: 20px;
+  height: 20px;
+}
+.CheckoutSection .checkout-express-head:after {
+  padding: 10px 10px;
+  line-height: 1;
+  bottom: -17px;
+}
 }
 
 @media(max-width:479px){
