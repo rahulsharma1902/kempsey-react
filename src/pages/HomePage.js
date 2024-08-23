@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Bannerslider from '../components/Bannerslider.js';
+import Bannerslider from '../components/Front/Home/Bannerslider.js';
 import kempspattern from '../images/kemps_pattern.png';
 import Layout from '../components/Layout.jsx';
 import Newarrivalmodule from '../components/Newarrivalmodule.jsx';
@@ -11,10 +11,11 @@ import CategoryMarquee from '../components/CategoryMarquee.jsx';
 import Aboutsection from '../components/Aboutsection.jsx';
 import Reviewsection from '../components/Reviewsection.jsx';
 import Outdoorcloset from '../components/Outdoorcloset.jsx';
-
+import {useHomeContent } from '../contexts/HomeContentContext.js';
 
 const HomePage = () => {
-
+    const { homeContent, loading } = useHomeContent();
+    console.log(homeContent);
     return (
         <Layout>
         <div className='body_inner '>

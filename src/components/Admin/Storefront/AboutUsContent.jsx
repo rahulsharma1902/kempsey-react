@@ -202,13 +202,37 @@ const HomeContentAdd = () => {
 
     
         try {
+            setLoading(true);
             const response = await addAboutUsContent(data);
             toast.success(response.message);
+            setFormData({
+                about_us_banner_title: response.data.about_us_banner_title || '',
+                about_us_banner_image: response.data.about_us_banner_image || '',
+                about_us_banner_sub_title: response.data.about_us_banner_sub_title || '',
+                about_us_heading: response.data.about_us_heading || '',
+                about_us_logo: response.data.about_us_logo || '',
+                about_us_details: response.data.about_us_details || '',
+                about_us_image: response.data.about_us_image || '',
+                about_us_btn: response.data.about_us_btn || '',
+                about_us_btn_link: response.data.about_us_btn_link || '',
+                about_us_shop_title: response.data.about_us_shop_title || '',
+                about_us_shop_details: JSON.parse(response.data.about_us_shop_details) || '',
+
+                about_us_bottom_title: response.data.about_us_bottom_title || '',
+                about_us_bottom_banner: response.data.about_us_bottom_banner || '',
+            });
+
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach((input, index) => {
+                input.value = '';
+            });
         } catch (err) {
             toast.error(err.message || 'Error saving home content');
+            setLoading(false);
         } finally {
             setLoading(false);
         }
+
     };
     
 

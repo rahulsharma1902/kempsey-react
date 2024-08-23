@@ -25,11 +25,14 @@ import CustomerServices from './pages/CustomerServices';
 import Workshop from './pages/Workshop';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import WorkshopBooking from './pages/WorkshopBooking';
-
+import {CategoryProvider} from './contexts/CategoryContext';
+import {HomeContentProvider} from './contexts/HomeContentContext';
 
 function App() {
   return (
     <AuthProvider>
+      <HomeContentProvider>
+      <CategoryProvider>
       <Router>
         {/* <Header /> */}
         <Routes>
@@ -56,6 +59,8 @@ function App() {
       </Router>
 
       <ToastContainer />
+      </CategoryProvider>
+      </HomeContentProvider>
     </AuthProvider>
 
   )}
