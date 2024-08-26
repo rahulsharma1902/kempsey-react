@@ -24,7 +24,7 @@ export const CategoryProvider = ({ children }) => {
             } catch (error) {
                 console.error('Failed to fetch Parent Categories:', error.message);
             } finally {
-                setLoading(true);
+                setLoading(false);
             }
         };
 
