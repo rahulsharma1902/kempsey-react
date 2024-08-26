@@ -3,10 +3,10 @@ import React from 'react';
 import Slider from 'react-slick';
 import { Link } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
-import { useCategories } from '../contexts/CategoryContext';
+import { useCategories } from '../../../contexts/CategoryContext';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
-import viewcollectionbutton from '../images/view_collection_button.svg';
+import viewcollectionbutton from '../../../images/view_collection_button.svg';
 
 const CategorySlider = () => {
     const { ParentCategories, loading } = useCategories();

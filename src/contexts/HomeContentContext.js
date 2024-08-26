@@ -26,7 +26,7 @@ export const HomeContentProvider = ({ children }) => {
                 console.error('Failed to fetch home content:', error.message);
                 setHomeContent([]); // Set an empty array if the fetch fails
             } finally {
-                setLoading(false);
+                setLoading(true);
             }
         };
 

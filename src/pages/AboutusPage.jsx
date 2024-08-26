@@ -3,7 +3,7 @@ import Layout from '../components/Layout.jsx';
 import InnerpageBanner from '../components/InnerpageBanner.jsx';
 import Aboutsection from '../components/Aboutsection.jsx';
 import Reviewsection from '../components/Reviewsection.jsx';
-import Outdoorcloset from '../components/Outdoorcloset.jsx';
+import Outdoorcloset from '../components/Front/Home/Outdoorcloset.jsx';
 import WhyShopsection from '../components/About/WhyShopsection.jsx'
 
 

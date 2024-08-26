@@ -1,8 +1,9 @@
 import React from 'react';
 import Categorymodulehome from '../components/Categorymodulehome.jsx';
-import CategorySidebar from '../components/CategorySidebar.jsx';
+import CategorySidebar from './Front/Home/CategorySidebar.jsx';
 
 const CategorySection = () => {
+
   return (
     <section className="category-sec p-130">
       <div className="container">

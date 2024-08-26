@@ -1,7 +1,7 @@
 import React from 'react';
 import { Skeleton } from '@mui/material';
-import { useHomeContent } from '../contexts/HomeContentContext.js';
-import innbanner from '../images/inn_banner_img.png';
+import { useHomeContent } from '../../../contexts/HomeContentContext.js';
+import innbanner from '../../../images/inn_banner_img.png';
 
 const Outdoorcloset = () => {
     const { homeContent, loading } = useHomeContent(); 

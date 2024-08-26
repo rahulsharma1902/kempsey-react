@@ -1,8 +1,8 @@
 // CategoryMarquee.jsx
 import React from 'react';
 import Slider from 'react-slick';
-import { useCategories } from '../contexts/CategoryContext';
-import Star from '../images/Star.svg';
+import { useCategories } from '../../../contexts/CategoryContext';
+import Star from '../../../images/Star.svg';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import Skeleton from '@mui/material/Skeleton';
