@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../AdminLayout';
-import { sitecontent, addAboutUsContent } from '../../../api/apiStorefront';
+import { sitecontent, addStoreContent } from '../../../api/apiStorefront';
 import { toast } from 'react-toastify';
 import FormSkeleton from '../../Animation/FormSkeleton';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -206,7 +206,7 @@ const HomeContentAdd = () => {
     
         try {
             setLoading(true);
-            const response = await addAboutUsContent(data);
+            const response = await addStoreContent(data);
             toast.success(response.message);
             setFormData({
                 about_us_banner_title: response.data.about_us_banner_title || '',

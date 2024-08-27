@@ -59,6 +59,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 export const addHomeContent = (formData) => postData('home-content/add', formData, true);
 export const addAboutUsContent = (formData) => postData('about-us-content/add', formData, true);
+export const addStoreContent = (formData) => postData('store-content/add', formData, true);
 export const updateProduct = (formData) => postData('product/update', formData, true);
 
 export const removeProduct = (id) => postData(`product/remove/${id}`, {});
