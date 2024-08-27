@@ -348,7 +348,7 @@ const HomeContentAdd = () => {
                                                                 error={!!validationErrors.footer_instagram_link}
                                                                 helperText={validationErrors.footer_instagram_link}
                                                                 variant="outlined"
-                                                            />
+                                                            /> 
                                                         </Grid>
                                                         <Grid item xs={12}>
                                                             <TextField
