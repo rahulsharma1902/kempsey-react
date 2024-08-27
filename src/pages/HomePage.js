@@ -8,7 +8,7 @@ import Newproductmodule from '../components/Newproductmodule.jsx';
 import Categoryslider from '../components/Front/Home/Categoryslider.jsx';
 import CategorySection from '../components/CategorySection.jsx';
 import CategoryMarquee from '../components/Front/Home/CategoryMarquee.jsx';
-import Aboutsection from '../components/Aboutsection.jsx';
+import Aboutsection from '../components/Front/Home/Aboutsection.jsx';
 import Reviewsection from '../components/Reviewsection.jsx';
 import Outdoorcloset from '../components/Front/Home/Outdoorcloset.jsx';
 import {useHomeContent } from '../contexts/HomeContentContext.js';

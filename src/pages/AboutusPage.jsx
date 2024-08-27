@@ -1,10 +1,10 @@
 import React from 'react';
 import Layout from '../components/Layout.jsx';
 import InnerpageBanner from '../components/InnerpageBanner.jsx';
-import Aboutsection from '../components/Aboutsection.jsx';
+import Aboutsection from '../components/Front/About/AboutMainSection.jsx';
 import Reviewsection from '../components/Reviewsection.jsx';
-import Outdoorcloset from '../components/Front/Home/Outdoorcloset.jsx';
-import WhyShopsection from '../components/About/WhyShopsection.jsx'
+import Outdoorcloset from '../components/Front/About/Outdoorcloset.jsx';
+import WhyShopsection from '../components/Front/About/WhyShopsection.jsx'
 
 
 const AboutusPage = () => {

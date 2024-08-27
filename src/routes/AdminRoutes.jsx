@@ -22,6 +22,7 @@ import ProductUpdate from '../components/Admin/Products/productUpdate';
 import HomePageCarousel from '../components/Admin/Storefront/HomePageCarousel';
 import HomeContent from '../components/Admin/Storefront/HomeContent';
 import AboutUsContent from '../components/Admin/Storefront/AboutUsContent';
+import SiteContent from '../components/Admin/Storefront/SiteContent';
 
 const AdminRoutes = () => {
     return (
@@ -171,6 +172,14 @@ const AdminRoutes = () => {
                 element={
                         <PrivateRoute roles={['admin']}>
                             <AboutUsContent />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/storefront/site-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <SiteContent />
                         </PrivateRoute>
                 } 
             />

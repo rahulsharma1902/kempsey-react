@@ -24,6 +24,7 @@ const fetchData = async (endpoint) => {
 
 export const homecontent = () => fetchData('home-content');
 export const aboutuscontent = () => fetchData('about-us-content');
+export const sitecontent = () => fetchData('site-content');
 
 export const getProductById = (id) => fetchData(`get-product/${id}`);
 export const products = () => fetchData(`products`);
