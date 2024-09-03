@@ -6,11 +6,27 @@ import { Brands } from '../../../api/apiBrands';
 import { toast } from 'react-toastify';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import FormSkeleton from '../../Animation/FormSkeleton';
+import {
+    Container,
+    Grid,
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    Typography,
+} from '@mui/material';
 
 const ProductsAdd = () => {
     const [ParentCategories, setParentCategories] = useState([]);
     const [BrandsData, setBrandsData] = useState([]);
-    const [filters, setFilters] = useState([]);
+    const [filters, setFilters] = useState([]); // Initialize as an empty array
+    const [loading, setLoading] = useState(true);
     const [selectedOptions, setSelectedOptions] = useState({});
     const [formData, setFormData] = useState({
         name: '',
@@ -18,11 +34,11 @@ const ProductsAdd = () => {
         category_id: '',
         brand_id: '',
         selected_filters_options: '',
-        description:'',
-        details:'',
-        price:'',
-        stock:'',
-        weight:'',
+        description: '',
+        details: '',
+        price: '',
+        stock: '',
+        weight: '',
         images: [],
     });
     const [validationErrors, setValidationErrors] = useState({});
@@ -35,6 +51,7 @@ const ProductsAdd = () => {
                 const response = await categories();
                 if (Array.isArray(response.data)) {
                     setParentCategories(response.data);
+                    console.log(ParentCategories);
                 } else {
                     setParentCategories([]);
                     console.error('Unexpected response format:', response.data);
@@ -44,7 +61,7 @@ const ProductsAdd = () => {
             }
         };
         getParentCategory();
-
+    
         const getBrandsData = async () => {
             try {
                 const response = await Brands();
@@ -59,7 +76,10 @@ const ProductsAdd = () => {
             }
         };
         getBrandsData();
+
+        setLoading(false);
     }, []);
+    
 
     const generateSlug = (name) => {
         return name
@@ -89,12 +109,12 @@ const ProductsAdd = () => {
             ...prevFormData,
             category_id: categoryId,
         }));
-
+    
         if (categoryId) {
             const selectedCategory = ParentCategories.find(cat => cat.id === parseInt(categoryId));
             if (selectedCategory) {
                 let filtersToSet = [];
-
+    
                 // Check if the selected category has a parent category
                 if (selectedCategory.parent_id) {
                     const parentCategory = ParentCategories.find(cat => cat.id === selectedCategory.parent_id);
@@ -102,22 +122,24 @@ const ProductsAdd = () => {
                 } else {
                     filtersToSet = selectedCategory.filters;
                 }
-
-                setFilters(filtersToSet || []);
+    
+                setFilters(filtersToSet || []); // Ensure it's an array
                 setSelectedOptions((filtersToSet || []).reduce((acc, filter) => {
                     acc[filter.id] = ''; // Initialize selected options for each filter
                     return acc;
                 }, {}));
             } else {
-                setFilters([]);
+                setFilters([]); // Ensure it's an array
                 setSelectedOptions({});
             }
         } else {
             // Clear filters and selected options if no category is selected
-            setFilters([]);
+            setFilters([]); // Ensure it's an array
             setSelectedOptions({});
         }
     };
+    
+    
 
     const handleFilterChange = (filterId, value) => {
         setSelectedOptions(prevSelectedOptions => ({
@@ -158,10 +180,19 @@ const ProductsAdd = () => {
         const errors = {};
 
         if (!formData.name.trim()) {
-            errors.name = 'Product name is required';
+            errors.name = 'product name is required';
         }
-        if (!formData.category_id.trim()) {
-            errors.category_id = 'Product Category is required';
+        if (!formData.price.trim()) {
+            errors.price = 'product price is required';
+        }
+        if (!formData.stock.trim()) {
+            errors.stock = 'product stock is required';
+        }
+        if (!formData.weight.trim()) {
+            errors.weight = 'product weight is required';
+        }
+        if (!formData.category_id) {
+            errors.category_id = 'product category is required';
         }
 
         if (Object.keys(errors).length > 0) {
@@ -197,21 +228,24 @@ const ProductsAdd = () => {
             toast.success(response.message);
             console.log(response);
             // Clear form data after successful submission
-            // setFormData({
-            //     name: '',
-            //     slug: '',
-            //     category_id: '',
-            //     brand_id: '',
-            //     selectedOptions: '',
-            //     description: '',
-            //     details: '',
-            //     images: [] // Clear images as well
-            // });
-            // setImagePreviews([]);
-            // setSelectedThumbnailIndex(null);
-            // setFilters([]);
-            // setSelectedOptions({});
-            // setValidationErrors({});
+            setFormData({
+                name: '',
+                slug: '',
+                category_id: '',
+                brand_id: '',
+                selected_filters_options: '',
+                description: '',
+                details: '',
+                price: '',
+                stock: '',
+                weight: '',
+                images: [] // Clear images as well
+            });
+            setImagePreviews([]);
+            setSelectedThumbnailIndex(null);
+            setFilters([]);
+            setSelectedOptions({});
+            setValidationErrors({});
         } catch (err) {
             toast.error(err.message || 'Error adding product');
         }
@@ -219,261 +253,195 @@ const ProductsAdd = () => {
 
     return (
         <AdminLayout>
-            <div className="card card-bordered">
-                <div className="card-inner">
-                    <div className="card-head">
-                        <h5 className="card-title">Product Details</h5>
-                    </div>
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <form onSubmit={handleSubmit} encType="multipart/form-data">
-                            <div className="d-flex">
-                                        <div className="col-lg-6 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label" htmlFor="name">Product Name</label>
-                                                <div className="form-control-wrap p-2">
-                                                    <input
-                                                        type="text"
-                                                        name="name"
-                                                        className="form-control"
-                                                        id="name"
-                                                        value={formData.name}
-                                                        onChange={handleChange}
-                                                        placeholder="Enter Product name"
-                                                    />
-                                                </div>
-                                                {validationErrors.name && <span className="text text-danger">{validationErrors.name}</span>}
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label" htmlFor="slug">Slug</label>
-                                                <div className="form-control-wrap p-2">
-                                                    <input
-                                                        type="text"
-                                                        name="slug"
-                                                        className="form-control"
-                                                        id="slug"
-                                                        value={formData.slug}
-                                                        onChange={handleChange}
-                                                        placeholder="Slug"
-                                                        readOnly
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <div className="d-flex">
-                                        <div className="col-lg-4 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label" htmlFor="price">Price</label>
-                                                <div className="form-control-wrap p-2">
-                                                    <input
-                                                        type="number"
-                                                        name="price"
-                                                        className="form-control"
-                                                        id="price"
-                                                        value={formData.price}
-                                                        onChange={handleChange}
-                                                        placeholder="enter product price"
-                                                    />
-                                                </div>
-                                                {validationErrors.price && <span className="text text-danger">{validationErrors.price}</span>}
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-4 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label" htmlFor="stock">Stock</label>
-                                                <div className="form-control-wrap p-2">
-                                                    <input
-                                                        type="number"
-                                                        name="stock"
-                                                        className="form-control"
-                                                        id="stock"
-                                                        value={formData.stock}
-                                                        onChange={handleChange}
-                                                        placeholder="enter product stock"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-4 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label" htmlFor="weight">Weight (LBS)</label>
-                                                <div className="form-control-wrap p-2">
-                                                    <input
-                                                        type="number"
-                                                        name="weight"
-                                                        className="form-control"
-                                                        id="weight"
-                                                        value={formData.weight}
-                                                        onChange={handleChange}
-                                                        placeholder="enter product weight"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <div className="d-flex">
-                                        <div className="col-lg-6 p-2">
-                                                <div className="form-group">
-                                                    <label className="form-label" htmlFor="brand_id">Brand</label>
-                                                    <div className="form-control-wrap p-2">
-                                                        <select
-                                                            name="brand_id"
-                                                            className="form-control"
-                                                            id="brand_id"
-                                                            value={formData.brand_id}
-                                                            onChange={handleChange}
-                                                        >
-                                                            <option value="" disabled>--Select Brands For Product--</option>
-                                                            {BrandsData.map(brand => (
-                                                                <option key={brand.id} value={brand.id}>{brand.name}</option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-                                                    {validationErrors.brand_id && <span className="text text-danger">{validationErrors.brand_id}</span>}
-                                                </div>
-                                            </div>
-                                        <div className="col-lg-6 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label" htmlFor="category_id">Category</label>
-                                                <div className="form-control-wrap p-2">
-                                                    <select
-                                                        name="category_id"
-                                                        className="form-control"
-                                                        id="category_id"
-                                                        value={formData.category_id}
-                                                        onChange={handleCategoryChange}
-                                                    >
-                                                        <option value="" disabled>--select category for product--</option>
-                                                        {ParentCategories.map(category => (
-                                                            <option key={category.id} value={category.id}>{category.name}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                {validationErrors.category_id && <span className="text text-danger">{validationErrors.category_id}</span>}
-                                            </div>
-                                        </div>
-                                    
-                                    </div>
-                                    <hr />
-                                    <div className="d-flex">
-                                        <div className="col-lg-6 p-2">
-                                            <div className="form-group">
-                                                <label className="form-label">Filters</label>
-                                                <div className="form-control-wrap p-2">
-                                                    {filters && filters.length > 0 ? (
-                                                        filters.map(filter => (
-                                                            <div key={filter.id} className="mb-3">
-                                                                <label className="form-label">{filter.name}</label>
-                                                                <select
-                                                                    name={`filter_${filter.id}`}
-                                                                    className="form-control"
-                                                                    value={selectedOptions[filter.id] || ''}
-                                                                    onChange={e => handleFilterChange(filter.id, e.target.value)}
-                                                                >
-                                                                    <option value="" disabled>-- Select {filter.name} --</option>
-                                                                    {filter.filter_options&& filter.filter_options.length > 0 ? (
-                                                                        filter.filter_options.map(option => (
-                                                                            <option key={option.id} value={option.id}>{option.name}</option>
-                                                                        ))
-                                                                    ) : (
-                                                                        <option value="" disabled>No options available</option>
-                                                                    )}
-                                                                </select>
-                                                            </div>
+            <Container>
+            {loading ? (
+                        <FormSkeleton />
+                ) : (
+                <Card>
+                    <CardHeader title="Product Details" />
+                    <CardContent>
+                        <form onSubmit={handleSubmit} encType="multipart/form-data">
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        label="Product Name"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        error={!!validationErrors.name}
+                                        helperText={validationErrors.name}
+                                    />
+                                </Grid>
+                                    <input
+                                        type="hidden"
+                                        name="slug"
+                                        onChange={handleChange}
+                                        value={formData.slug}
+                                    />
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        label="Price"
+                                        name="price"
+                                        type="number"
+                                        value={formData.price}
+                                        onChange={handleChange}
+                                        error={!!validationErrors.price}
+                                        helperText={validationErrors.price}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        label="Stock"
+                                        name="stock"
+                                        type="number"
+                                        value={formData.stock}
+                                        onChange={handleChange}
+                                        error={!!validationErrors.stock}
+                                        helperText={validationErrors.stock}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        label="Weight (LBS)"
+                                        name="weight"
+                                        type="number"
+                                        value={formData.weight}
+                                        onChange={handleChange}
+                                        error={!!validationErrors.weight}
+                                        helperText={validationErrors.weight}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <FormControl fullWidth>
+                                        <InputLabel>Brand</InputLabel>
+                                        <Select
+                                            name="brand_id"
+                                            value={formData.brand_id}
+                                            onChange={handleChange}
+                                        >
+                                            <MenuItem value="" disabled>--Select Brand--</MenuItem>
+                                            {BrandsData.map(brand => (
+                                                <MenuItem key={brand.id} value={brand.id}>
+                                                    {brand.name}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <FormControl fullWidth>
+                                        <InputLabel>Category</InputLabel>
+                                        <Select
+                                            name="category_id"
+                                            value={formData.category_id}
+                                            onChange={handleCategoryChange}
+                                            error={!!validationErrors.category_id}
+                                            helperText={validationErrors.category_id}
+                                        >
+                                            <MenuItem value="" disabled>--Select Category--</MenuItem>
+                                            {ParentCategories.map(category => (
+                                                <MenuItem key={category.id} value={category.id}>
+                                                    {category.name}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="h6">Filters</Typography> {/* Label for Filters */}
+                                    {filters.length > 0 ? (
+                                        filters.map(filter => (
+                                            <FormControl fullWidth key={filter.id} margin="normal">
+                                                <InputLabel>{filter.name}</InputLabel>
+                                                <Select
+                                                    value={selectedOptions[filter.id] || ''}
+                                                    onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+                                                >
+                                                    <MenuItem value="">--Select Option--</MenuItem>
+                                                    {filter.filter_options && filter.filter_options.length > 0 ? (
+                                                        filter.filter_options.map(option => (
+                                                            <MenuItem key={option.id} value={option.id}>
+                                                                {option.name}
+                                                            </MenuItem>
                                                         ))
                                                     ) : (
-                                                        <p>No filters available for the selected category.</p>
+                                                        <MenuItem disabled>No filter options available</MenuItem> // Message when no options are available
                                                     )}
-                                                </div>
-                                            </div>
-                                        </div>
+                                                </Select>
+                                            </FormControl>
+                                        ))
+                                    ) : (
+                                        <Typography>No filters available for this category</Typography> // Message when no filters are available
+                                    )}
+                                </Grid>
 
-                                    </div>
-                                <hr />
-                                <div className="d-flex">
-                                    <div className="col-lg-12 p-2">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="images">Product Images</label>
-                                            <div className="form-control-wrap p-2">
-                                                <input
-                                                    type="file"
-                                                    id="images"
-                                                    name="images"
-                                                    accept="image/*"
-                                                    className='form-control'
-                                                    multiple
-                                                    onChange={handleFileChange}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {imagePreviews.length > 0 && (
-                                    <div className="row">
-                                        {imagePreviews.map((preview, index) => (
-                                            <div key={index} className="col-lg-2 p-2">
-                                                <div className="custom-control custom-radio image-control">
-                                                    <input
-                                                        type="radio"
-                                                        className="custom-control-input"
-                                                        id={`imageRadio${index}`}
-                                                        checked={selectedThumbnailIndex === index}
-                                                        onChange={() => handleThumbnailChange(index)}
-                                                        name="previewImage"
-                                                        value={index}
+
+                                <Grid item xs={12}>
+                                    <Typography variant="h6">Product Description</Typography>
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        data={formData.description}
+                                        onChange={handleDescriptionChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="h6">Product Details</Typography>
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        data={formData.details}
+                                        onChange={handleDetailChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <input
+                                        accept="image/*"
+                                        id="product-images"
+                                        type="file"
+                                        multiple
+                                        onChange={handleFileChange}
+                                        style={{ display: 'none' }}
+                                    />
+                                    <label htmlFor="product-images">
+                                        <Button variant="outlined"  component="span">
+                                            Upload Images
+                                        </Button>
+                                    </label>
+                                    <div>
+                                        {imagePreviews.length > 0 && (
+                                            <div style={{ display: 'flex', marginTop: '10px' }}>
+                                                {imagePreviews.map((preview, index) => (
+                                                    <img
+                                                        key={index}
+                                                        src={preview}
+                                                        alt={`Preview ${index}`}
+                                                        style={{
+                                                            width: '100px',
+                                                            height: '100px',
+                                                            margin: '0 5px',
+                                                            border: index === selectedThumbnailIndex ? '2px solid blue' : '2px solid transparent'
+                                                        }}
+                                                        onClick={() => handleThumbnailChange(index)}
                                                     />
-                                                    <label className="custom-control-label" htmlFor={`imageRadio${index}`}>
-                                                        <img
-                                                            src={preview}
-                                                            alt={`Preview ${index}`}
-                                                            style={{ width: '100%', height: 'auto' }}
-                                                        />
-                                                    </label>
-                                                </div>
+                                                ))}
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
-                                )}
-                                <hr />
-                                <div className="col-lg-12 p-3">
-                                    <div className="form-group">
-                                        <label className="form-label" htmlFor="description">Description</label>
-                                        <div className="form-control-wrap p-2">
-                                            <CKEditor
-                                                editor={ClassicEditor}
-                                                data={formData.description}
-                                                onChange={handleDescriptionChange}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-12 p-3">
-                                    <div className="form-group">
-                                        <label className="form-label" htmlFor="details">Details</label>
-                                        <div className="form-control-wrap p-2">
-                                            <CKEditor
-                                                editor={ClassicEditor}
-                                                data={formData.details}
-                                                onChange={handleDetailChange}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-lg-12 text-right">
-                                        <button type="submit" className="btn btn-primary">Add Product</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button variant="contained" color="primary" type="submit" fullWidth>
+                                        Save Product
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </form>
+                    </CardContent>
+                </Card>
+                )}
+            </Container>
         </AdminLayout>
     );
 };

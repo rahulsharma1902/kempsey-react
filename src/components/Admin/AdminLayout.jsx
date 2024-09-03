@@ -1,24 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SidebarComponent from './AdminSidebar';
 import AdminHeader from './AdminHeader';
 import Footer from './AdminFooter';
-
-// Import CSS files
-import './../../assets/admin/assets/css/dashlite.css?ver=3.1.2';
-import './../../assets/admin/assets/css/theme.css?ver=3.1.2';
+import { Container, Box } from '@mui/material';
 
 const AdminLayout = ({ children }) => {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const handleToggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      <SidebarComponent />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <AdminHeader />
-        <div className='nk-content' style={{ flex: 1, overflowY: 'auto', marginTop: '100px' }}>
+    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+      <SidebarComponent isSidebarCollapsed={isSidebarCollapsed} />
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          ml: isSidebarCollapsed ? '80px' : '250px',
+          transition: 'margin-left 0.3s ease-in-out',
+        }}
+      >
+        <AdminHeader onToggleSidebar={handleToggleSidebar} />
+        <Container component="main" sx={{ flex: 1, mt: 10, overflow: 'auto' }}>
           {children}
-        </div>
+        </Container>
         <Footer />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

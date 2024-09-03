@@ -11,7 +11,7 @@ const fetchData = async (endpoint) => {
                 'Authorization': `Bearer ${token}`,
             }
         });
-        console.log(response.data);
+        // console.log(response.data);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -24,7 +24,7 @@ const fetchData = async (endpoint) => {
 
 export const Filters = () => fetchData('filters');
 
-export const getFilterById = (id) => fetchData(`get-filter/${id}`);
+export const getProductById = (id) => fetchData(`get-product/${id}`);
 export const products = () => fetchData(`products`);
 
 
@@ -43,6 +43,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
         const response = await axios.post(`${API_URL}/${endpoint}`, formData, {
             headers
         });
+        console.log(response);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -55,7 +56,6 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 
 export const addProduct = (formData) => postData('product/add', formData, true);
+export const updateProduct = (formData) => postData('product/update', formData, true);
 
-export const updateFilter = (formData) => postData('filter/update', formData, true);
-
-export const removeFilter = (id) => postData(`filter/remove/${id}`, {});
+export const removeProduct = (id) => postData(`product/remove/${id}`, {});

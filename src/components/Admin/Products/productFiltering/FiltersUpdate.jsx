@@ -5,7 +5,7 @@ import { activeParentCategories } from '../../../../api/apiCategories';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, TextField, Container, Card, CardContent, Typography, Grid, MenuItem, CircularProgress } from '@mui/material';
-
+import FormSkeleton from '../../../Animation/FormSkeleton';
 
 const FiltersUpdate = () => {
     const { id } = useParams();
@@ -165,9 +165,7 @@ const FiltersUpdate = () => {
     return (
         <AdminLayout>
             {loading ? (
-                <div className="text-center">
-                    <CircularProgress />
-                </div>
+                <FormSkeleton />
             ) : (
                 <Container maxWidth="md">
                     <Card>

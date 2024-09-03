@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import DataTable from 'react-data-table-component';
 import { Menu, MenuItem, IconButton, TextField, Select, MenuItem as MuiMenuItem, InputLabel, FormControl, Button, Grid, Box, Typography } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
+import FormSkeleton from '../../../Animation/FormSkeleton';
 const FiltersList = () => {
   const [filtersData, setFiltersData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -174,6 +174,7 @@ const FiltersList = () => {
               columns={columns}
               data={filteredFilters}
               progressPending={loading}
+              progressComponent={<FormSkeleton />}
               highlightOnHover
               pagination
             />

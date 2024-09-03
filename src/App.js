@@ -16,11 +16,26 @@ import Logout from './components/Auth/Logout';
 import Home from './pages/HomePage';
 import ShopCamping from './pages/ShopCamping';
 import ShopDetail from './pages/ShopDetail';
-
+import CartPage from './pages/CartPage';
+import Faq from './pages/Faq';
+import GiftCertificates from './pages/GiftCertificates';
+import AboutusPage from './pages/AboutusPage';
+import Contact from './pages/Contact';
+import CustomerServices from './pages/CustomerServices';
+import Workshop from './pages/Workshop';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import WorkshopBooking from './pages/WorkshopBooking';
+import Checkout from './pages/Checkout';
+import {CategoryProvider} from './contexts/CategoryContext';
+import {HomeContentProvider} from './contexts/HomeContentContext';
+import {AboutContentProvider} from './contexts/AboutContentContext';
 
 function App() {
   return (
     <AuthProvider>
+      <HomeContentProvider>
+      <AboutContentProvider>
+      <CategoryProvider>
       <Router>
         {/* <Header /> */}
         <Routes>
@@ -33,12 +48,25 @@ function App() {
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/" element={<Home />} /> 
           <Route path="/shop-camping" element={<ShopCamping />} />
-          <Route path="/shop-camping-detail" element={<ShopDetail />} />  
+          <Route path="/shop-camping-detail" element={<ShopDetail />} />
+          <Route path="/about-us" element={<AboutusPage />} />
+          <Route path="/cart" element={<CartPage />} /> 
+          <Route path="/Contact-us" element={<Contact />} /> 
+          <Route path="/Faq" element={<Faq/>}/>
+          <Route path="/GiftCertificates" element={<GiftCertificates/>}/>
+          <Route path="/customer-services" element={<CustomerServices/>}/>
+          <Route path="/Workshop" element={<Workshop/>}/>
+          <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
+          <Route path="/workshop-booking" element={<WorkshopBooking/>}/>
+          <Route path="/checkout" element={<Checkout/>}/>
           
         </Routes>
       </Router>
 
       <ToastContainer />
+      </CategoryProvider>
+      </AboutContentProvider>
+      </HomeContentProvider>
     </AuthProvider>
 
   )}

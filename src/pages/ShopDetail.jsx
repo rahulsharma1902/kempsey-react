@@ -1,8 +1,12 @@
 import React from 'react';
 import Layout from '../components/Layout.jsx';
 import { Link } from 'react-router-dom';
-import ProductImages from '../components/ProductImages';
-import Productdetailmodule from '../components/Productdetailmodule';
+import ProductImages from '../components/Productdetail/ProductImages.jsx';
+import Productdetailmodule from '../components/Productdetail/Productdetailmodule';
+import ProductDescriptionTab from '../components/Productdetail/ProductDescriptionTab';
+import RelatedProductslider from '../components/Productdetail/RelatedProductslider';
+
+
 
 const ShopDetail = () => {
     return (
@@ -34,9 +38,19 @@ const ShopDetail = () => {
                     </div>
                 </div>
             </div>
-
-
-
+            <ProductDescriptionTab />
+            <div className='rel_pr_section p-130 light'>
+                <div className='container'>
+                    <div className='section_head'>
+                            <h2 className='size56'>Related Products</h2>
+                    </div>
+                    <div className='rel_products mt-30'>
+                            <div className='related_products_wrap'>
+                                <RelatedProductslider />
+                            </div>
+                    </div>
+                    </div>
+                </div>
             </div>
         </div>
         </Layout>

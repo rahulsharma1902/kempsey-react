@@ -74,8 +74,8 @@ const Header = () => {
                             <div className='header_icons_col'>
                                 <div className='workshop_links'>
                                     <div className="links_wrap">
-                                        <Link to="/" className="icon_text_link"><img src={workshopicon} alt="icon" /> Workshop</Link>
-                                        <Link to="/" className="icon_text_link"><img src={contacticon} alt="icon" /> Contact Us</Link>
+                                        <Link to="/Workshop" className="icon_text_link"><img src={workshopicon} alt="icon" /> Workshop</Link>
+                                        <Link to="/Contact-us" className="icon_text_link"><img src={contacticon} alt="icon" /> Contact Us</Link>
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@ const Header = () => {
                                 <div className='icon_links'>
                                     <Link to="/login" className="icon_link"><img src={usericon} alt="icon" /></Link>
                                     <Link to="/" className="icon_link fav_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link>
-                                    <Link to="/" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span> </Link>
+                                    <Link to="/cart" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span> </Link>
                                 </div>
                             </div>
                         </div>
@@ -111,18 +111,18 @@ const Header = () => {
                                             <Link to="/shop-camping" className='nav_link'>Gun Shop</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>About Us</Link>
+                                            <Link to="/about-us" className='nav_link'>About Us</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>FAQ</Link>
+                                            <Link to="/Faq" className='nav_link'>FAQ</Link>
                                         </li>
                                         <li className='list_item'>
-                                            <Link to="/" className='nav_link'>Customer Service</Link>
+                                            <Link to="/customer-services" className='nav_link'>Customer Service</Link>
                                         </li>
                                     </ul>
                                 </div>
                                 <div className='navigation_button_col'>
-                                    <Link to="/" className='blue_link'>Gift Certificate</Link>
+                                    <Link to="/GiftCertificates" className='blue_link'>Gift Certificate</Link>
                                 </div>
                             </div>
                         </div>

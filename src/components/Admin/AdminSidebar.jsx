@@ -1,40 +1,74 @@
 import React from 'react';
-import { Sidebar, Menu, MenuItem, SubMenu, ProSidebarProvider } from 'react-pro-sidebar';
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { Link } from 'react-router-dom';
-import { FaTachometerAlt, FaList, FaFilter, FaTags, FaPlusCircle } from 'react-icons/fa';
+import { FaTachometerAlt, FaList } from 'react-icons/fa';
+import { AiFillProduct } from "react-icons/ai";
+import { CgWebsite } from "react-icons/cg";
 import '../../assets/Admin.css';
+import { Box } from '@mui/material';
+import { RiCustomerServiceFill } from "react-icons/ri";
+import { IoStorefrontSharp } from "react-icons/io5";
 
-const SidebarComponent = () => {
+const SidebarComponent = ({ isSidebarCollapsed }) => {
   return (
-    <ProSidebarProvider>
-      <Sidebar style={{ height: '100vh', position: '', width: '250px' }}>
-        <div style={{ padding: '24px', fontSize: '18px', color: 'white' }}>
-          <Link to="/admin-dashboard" className="text-light" style={{ textDecoration: 'none' }}>kempsey</Link>
-        </div>
-        <Menu iconShape="circle">
-          <MenuItem icon={<FaTachometerAlt />}>
-            <Link to="/admin-dashboard">Dashboard</Link>
+    <Sidebar
+      collapsed={isSidebarCollapsed}
+      style={{ height: '100vh', width: isSidebarCollapsed ? '80px' : '250px', position: 'fixed', top: 0, left: 0, zIndex: 1000 }}
+    >
+      <Box sx={{ padding: 2, fontSize: 18, color: 'white' }}>
+        <Link to="/admin-dashboard" className="text-light" style={{ textDecoration: 'none' }}>Kempsey</Link>
+      </Box>
+      <Menu iconShape="circle">
+        <MenuItem icon={<FaTachometerAlt />}>
+          <Link to="/admin-dashboard" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Dashboard</Link>
+        </MenuItem>
+        <SubMenu label="Products" icon={<AiFillProduct />} >
+          <MenuItem>
+            <Link to="/admin-dashboard/products" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>View</Link>
           </MenuItem>
-          <SubMenu label="Products" icon={<FaList />} >
-            <MenuItem >
-              <Link to="/admin-dashboard/products">View</Link>
-            </MenuItem>
-            <MenuItem>
-              <Link to="/admin-dashboard/products/add">Add</Link>
-            </MenuItem>
-            <MenuItem>
-              <Link to="/admin-dashboard/products/categories">Product Categories</Link>
-            </MenuItem>
-            <MenuItem>
-              <Link to="/admin-dashboard/products/filters">Product Filtering</Link>
-            </MenuItem>
-            <MenuItem>
-              <Link to="/admin-dashboard/products/brands">Brands</Link>
-            </MenuItem>
-          </SubMenu>
-        </Menu>
-      </Sidebar>
-    </ProSidebarProvider>
+          <MenuItem>
+            <Link to="/admin-dashboard/products/add" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Add</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/products/categories" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Product Categories</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/products/filters" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Product Filtering</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/products/brands" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Brands</Link>
+          </MenuItem>
+        </SubMenu>
+        <SubMenu label="Storefront" icon={<CgWebsite />} >
+          <MenuItem>
+            <Link to="/admin-dashboard/storefront/carousel" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Home Page Carousel</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/storefront/home-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Home Page Content</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/storefront/about-us-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>About Us Content</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/storefront/site-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Site Content</Link>
+          </MenuItem>
+        </SubMenu>
+
+        <SubMenu label="Servicing" icon={<RiCustomerServiceFill />} >
+          <MenuItem>
+            <Link to="/admin-dashboard/services" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Services</Link>
+          </MenuItem>
+          <SubMenu label="Stores" icon={<IoStorefrontSharp />} >
+          <MenuItem>
+            <Link to="/admin-dashboard/stores" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>View</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/stores/add" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Add</Link>
+          </MenuItem>
+        </SubMenu>
+        </SubMenu>
+      </Menu>
+    </Sidebar>
   );
 };
 

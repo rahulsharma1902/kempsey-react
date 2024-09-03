@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import { Menu, MenuItem, IconButton, TextField, Select, MenuItem as MuiMenuItem, InputLabel, FormControl, Button, Grid, Box, Typography } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
+import FormSkeleton from '../../../Animation/FormSkeleton';
 const CategoriesList = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -189,6 +189,7 @@ const CategoriesList = () => {
               columns={columns}
               data={filteredCategories}
               progressPending={loading}
+              progressComponent={<FormSkeleton />}
               pagination
               paginationPerPage={10}
               paginationRowsPerPageOptions={[10, 20, 30]}
