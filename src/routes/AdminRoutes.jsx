@@ -24,6 +24,14 @@ import HomeContent from '../components/Admin/Storefront/HomeContent';
 import AboutUsContent from '../components/Admin/Storefront/AboutUsContent';
 import SiteContent from '../components/Admin/Storefront/SiteContent';
 
+import FaqCategoriesAdd from '../components/Admin/Storefront/Faqs/faqcategory/FaqCategoryadd';
+import FaqCategoriesList from '../components/Admin/Storefront/Faqs/faqcategory/FaqCategoryList';
+import FaqCategoryUpdate from '../components/Admin/Storefront/Faqs/faqcategory/FaqCategoryUpdate';
+
+import FaqsList from '../components/Admin/Storefront/Faqs/faqlist';
+import FaqsAdd from '../components/Admin/Storefront/Faqs/faqadd';
+import FaqsUpdate from '../components/Admin/Storefront/Faqs/faqupdate';
+ 
 
 import AddService from '../components/Admin/Servicing/AddService';
 import ServicesList from '../components/Admin/Servicing/ServicesList';
@@ -196,6 +204,55 @@ const AdminRoutes = () => {
                 element={
                         <PrivateRoute roles={['admin']}>
                             <SiteContent />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faq-categories" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqCategoriesList />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faq-categories/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqCategoriesAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faq-categories/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqCategoryUpdate />
+                        </PrivateRoute>
+                } 
+            />
+
+            <Route 
+                path="/faqs" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqsList />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faqs/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqsAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faqs/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqsUpdate />
                         </PrivateRoute>
                 } 
             />

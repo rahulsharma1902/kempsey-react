@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { Link } from 'react-router-dom';
-import { FaTachometerAlt, FaList } from 'react-icons/fa';
+import { FaTachometerAlt,FaQuestionCircle,FaQuoteLeft, FaList } from 'react-icons/fa';
 import { AiFillProduct } from "react-icons/ai";
 import { CgWebsite } from "react-icons/cg";
 import '../../assets/Admin.css';
@@ -52,6 +52,19 @@ const SidebarComponent = ({ isSidebarCollapsed }) => {
           <MenuItem>
             <Link to="/admin-dashboard/storefront/site-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Site Content</Link>
           </MenuItem>
+          <SubMenu label="FAQs" icon={<FaQuestionCircle />} >
+            <MenuItem>
+              <Link to="/admin-dashboard/faq-categories" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Faq Category</Link>
+            </MenuItem>
+            <SubMenu label="Faqs" icon={<FaQuoteLeft />} >
+              <MenuItem>
+                <Link to="/admin-dashboard/faqs" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>View</Link>
+              </MenuItem>
+              <MenuItem>
+                <Link to="/admin-dashboard/faqs/add" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Add</Link>
+              </MenuItem>
+            </SubMenu>
+          </SubMenu>
         </SubMenu>
 
         <SubMenu label="Servicing" icon={<RiCustomerServiceFill />} >
