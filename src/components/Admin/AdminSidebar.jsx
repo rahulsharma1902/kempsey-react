@@ -6,6 +6,8 @@ import { AiFillProduct } from "react-icons/ai";
 import { CgWebsite } from "react-icons/cg";
 import '../../assets/Admin.css';
 import { Box } from '@mui/material';
+import { RiCustomerServiceFill } from "react-icons/ri";
+import { IoStorefrontSharp } from "react-icons/io5";
 
 const SidebarComponent = ({ isSidebarCollapsed }) => {
   return (
@@ -50,6 +52,20 @@ const SidebarComponent = ({ isSidebarCollapsed }) => {
           <MenuItem>
             <Link to="/admin-dashboard/storefront/site-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Site Content</Link>
           </MenuItem>
+        </SubMenu>
+
+        <SubMenu label="Servicing" icon={<RiCustomerServiceFill />} >
+          <MenuItem>
+            <Link to="/admin-dashboard/services" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Services</Link>
+          </MenuItem>
+          <SubMenu label="Stores" icon={<IoStorefrontSharp />} >
+          <MenuItem>
+            <Link to="/admin-dashboard/stores" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>View</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/stores/add" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Add</Link>
+          </MenuItem>
+        </SubMenu>
         </SubMenu>
       </Menu>
     </Sidebar>

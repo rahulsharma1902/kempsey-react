@@ -24,6 +24,20 @@ import HomeContent from '../components/Admin/Storefront/HomeContent';
 import AboutUsContent from '../components/Admin/Storefront/AboutUsContent';
 import SiteContent from '../components/Admin/Storefront/SiteContent';
 
+
+import AddService from '../components/Admin/Servicing/AddService';
+import ServicesList from '../components/Admin/Servicing/ServicesList';
+import ServiceUpdate from '../components/Admin/Servicing/ServiceUpdate';
+import ServiceTypeAdd from '../components/Admin/Servicing/Types/ServiceTypeAdd';
+import ServiceTypesList from '../components/Admin/Servicing/Types/ServiceTypeList';
+import ServiceTypeUpdate from '../components/Admin/Servicing/Types/ServiceTypeUpdate';
+import AddServiceOptions from '../components/Admin/Servicing/Options/AddServiceOptions';
+import ServiceOptionUpdate from '../components/Admin/Servicing/Options/ServiceOptionUpdate';
+
+// store 
+import AddStore from '../components/Admin/Stores/AddStore';
+import StoreList from '../components/Admin/Stores/StoreList';
+
 const AdminRoutes = () => {
     return (
         <Routes>
@@ -186,6 +200,95 @@ const AdminRoutes = () => {
             {/* store front routes end here */}
 
 
+            {/* servicing route start from here AddService */}
+
+            <Route 
+                path="/services/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <AddService />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/services" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ServicesList />
+                        </PrivateRoute>
+                } 
+            />
+             <Route 
+                path="/services/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ServiceUpdate />
+                        </PrivateRoute>
+                } 
+            />
+
+            {/* service types */}
+            <Route 
+                path="/service-types/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ServiceTypeAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/service-types" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ServiceTypesList />
+                        </PrivateRoute>
+                } 
+            />
+             <Route 
+                path="/service-types/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ServiceTypeUpdate />
+                        </PrivateRoute>
+                } 
+            />
+
+            <Route 
+                path="/service-options/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <AddServiceOptions />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/service-options/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ServiceOptionUpdate />
+                        </PrivateRoute>
+                } 
+            />
+            {/* servicing route end here AddService */}
+            {/* store start from here  AddStore*/}
+            <Route 
+                path="/stores/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <AddStore />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/stores" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <StoreList />
+                        </PrivateRoute>
+                } 
+            />
+
+            {/* store end here */}
         </Routes>
     );
 };

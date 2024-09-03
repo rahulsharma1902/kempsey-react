@@ -41,7 +41,6 @@ const HomeContentAdd = () => {
 
         footer_slider_image: '',
 
-
         footer_description: '',
 
         address: '',
@@ -49,11 +48,12 @@ const HomeContentAdd = () => {
         email: '',
 
         footer_policy: '',
-
-
         
     });
     const [validationErrors, setValidationErrors] = useState({});
+    const [imagePreviews, setImagePreviews] = useState([]);
+    const [existingImagePreviews, setExistingImagePreviews] = useState([]);
+    const [selectedThumbnailIndex, setSelectedThumbnailIndex] = useState(null);
     const [openSections, setOpenSections] = useState({
         header: true,
         footer: true,
@@ -83,20 +83,20 @@ const HomeContentAdd = () => {
                     footer_instagram_link: response.data.footer_instagram_link || '',
                     footer_twitter_link: response.data.footer_twitter_link || '',
 
-
                     footer_slider_image: response.data.footer_slider_image || '',
                     footer_description: response.data.footer_description || '',
                     address: response.data.address || '',
                     phone: response.data.phone || '',
                     email: response.data.email || '',
                     footer_policy: response.data.footer_policy || '',
-
                   
                 });
+                setExistingImagePreviews(JSON.parse(response.data.footer_instagram_images));
+
     
                 console.log(response);
             } catch (error) {
-                console.error('Failed to fetch About Us Content:', error.message);
+                console.error('Failed to fetch Site Content:', error.message);
             } finally {
                 setLoading(false);
             }
@@ -105,14 +105,6 @@ const HomeContentAdd = () => {
         getContent();
     }, []);
     
-
-    const addNewShopDetail = () => {
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            about_us_shop_details: [...prevFormData.about_us_shop_details, { title: '', text: '', image: null }],
-        }));
-        setOpenDetails(prevOpenDetails => [...prevOpenDetails, true]);
-    };
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -123,34 +115,24 @@ const HomeContentAdd = () => {
     };
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-        const newImages = files.map(file => URL.createObjectURL(file));
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            footer_instagram_images: [...prevFormData.footer_instagram_images, ...newImages]
-        }));
-    };
-    const handleShopDetailsChange = (index, field, value) => {
-        const newShopDetails = [...formData.about_us_shop_details];
-        newShopDetails[index][field] = value;
-        setFormData({ ...formData, about_us_shop_details: newShopDetails });
-    };
-
-    const handleDeleteDetail = (index) => {
-        const newShopDetails = formData.about_us_shop_details.filter((_, i) => i !== index);
-        if (newShopDetails.length === 0) {
-            newShopDetails.push({ title: '', text: '', image: null });
-        }
-        setFormData({ ...formData, about_us_shop_details: newShopDetails });
-        setOpenDetails(prevOpenDetails => prevOpenDetails.filter((_, i) => i !== index));
-    };
-
-    const handleToggleDetailsCollapse = (index) => {
-        setOpenDetails(prevOpenDetails => {
-            const newOpenDetails = [...prevOpenDetails];
-            newOpenDetails[index] = !newOpenDetails[index];
-            return newOpenDetails;
+        console.log(files);
+      
+        setFormData(prevFormData => {
+            const updatedImages = prevFormData.footer_instagram_images
+                ? [...prevFormData.footer_instagram_images, ...files]
+                : [...files];
+            return {
+                ...prevFormData,
+                footer_instagram_images: updatedImages
+            };
         });
+    
+        const previews = files.map(file => URL.createObjectURL(file));
+        console.log(previews);
+        setImagePreviews(prevPreviews => [...prevPreviews, ...previews]);
     };
+
+
     const handleDescriptionChange = (event, editor) => {
         const data = editor.getData();
         setFormData({ ...formData, description: data });
@@ -160,72 +142,45 @@ const HomeContentAdd = () => {
         const errors = {};
     
         Object.keys(formData).forEach(key => {
-            if (key !== 'about_us_shop_details' && !formData[key]) {
+            if (!formData[key]) {
                 errors[key] = `${key.replace(/_/g, ' ')} is required`;
             }
         });
-    
-        formData.about_us_shop_details.forEach((detail, index) => {
-            if (!detail.title || !detail.text) {
-                errors[`about_us_shop_details_${index}`] = 'Title and text are required for each shop detail';
-            }
-        });
-    
-        if (formData.about_us_shop_details.length === 0) {
-            errors.about_us_shop_details = 'At least one shop detail is required';
-        }
     
         if (Object.keys(errors).length > 0) {
             setValidationErrors(errors);
             setLoading(false);
             return;
         }
-    
-        const data = new FormData();
 
-        Object.keys(formData).forEach(key => {
-            if (key === 'about_us_shop_details') {
-                const details = formData[key].map((detail, index) => {
-                    data.append(`about_us_shop_details[${index}][title]`, detail.title);
-                    data.append(`about_us_shop_details[${index}][text]`, detail.text);
-
-                    // Append the image correctly
-                    if (detail.image instanceof File) {
-                        data.append(`about_us_shop_details[${index}][image]`, detail.image);
-                    } else {
-                        // Handle the case where it's a URL
-                        data.append(`about_us_shop_details[${index}][image]`, detail.image);
-                    }
-                    return detail;
-                });
-            } else {
-                data.append(key, formData[key]);
-            }
-        });
-
-    
         try {
             setLoading(true);
-            const response = await addStoreContent(data);
+            const response = await addStoreContent(formData);
             toast.success(response.message);
+            // setImagePreviews([]);
+
             setFormData({
-                about_us_banner_title: response.data.about_us_banner_title || '',
-                about_us_banner_image: response.data.about_us_banner_image || '',
-                about_us_banner_sub_title: response.data.about_us_banner_sub_title || '',
-                about_us_heading: response.data.about_us_heading || '',
-                about_us_logo: response.data.about_us_logo || '',
-                about_us_details: response.data.about_us_details || '',
-                about_us_image: response.data.about_us_image || '',
-                about_us_btn: response.data.about_us_btn || '',
-                about_us_btn_link: response.data.about_us_btn_link || '',
-                about_us_shop_title: response.data.about_us_shop_title || '',
-                about_us_shop_details: JSON.parse(response.data.about_us_shop_details) || '',
+                header_offer_text: response.data.header_offer_text || '',
+                footer_instagram_name: response.data.footer_instagram_name || '',
+                
+                footer_instagram_images: JSON.parse(response.data.footer_instagram_images) || '',
+                
+                footer_contact_title: response.data.footer_contact_title || '',
+                footer_contact_banner: response.data.footer_contact_banner || '',
+                footer_facebook_link: response.data.footer_facebook_link || '',
+                footer_instagram_link: response.data.footer_instagram_link || '',
+                footer_twitter_link: response.data.footer_twitter_link || '',
 
-                about_us_bottom_title: response.data.about_us_bottom_title || '',
-                about_us_bottom_banner: response.data.about_us_bottom_banner || '',
+
+                footer_slider_image: response.data.footer_slider_image || '',
+                footer_description: response.data.footer_description || '',
+                address: response.data.address || '',
+                phone: response.data.phone || '',
+                email: response.data.email || '',
+                footer_policy: response.data.footer_policy || '',
+              
             });
-
-            const fileInputs = document.querySelectorAll('input[type="file"]');
+            const fileInputs = document.querySelectorAll('input[type="file"]'); 
             fileInputs.forEach((input, index) => {
                 input.value = '';
             });
@@ -253,11 +208,29 @@ const HomeContentAdd = () => {
     };
 
     const handleRemoveImage = (index) => {
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            footer_instagram_images: prevFormData.footer_instagram_images.filter((_, i) => i !== index)
-        }));
+        setImagePreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index));
+        setFormData(prevFormData => {
+            const updatedImages = prevFormData.footer_instagram_images.filter((_, i) => i !== index);
+            return {
+                ...prevFormData,
+                footer_instagram_images: updatedImages
+            };
+        });
     };
+    
+    const handleExistingImageRemove = (index) => {
+        const updatedExistingImages = existingImagePreviews.filter((_, i) => i !== index);
+        setExistingImagePreviews(updatedExistingImages);
+    
+        setFormData(prevFormData => {
+            const updatedImages = prevFormData.footer_instagram_images.filter((_, i) => i !== index);
+            return {
+                ...prevFormData,
+                footer_instagram_images: updatedImages
+            };
+        });
+    };
+
     return (
         <AdminLayout>
             <Container maxWidth="lg" sx={{ marginTop: 4 }}>
@@ -579,50 +552,74 @@ const HomeContentAdd = () => {
                                                                 variant="outlined"
                                                             />
                                                         </Grid>
-                                                        <Grid item xs={6}>
-                                                        <FormControl fullWidth error={!!validationErrors.footer_instagram_images}>
-                                                            <InputLabel shrink>Instagram Images</InputLabel>
-                                                            <TextField
-                                                                fullWidth
-                                                                type="file"
-                                                                name="footer_instagram_images"
-                                                                onChange={handleFileChange}
-                                                                variant="filled"
-                                                                inputProps={{ accept: 'image/*', multiple: true }}
-                                                            />
-                                                            <FormHelperText>{validationErrors.footer_instagram_images}</FormHelperText>
-                                                        </FormControl>
-                                                    </Grid>
+                                                        {/* <Grid container spacing={2}> */}
+                                                            {/* File Input */}
+                                                            <Grid item xs={6}>
+                                                                <FormControl fullWidth error={!!validationErrors.footer_instagram_images}>
+                                                                    <InputLabel shrink>Instagram Images</InputLabel>
+                                                                    <TextField
+                                                                        fullWidth
+                                                                        type="file"
+                                                                        name="footer_instagram_images[]"
+                                                                        onChange={handleFileChange}
+                                                                        variant="filled"
+                                                                        inputProps={{ accept: 'image/*', multiple: true }}
+                                                                    />
+                                                                    <FormHelperText>{validationErrors.footer_instagram_images}</FormHelperText>
+                                                                </FormControl>
+                                                            </Grid>
 
-                                                    <Grid item xs={6}>
-                                                        <Grid container spacing={2}>
-                                                            {formData.footer_instagram_images.map((image, index) => (
-                                                                <Grid item xs={4} key={index}>
-                                                                    <div style={{ position: 'relative' }}>
-                                                                        <img
-                                                                            src={image}
-                                                                            alt={`instagram_image_${index}`}
-                                                                            style={{ maxWidth: '100%', height: 'auto' }}
-                                                                        />
-                                                                        <IconButton
-                                                                            onClick={() => handleRemoveImage(index)}
-                                                                            style={{
-                                                                                position: 'absolute',
-                                                                                top: 0,
-                                                                                right: 0,
-                                                                                color: 'red',
-                                                                            }}
-                                                                        >
-                                                                            <DeleteIcon />
-                                                                        </IconButton>
-                                                                    </div>
+                                                            {/* Image Previews */}
+                                                            <Grid item xs={6}>
+                                                                <Grid container spacing={2}>
+                                                                    {existingImagePreviews.map((image, index) => (
+                                                                        <Grid item xs={4} key={index}>
+                                                                            <div style={{ position: 'relative' }}>
+                                                                                <img
+                                                                                    src={image}
+                                                                                    alt={`instagram_image_${index}`}
+                                                                                    style={{ maxWidth: '100%', height: 'auto' }}
+                                                                                />
+                                                                                <IconButton
+                                                                                    onClick={() => handleExistingImageRemove(index)}
+                                                                                    style={{
+                                                                                        position: 'absolute',
+                                                                                        top: 0,
+                                                                                        right: 0,
+                                                                                        color: 'red',
+                                                                                    }}
+                                                                                >
+                                                                                    <DeleteIcon />
+                                                                                </IconButton>
+                                                                            </div>
+                                                                        </Grid>
+                                                                    ))}
+                                                                    {imagePreviews.map((image, index) => (
+                                                                        <Grid item xs={4} key={index}>
+                                                                            <div style={{ position: 'relative' }}>
+                                                                                <img
+                                                                                    src={image}
+                                                                                    alt={`instagram_image_${index}`}
+                                                                                    style={{ maxWidth: '100%', height: 'auto' }}
+                                                                                />
+                                                                                <IconButton
+                                                                                    onClick={() => handleRemoveImage(index)}
+                                                                                    style={{
+                                                                                        position: 'absolute',
+                                                                                        top: 0,
+                                                                                        right: 0,
+                                                                                        color: 'red',
+                                                                                    }}
+                                                                                >
+                                                                                    <DeleteIcon />
+                                                                                </IconButton>
+                                                                            </div>
+                                                                        </Grid>
+                                                                    ))}
                                                                 </Grid>
-                                                            ))}
+                                                            </Grid>
                                                         </Grid>
-                                                    </Grid>
-                                                        
-                                                        
-                                                    </Grid>
+                                                    {/* </Grid> */}
                                                 </CardContent>
                                             </Collapse>
                                         </Card>
