@@ -37,6 +37,8 @@ import ServiceOptionUpdate from '../components/Admin/Servicing/Options/ServiceOp
 // store 
 import AddStore from '../components/Admin/Stores/AddStore';
 import StoreList from '../components/Admin/Stores/StoreList';
+import StoreUpdate from '../components/Admin/Stores/StoreUpdate';
+
 
 const AdminRoutes = () => {
     return (
@@ -284,6 +286,15 @@ const AdminRoutes = () => {
                 element={
                         <PrivateRoute roles={['admin']}>
                             <StoreList />
+                        </PrivateRoute>
+                } 
+            />
+
+            <Route 
+                path="/stores/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <StoreUpdate />
                         </PrivateRoute>
                 } 
             />

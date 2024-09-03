@@ -24,6 +24,7 @@ const fetchData = async (endpoint) => {
 
 
 export const Stores = () => fetchData('stores');
+export const getStoreById = (id) => fetchData(`get-store/${id}`);
 
 
 

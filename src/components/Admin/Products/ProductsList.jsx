@@ -47,6 +47,7 @@ const ProductsList = () => {
         const response = await products();
         if (Array.isArray(response.data)) {
           setProducts(response.data);
+          console.warn(response.data);
         } else {
           setProducts([]);
           console.error('Unexpected response format:', response.data);
@@ -109,27 +110,27 @@ const ProductsList = () => {
     },
     {
       name: 'Name',
-      selector: (row) => row.name,
+      selector: (row) => row?.name,
       sortable: true,
     },
     {
       name: 'Price',
-      selector: (row) => row.price,
+      selector: (row) => row?.price,
       sortable: true,
     },
     {
       name: 'Stock',
-      selector: (row) => row.stock,
+      selector: (row) => row?.stock,
       sortable: true,
     },
     {
       name: 'Category',
-      selector: (row) => row.categorie.name,
+      selector: (row) => row?.categorie?.name,
       sortable: true,
     },
     {
       name: 'Brand',
-      selector: (row) => row.brand.name,
+      selector: (row) => row?.brand?.name,
       sortable: true,
     },
     {
