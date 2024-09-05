@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../components/Layout';
 import WorkshopBanner from '../components/Workshop/WorkshopBanner';
-import Servicing from '../components/Workshop/Servicing';
+import Servicing from '../components/Front/Workshop/Servicing';
 
 const Workshop = () => {
 

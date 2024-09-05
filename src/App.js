@@ -29,12 +29,14 @@ import Checkout from './pages/Checkout';
 import {CategoryProvider} from './contexts/CategoryContext';
 import {HomeContentProvider} from './contexts/HomeContentContext';
 import {AboutContentProvider} from './contexts/AboutContentContext';
+import {ServiceContentProvider} from './contexts/WorkshopContext';
 
 function App() {
   return (
     <AuthProvider>
       <HomeContentProvider>
       <AboutContentProvider>
+      <ServiceContentProvider>
       <CategoryProvider>
       <Router>
         {/* <Header /> */}
@@ -65,6 +67,7 @@ function App() {
 
       <ToastContainer />
       </CategoryProvider>
+      </ServiceContentProvider>
       </AboutContentProvider>
       </HomeContentProvider>
     </AuthProvider>

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import CheckImage from '../../images/check.png';
-
-
-
+// import CheckImage from '../../../images/check.png';
+import {useServiceContent} from '../../../contexts/WorkshopContext';
+import Services from './Services';
 
 const Servicing = () => {
+    const { serviceContent, loading } = useServiceContent();
     return (
         <div className="servicing_section light p-130">
             <div className="container">
@@ -18,8 +18,8 @@ const Servicing = () => {
                     <Link to="/workshop-booking" className='cta'>book a service</Link>
 
                 </div>
-
-                <div className="servicing_table">
+                <Services/>
+                {/* <div className="servicing_table">
                     <table>
                         <thead> 
                             <tr>
@@ -173,7 +173,7 @@ const Servicing = () => {
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </div> */}
 
                 <div className="workshop_wrapper">
                     <div className="workshop_content">

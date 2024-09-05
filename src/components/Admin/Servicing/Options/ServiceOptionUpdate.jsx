@@ -3,7 +3,7 @@ import AdminLayout from '../../AdminLayout';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { addServiceOption, Services, getServiceOptionById } from '../../../../api/apiService';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormSkeleton from '../../../Animation/FormSkeleton';
 import { useParams } from 'react-router-dom';
@@ -108,7 +108,11 @@ const ServiceOptionUpdate = () => {
         if (serviceId) {
             const selectedService = services.find((service) => service.id === parseInt(serviceId));
             if (selectedService) {
-                setServiceTypes(JSON.parse(selectedService.service_types)); 
+                // Check if selectedService.service_types is already an array
+                const serviceTypesData = Array.isArray(selectedService.service_types)
+                    ? selectedService.service_types 
+                    : JSON.parse(selectedService.service_types);
+                setServiceTypes(serviceTypesData);
             } else {
                 setServiceTypes([]);
             }
@@ -116,13 +120,15 @@ const ServiceOptionUpdate = () => {
             setServiceTypes([]);
         }
     };
+    
 
     const handleServiceTypeChange = (e) => {
         const { value } = e.target;
-        // Convert selected values to strings
-        const stringValues = value.map(v => v.toString());
-        setFormData((prevData) => ({ ...prevData, service_type_ids: stringValues }));
+        setFormData((prevData) => ({ ...prevData, service_type_ids: value }));
     };
+    
+    
+    
     
 
     const generateSlug = (name) => {
@@ -161,13 +167,15 @@ const ServiceOptionUpdate = () => {
 
         const form = new FormData();
         form.append('name', formData.name);
+        form.append('id', formData.id);
         form.append('slug', formData.slug);
         form.append('service_id', formData.service_id);
         form.append('service_type_ids', JSON.stringify(formData.service_type_ids)); 
 
         try {
             const response = await addServiceOption(form);
-            setFormData({ name: '', slug: '', service_id: '', service_type_ids: [] });
+            console.log(response);
+            // setFormData({ name: '', slug: '', service_id: '', service_type_ids: [] });
             toast.success(response.message);
             setValidationErrors({});
         } catch (err) {
@@ -265,7 +273,6 @@ const ServiceOptionUpdate = () => {
                     </CardContent>
                 </Card>
             )}
-            <ToastContainer />
         </AdminLayout>
     );
 };

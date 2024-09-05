@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../AdminLayout';
 import { addServiceOption, Services } from '../../../../api/apiService';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormSkeleton from '../../../Animation/FormSkeleton';
 import {
@@ -214,7 +214,6 @@ const ServiceOptionAdd = () => {
                     </CardContent>
                 </Card>
             )}
-            <ToastContainer />
         </AdminLayout>
     );
 };

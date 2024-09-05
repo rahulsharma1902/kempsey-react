@@ -22,6 +22,7 @@ const ServicesList = () => {
         const response = await Services();
         if (Array.isArray(response.data)) {
           setServicesData(response.data);
+          console.log(response.data);
         } else {
           setServicesData([]);
           console.error('Unexpected response format:', response.data);

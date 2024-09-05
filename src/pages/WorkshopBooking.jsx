@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { Link } from 'react-router-dom';
-import WorkshopStore from '../components/Workshop/WorkshopStore';
+import WorkshopStore from '../components/Front/Workshop/Booking/WorkshopStore';
 import StoreService from '../components/Workshop/StoreService';
 import ServiceDate from '../components/Workshop/ServiceDate';
 import DetailForm from '../components/Workshop/DetailForm';
@@ -12,10 +12,16 @@ import BookingConfirm from '../components/Workshop/Bookingconfrm';
 
 const WorkshopBooking = () => {
     const [currentStep, setCurrentStep] = useState(1);
-
-    const handleNext = () => {
-        setCurrentStep(prevStep => prevStep + 1);
+    const [storeId , setStoreId] = useState(null);
+    const handleNext = (Data) => {
+        setCurrentStep((prevStep) => prevStep + 1);    
+        if (Data && typeof Data === 'number') { 
+            setStoreId(Data);
+        } else {
+            console.log('Invalid Data: Not setting store ID');
+        }
     };
+    
 
     const handleBack = () => {
         setCurrentStep(prevStep => prevStep - 1);
@@ -77,7 +83,7 @@ const WorkshopBooking = () => {
                                         </div>
 
                                         <div className='store_wrapper'>
-                                            <StoreService />
+                                            <StoreService storeId={storeId} />
                                         </div>
 
                                         <div className='button_flex text-center mt-60'>

@@ -1,146 +1,155 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getStoreById } from '../../api/apiStore';
 
-const StoreService = () => {
-    // State to manage which section is open
+const StoreService = ({ storeId }) => {
+    const [loading, setLoading] = useState(true);
+    const [services, setServices] = useState([]);
     const [openSection, setOpenSection] = useState(null);
+    const [selectedServices, setSelectedServices] = useState([]);
+    const [bikeDetail, setBikeDetail] = useState('');
 
-    // State to manage selected service
-    const [selectedService, setSelectedService] = useState('');
+    useEffect(() => {
+        const fetchStoreDetails = async () => {
+            if (storeId) {
+                try {
+                    const response = await getStoreById(storeId);
+                    if (response.data) {
+                        const storeData = response?.data?.store_services;
+                        setServices(storeData);
 
-    const handleServiceChange = (event) => {
-        setSelectedService(event.target.value);
-    };
+                        // Sync the selected services with the newly fetched services
+                        const storedBooking = JSON.parse(localStorage.getItem('booking')) || {};
+                        if (storedBooking.services) {
+                            setSelectedServices(storedBooking.services);
+                        }
+                    } else {
+                        console.error('Failed to fetch store details.');
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch store details.', error);
+                }
+                setLoading(false);
+            }
+        };
+        fetchStoreDetails();
+    }, [storeId]);
+
+    useEffect(() => {
+        // Perform store data handling whenever selectedServices is updated
+        handleStoreData();
+    }, [selectedServices]);
 
     const toggleSection = (section) => {
         setOpenSection(openSection === section ? null : section);
     };
 
+    const handleCheckboxChange = (serviceId, typeId) => {
+        setSelectedServices((prevSelectedServices) => {
+            const serviceIndex = prevSelectedServices.findIndex(service => service.id === serviceId);
+            if (serviceIndex >= 0) {
+                const updatedTypes = prevSelectedServices[serviceIndex].types.includes(typeId)
+                    ? prevSelectedServices[serviceIndex].types.filter(type => type !== typeId)
+                    : [...prevSelectedServices[serviceIndex].types, typeId];
+                
+                return prevSelectedServices.map((service, index) =>
+                    index === serviceIndex
+                        ? { ...service, types: updatedTypes }
+                        : service
+                );
+            } else {
+                return [...prevSelectedServices, { id: serviceId, types: [typeId] }];
+            }
+        });
+    };
+
+    const handleStoreData = () => {
+        const bookingData = JSON.parse(localStorage.getItem('booking')) || {};
+        bookingData.services = selectedServices;
+        bookingData.bikeDetail = bikeDetail;
+        localStorage.setItem('booking', JSON.stringify(bookingData));
+    };
+
+    const handleNext = () => {
+        handleStoreData();
+        // Proceed to the next step (e.g., navigation)
+    };
+
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
     return (
         <div className='store_wrapper_outer'>
             <div className='service_inner'>
-                <div className='service_select_wrapper'>
-                    <div className='servicetoggle_head' onClick={() => toggleSection('major')}>
-                        <p>Major Service</p>
-                        <span className={`toggle_icon ${openSection === 'major' ? 'open' : ''}`}>
-                            <i className="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </div>
-                    <div className={`service_select_content ${openSection === 'major' ? 'open' : 'closed'}`}>
-                        <div className='service_content_wrapp'>
-                              <div className='service_radio_row'>
-                                    <div className='service_radio_col'>
-                                        <label className="checkcontainer">
-                                            <input
-                                                type="radio"
-                                                name="MajorService"
-                                                value="FirstFreeTuneup"
-                                                checked={selectedService === 'FirstFreeTuneup'}
-                                                onChange={handleServiceChange}
-                                            />
-                                            <span className="radiobtn"></span>
-                                            <div className='radio_info'>
-                                                <p>First Free Tune-up</p>
-                                                <p className='service_price'>$0</p>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div className='service_radio_col'>
-                                        <label className="checkcontainer">
-                                            <input
-                                                type="radio"
-                                                name="MajorService"
-                                                value="General Assessment"
-                                                checked={selectedService === 'General Assessment'}
-                                                onChange={handleServiceChange}
-                                            />
-                                            <span className="radiobtn"></span>
-                                            <div className='radio_info'>
-                                                <p>General Assessment</p>
-                                                <p className='service_price'>$50</p>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div className='service_radio_col'>
-                                        <label className="checkcontainer">
-                                            <input
-                                                type="radio"
-                                                name="MajorService"
-                                                value="Standard Plus Service"
-                                                checked={selectedService === 'Standard Plus Service'}
-                                                onChange={handleServiceChange}
-                                            />
-                                            <span className="radiobtn"></span>
-                                            <div className='radio_info'>
-                                                <p>Standard Plus Service</p>
-                                                <p className='service_price'>$169</p>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div className='service_radio_col'>
-                                        <label className="checkcontainer">
-                                            <input
-                                                type="radio"
-                                                name="MajorService"
-                                                value="Standard  Service"
-                                                checked={selectedService === 'Standard  Service'}
-                                                onChange={handleServiceChange}
-                                            />
-                                            <span className="radiobtn"></span>
-                                            <div className='radio_info'>
-                                                <p>Standard  Service</p>
-                                                <p className='service_price'>$119</p>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div className='service_radio_col'>
-                                        <label className="checkcontainer">
-                                            <input
-                                                type="radio"
-                                                name="MajorService"
-                                                value="Tune Up"
-                                                checked={selectedService === 'Tune Up'}
-                                                onChange={handleServiceChange}
-                                            />
-                                            <span className="radiobtn"></span>
-                                            <div className='radio_info'>
-                                                <p>Tune Up</p>
-                                                <p className='service_price'>$79</p>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div className='service_radio_col'>
-                                        <label className="checkcontainer">
-                                            <input
-                                                type="radio"
-                                                name="MajorService"
-                                                value="Ultimate Service"
-                                                checked={selectedService === 'Ultimate Service'}
-                                                onChange={handleServiceChange}
-                                            />
-                                            <span className="radiobtn"></span>
-                                            <div className='radio_info'>
-                                                <p>Ultimate Service</p>
-                                                <p className='service_price'>$119</p>
-                                            </div>
-                                        </label>
-                                    </div>
+                {services.map((service, index) => (
+                    <div className='service_select_wrapper' key={service.id}>
+                        <div
+                            className='servicetoggle_head'
+                            onClick={() => toggleSection(`major-${index}`)}
+                        >
+                            <p>{service?.service?.name}</p>
+                            <span
+                                className={`toggle_icon ${
+                                    openSection === `major-${index}` ? 'open' : ''
+                                }`}
+                            >
+                                <i className='fa-solid fa-chevron-down'></i>
+                            </span>
+                        </div>
+                        <div
+                            className={`service_select_content ${
+                                openSection === `major-${index}` ? 'open' : 'closed'
+                            }`}
+                        >
+                            <div className='service_content_wrapp'>
+                                <div className='service_radio_row'>
+                                    {service.service_type.map((type) => (
+                                        <div className='service_radio_col' key={type.id}>
+                                            <label className='checkcontainer'>
+                                                <input
+                                                    type='checkbox'
+                                                    id={`MajorService-${index}-${type.id}`}
+                                                    name={`MajorService-${index}`}
+                                                    value={type.id}
+                                                    checked={
+                                                        selectedServices.some(
+                                                            (selectedService) =>
+                                                                selectedService.id === service.id &&
+                                                                selectedService.types.includes(type.id)
+                                                        )
+                                                    }
+                                                    onChange={() =>
+                                                        handleCheckboxChange(service.id, type.id)
+                                                    }
+                                                />
+                                                <span className='radiobtn'></span>
+                                                <div className='radio_info'>
+                                                    <p>{type?.service_type_data?.name}</p>
+                                                    <p className='service_price'>
+                                                        ${type?.service_type_data?.club_price}
+                                                    </p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    ))}
                                 </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                ))}
                 <div className='service_select_wrapper'>
-                    <div className='servicetoggle_head' onClick={() => toggleSection('secondary')}>
-                        <p>Secondary Service</p>
-                        <span className={`toggle_icon ${openSection === 'secondary' ? 'open' : ''}`}>
-                            <i className="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </div>
-                    <div className={`service_select_content ${openSection === 'secondary' ? 'open' : 'closed'}`}>
-                        <div className='service_content_wrapp'>
-                            <div className='secondry_service_wrap'>
-                                <p>Please give us any details which will help us to understand any issues on your bike</p>
-                                <textarea className='form_control' placeholder='For example, my back brake is squeaking...'></textarea>
-                            </div>
+                    <div className='service_content_wrapp'>
+                        <div className='secondry_service_wrap'>
+                            <p>
+                                Please give us any details which will help us to understand any
+                                issues on your bike
+                            </p>
+                            <textarea
+                                className='form_control'
+                                placeholder='For example, my back brake is squeaking...'
+                                value={bikeDetail}
+                                onChange={(e) => setBikeDetail(e.target.value)}
+                            ></textarea>
                         </div>
                     </div>
                 </div>
