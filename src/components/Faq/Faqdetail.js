@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Accordion from "./Accordion";
 import { Faqcategories } from '../../api/apiStorefront';
+import {useStorefrontContent } from '../../contexts/StoreFrontContext.js';
 
 const Faqdetail = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [activeAccordion, setActiveAccordion] = useState(null);
     const [tabs, setTabs] = useState([]);
+    const { faq, loading } = useStorefrontContent();
 
     // const tabs = [
     //     {
@@ -81,7 +83,7 @@ const Faqdetail = () => {
             <div className="container">
                 <div className="faq-wrapper">
                     <div className="faq-heading">
-                        <h2 className="size76">Frequently Asked Questions</h2>
+                        <h2 className="size76">{ faq?.content_heading ?? 'Frequently Asked Questions'}</h2>
                     </div>
                     {tabs.length > 0 ? ( 
                         <div className="tab-wrapper">
