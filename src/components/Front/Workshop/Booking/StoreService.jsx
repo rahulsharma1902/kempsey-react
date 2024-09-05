@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getStoreById } from '../../api/apiStore';
+import { getStoreById } from '../../../../api/apiStore';
 
 const StoreService = ({ storeId }) => {
     const [loading, setLoading] = useState(true);
@@ -35,9 +35,8 @@ const StoreService = ({ storeId }) => {
     }, [storeId]);
 
     useEffect(() => {
-        // Perform store data handling whenever selectedServices is updated
         handleStoreData();
-    }, [selectedServices]);
+    }, [selectedServices, bikeDetail]); // Trigger handleStoreData on changes to selectedServices or bikeDetail
 
     const toggleSection = (section) => {
         setOpenSection(openSection === section ? null : section);
@@ -69,9 +68,8 @@ const StoreService = ({ storeId }) => {
         localStorage.setItem('booking', JSON.stringify(bookingData));
     };
 
-    const handleNext = () => {
-        handleStoreData();
-        // Proceed to the next step (e.g., navigation)
+    const handleTextareaChange = (e) => {
+        setBikeDetail(e.target.value);
     };
 
     if (loading) {
@@ -148,7 +146,7 @@ const StoreService = ({ storeId }) => {
                                 className='form_control'
                                 placeholder='For example, my back brake is squeaking...'
                                 value={bikeDetail}
-                                onChange={(e) => setBikeDetail(e.target.value)}
+                                onChange={handleTextareaChange}
                             ></textarea>
                         </div>
                     </div>
