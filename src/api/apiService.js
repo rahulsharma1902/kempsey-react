@@ -23,6 +23,7 @@ const fetchData = async (endpoint) => {
 
 
 export const Services = () => fetchData('services');
+
 export const getServiceById = (id) => fetchData(`get-service/${id}`);
 export const getServiceTypeById = (id) => fetchData(`get-service-type/${id}`);
 export const getServiceTypes = (id) => fetchData(`get-service-type`);
@@ -62,6 +63,7 @@ export const addServiceType = (formData) => postData('service-type/add', formDat
 export const addServiceOption = (formData) => postData('service-option/add', formData, true);
 export const fetchServiceTypes = (formData) => postData('service-type/add', formData, true);
 
+export const getServiceTypesByArray = (formData) => postData('service-types-by-ids',formData,true);
 
 export const removeService = (id) => postData(`service/remove/${id}`, {});
 export const removeServiceType = (id) => postData(`service-type/remove/${id}`, {});

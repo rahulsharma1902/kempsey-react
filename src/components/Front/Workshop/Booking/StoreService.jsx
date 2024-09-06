@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { getStoreById } from '../../../../api/apiStore';
 
-const StoreService = ({ storeId }) => {
+const StoreService = ({storeId}) => {
     const [loading, setLoading] = useState(true);
     const [services, setServices] = useState([]);
     const [openSection, setOpenSection] = useState(null);
     const [selectedServices, setSelectedServices] = useState([]);
     const [bikeDetail, setBikeDetail] = useState('');
-
+    // const [storeId, setStoreId] = useState(storeId);
     useEffect(() => {
+        // const storedBooking = JSON.parse(localStorage.getItem('booking')) || {};
+        // setStoreId(storedBooking?.storeId || '')
         const fetchStoreDetails = async () => {
             if (storeId) {
                 try {
@@ -16,6 +18,7 @@ const StoreService = ({ storeId }) => {
                     if (response.data) {
                         const storeData = response?.data?.store_services;
                         setServices(storeData);
+                        console.log(services);
 
                         // Sync the selected services with the newly fetched services
                         const storedBooking = JSON.parse(localStorage.getItem('booking')) || {};
@@ -63,8 +66,16 @@ const StoreService = ({ storeId }) => {
 
     const handleStoreData = () => {
         const bookingData = JSON.parse(localStorage.getItem('booking')) || {};
+
+        // Extract selected type IDs and service IDs
+        const typeIds = selectedServices.flatMap(service => service.types);
+        const serviceIds = selectedServices.map(service => service.id);
+
         bookingData.services = selectedServices;
         bookingData.bikeDetail = bikeDetail;
+        bookingData.types = typeIds; // Add all selected type IDs
+        bookingData.servicesIds = serviceIds; // Add all selected service IDs
+
         localStorage.setItem('booking', JSON.stringify(bookingData));
     };
 
@@ -80,7 +91,9 @@ const StoreService = ({ storeId }) => {
         <div className='store_wrapper_outer'>
             <div className='service_inner'>
                 {services.map((service, index) => (
-                    <div className='service_select_wrapper' key={service.id}>
+                    
+                    <div className='service_select_wrapper' key={service.service_id}>
+                        {console.log(service)}
                         <div
                             className='servicetoggle_head'
                             onClick={() => toggleSection(`major-${index}`)}
@@ -102,22 +115,22 @@ const StoreService = ({ storeId }) => {
                             <div className='service_content_wrapp'>
                                 <div className='service_radio_row'>
                                     {service.service_type.map((type) => (
-                                        <div className='service_radio_col' key={type.id}>
+                                        <div className='service_radio_col' key={type.service_type_id}>
                                             <label className='checkcontainer'>
                                                 <input
                                                     type='checkbox'
-                                                    id={`MajorService-${index}-${type.id}`}
+                                                    id={`MajorService-${index}-${type.service_type_id}`}
                                                     name={`MajorService-${index}`}
-                                                    value={type.id}
+                                                    value={type.service_type_id}
                                                     checked={
                                                         selectedServices.some(
                                                             (selectedService) =>
-                                                                selectedService.id === service.id &&
-                                                                selectedService.types.includes(type.id)
+                                                                selectedService.id === service.service_id &&
+                                                                selectedService.types.includes(type.service_type_id)
                                                         )
                                                     }
                                                     onChange={() =>
-                                                        handleCheckboxChange(service.id, type.id)
+                                                        handleCheckboxChange(service.service_id, type.service_type_id)
                                                     }
                                                 />
                                                 <span className='radiobtn'></span>

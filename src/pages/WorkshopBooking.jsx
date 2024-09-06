@@ -5,7 +5,7 @@ import WorkshopStore from '../components/Front/Workshop/Booking/WorkshopStore';
 import StoreService from '../components/Front/Workshop/Booking/StoreService';
 import ServiceDate from '../components/Front/Workshop/Booking/ServiceDate';
 import DetailForm from '../components/Workshop/DetailForm';
-import BikeDetailForm from '../components/Workshop/BikeDetail';
+import BikeDetailForm from '../components/Front/Workshop/Booking/BikeDetail';
 import CheckDetail from '../components/Workshop/Checkdetail';
 import BookingConfirm from '../components/Workshop/Bookingconfrm';
 
@@ -13,13 +13,48 @@ import BookingConfirm from '../components/Workshop/Bookingconfrm';
 const WorkshopBooking = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [storeId , setStoreId] = useState(null);
+    const [Types , setTypes ] = useState(null);
+    const [error, setError] =useState(null);
     const handleNext = (Data) => {
+        const bookingData = JSON.parse(localStorage.getItem('booking')) || {};
+        if(currentStep == 2){
+            if(!Array.isArray(bookingData.types) || bookingData.types.length == 0){
+                setError('At least one option is required..');
+                return false;
+            }
+        }
+        if(currentStep == 3){
+            if(bookingData.serviceDate  == ''){
+                setError('select a valid date for your service..');
+                return false;
+            }
+        }
+        if (currentStep === 4) {        
+            if (!bookingData.userDetails || 
+                !bookingData.userDetails.fname || 
+                !bookingData.userDetails.lname || 
+                !bookingData.userDetails.email || 
+                !bookingData.userDetails.phone || 
+                !bookingData.userDetails.hearAboutUs) {
+    
+                setError('All required fields are required.');
+                return false;
+            }
+        
+        }
+        
         setCurrentStep((prevStep) => prevStep + 1);    
         if (Data && typeof Data === 'number') { 
             setStoreId(Data);
-        } else {
-            console.log('Invalid Data: Not setting store ID');
+        } 
+        console.log(currentStep);
+        if(currentStep == 5){
+            const bookingData = JSON.parse(localStorage.getItem('booking')) || {};
+            setTypes(bookingData.types || []);
         }
+        // else {
+        //     console.log('Invalid Data: Not setting store ID');
+        // }
     };
     
 
@@ -84,8 +119,9 @@ const WorkshopBooking = () => {
 
                                         <div className='store_wrapper'>
                                             <StoreService storeId={storeId} />
+                                            <p className='error-text'>{error?? ''}</p>
                                         </div>
-
+                                        
                                         <div className='button_flex text-center mt-60'>
                                             <Link to="#" onClick={handleBack} className='cta step_back'>Back</Link>
                                             <Link to="#" onClick={handleNext} className='cta step_next'>Next</Link>
@@ -129,6 +165,7 @@ const WorkshopBooking = () => {
                                         </div>
                                         <div className='store_wrapper'>
                                             <DetailForm/>
+                                            <p className='error-text'>{error?? ''}</p>
                                         </div>
                                         <div className='button_flex text-center mt-60'>
                                         <Link to="#" onClick={handleBack} className='cta step_back'>Back</Link>
@@ -150,7 +187,7 @@ const WorkshopBooking = () => {
                                             <h2 className='size46'>Bike Details</h2>
                                         </div>
                                         <div className='store_wrapper'>
-                                            <BikeDetailForm/>
+                                            <BikeDetailForm />
                                         </div>
                                         <div className='button_flex text-center mt-60'>
                                         <Link to="#" onClick={handleBack} className='cta step_back'>Back</Link>
@@ -173,7 +210,8 @@ const WorkshopBooking = () => {
                                         <div className="summary_step-box">
                                             {/* <h2 className='size46'>Check Details And Confirm</h2>                                         */}
                                             <div className='store_wrapper'>
-                                                <CheckDetail/>
+                                                <CheckDetail Types={Types} />
+
                                             </div>
                                         </div>
                                         <div className='button_flex text-center mt-60'>

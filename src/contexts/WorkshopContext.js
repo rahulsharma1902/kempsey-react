@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { Services, addService, removeService } from '../api/apiService'; // Import necessary service functions
+import { Services, addService, removeService,getServiceTypes } from '../api/apiService'; // Import necessary service functions
 import { Stores } from '../api/apiStore';
 
 // Create a context for service content
@@ -15,6 +15,7 @@ export const ServiceContentProvider = ({ children }) => {
     const [serviceContent, setServiceContent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [storeContent, setStoreContent] = useState(null);
+    const [serviceTypes, setServiceTypes] = useState(null);
     const [error, setError] = useState(null); // State to handle errors
 
     // Function to fetch service data
@@ -44,15 +45,28 @@ export const ServiceContentProvider = ({ children }) => {
             setLoading(false);
         }
     };
-
+    const fetchsetServiceTypes = async () => {
+        try {
+            setLoading(true);
+            const response = await getServiceTypes();
+            setServiceTypes(response); 
+        } catch (error) {
+            console.error('Failed to fetch store content:', error.message);
+            setServiceTypes([]); 
+            setError(error.message); 
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         fetchServiceContent();
         fetchStoreContent();
+        fetchsetServiceTypes();
     }, []);
 
     return (
-        <ServiceContentContext.Provider value={{ serviceContent,storeContent, loading, error}}>
+        <ServiceContentContext.Provider value={{ serviceContent,storeContent,serviceTypes, loading, error}}>
             {children}
         </ServiceContentContext.Provider>
     );
