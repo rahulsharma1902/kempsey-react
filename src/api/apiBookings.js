@@ -23,7 +23,7 @@ const fetchData = async (endpoint) => {
 };
 
 
-export const Stores = () => fetchData('stores');
+export const Bookings = () => fetchData('bookings');
 export const getStoreById = (id) => fetchData(`get-store/${id}`);
 
 
@@ -53,6 +53,8 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 
 
-export const addStore = (formData) => postData('store/add', formData, true);
-export const removeService = (id) => postData(`service/remove/${id}`, {});
+export const completeBooking = (id) => postData(`complete-booking/${id}`, {});
+
+
+export const addBooking = (formData) => postData('service-booking/add', formData, true);
 

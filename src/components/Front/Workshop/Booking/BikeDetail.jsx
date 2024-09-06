@@ -21,15 +21,6 @@ const BikeDetailForm = () => {
         localStorage.setItem('booking', JSON.stringify({ ...bookingData, bikeDetails: formData }));
     }, [formData]);
 
-    const validateForm = () => {
-        const { bikeBrand, bikeType } = formData;
-        const newErrors = {};
-        if (!bikeBrand) newErrors.bikeBrand = 'Bike brand is required';
-        if (!bikeType) newErrors.bikeType = 'Bike type is required';
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
     const handleChange = (e) => {
         const { id, value } = e.target;
         setFormData((prevData) => ({

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getServiceTypes } from '../../api/apiService'; // Import the API call function
-import {ServiceContentContext} from '../../contexts/WorkshopContext';
+import { getServiceTypes } from '../../../../api/apiService'; // Import the API call function
+import {ServiceContentContext} from '../../../../contexts/WorkshopContext';
 const CheckDetail = ({ Types }) => {
     const [bikeBrand, setBikeBrand] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
@@ -24,8 +24,7 @@ const CheckDetail = ({ Types }) => {
             };
 
             const bookingData = JSON.parse(localStorage.getItem('booking')) || {};
-            setBikeBrand(bookingData.bikeDetail?.bikeBrand || '');
-            console.log(bikeBrand);
+            setBikeBrand(bookingData.bikeDetails?.bikeBrand || '');
             setSelectedDate(bookingData.serviceDate || '');
             setSelectedTypes(bookingData.types || []);
 
@@ -57,8 +56,8 @@ const CheckDetail = ({ Types }) => {
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>Bike Brand</td>
                                 <td>{bikeBrand}</td>
+                                <td></td>
                             </tr>
                             {serviceTypes
                                 .filter(type => selectedTypes.includes(type.id))
