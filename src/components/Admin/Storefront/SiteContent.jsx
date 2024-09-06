@@ -154,7 +154,7 @@ const HomeContentAdd = () => {
         }
 
         try {
-            setLoading(true);
+            // setLoading(true);
             const response = await addStoreContent(formData);
             toast.success(response.message);
             // setImagePreviews([]);

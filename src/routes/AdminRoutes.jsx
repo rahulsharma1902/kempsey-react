@@ -23,6 +23,7 @@ import HomePageCarousel from '../components/Admin/Storefront/HomePageCarousel';
 import HomeContent from '../components/Admin/Storefront/HomeContent';
 import AboutUsContent from '../components/Admin/Storefront/AboutUsContent';
 import SiteContent from '../components/Admin/Storefront/SiteContent';
+import WorkshopContentAdd from '../components/Admin/Storefront/WorkshopContent';
 
 import CustomerServiceContentAdd from '../components/Admin/Storefront/CustomerServiceContent';
 import ContactUsContentAdd from '../components/Admin/Storefront/ContactUsContent';
@@ -231,6 +232,14 @@ const AdminRoutes = () => {
                 element={
                         <PrivateRoute roles={['admin']}>
                             <SiteContent />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/storefront/workshop-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <WorkshopContentAdd />
                         </PrivateRoute>
                 } 
             />

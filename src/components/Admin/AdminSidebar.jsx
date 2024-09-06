@@ -53,6 +53,9 @@ const SidebarComponent = ({ isSidebarCollapsed }) => {
             <Link to="/admin-dashboard/storefront/site-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Site Content</Link>
           </MenuItem>
           <MenuItem>
+            <Link to="/admin-dashboard/storefront/workshop-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Workshop Content</Link>
+          </MenuItem>
+          <MenuItem>
             <Link to="/admin-dashboard/storefront/customer-service-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Customer Service Content</Link>
           </MenuItem>
           <MenuItem>

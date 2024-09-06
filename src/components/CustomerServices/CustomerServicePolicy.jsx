@@ -45,6 +45,10 @@ const CustomerServicePolicy = () => {
                             <p>Please note: When a refund is granted, we will refund the original purchase price via the previous method of payment indicated on the receipt</p>
                             <p>For further information on anything contained within this brochure please discuss with a Kempsey Outdoors Staff member</p>
                         </div>`;
+
+    if (loading) {
+        return <p>Loading...</p>;
+    }
     return (
 
         <div className="customer_policy p-130 light">
@@ -72,7 +76,7 @@ const CustomerServicePolicy = () => {
                 <div
                     className='customer-service-content'
                     dangerouslySetInnerHTML={{
-                        __html: CSdata?.content_ ?? fallbackContent,
+                        __html: CSdata?.content ?? fallbackContent,
                     }}
                 />
             </div>
