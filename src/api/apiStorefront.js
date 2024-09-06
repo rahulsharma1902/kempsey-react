@@ -25,15 +25,18 @@ const fetchData = async (endpoint) => {
 export const homecontent = () => fetchData('home-content');
 export const aboutuscontent = () => fetchData('about-us-content');
 export const sitecontent = () => fetchData('site-content');
+export const customerservicecontent = () => fetchData('customer-service-content');
+export const workshopcontent = () => fetchData('workshop-content');
+export const contactuscontent = () => fetchData('contact-us-content');
 
 export const getProductById = (id) => fetchData(`get-product/${id}`);
 export const products = () => fetchData(`products`);
 
-export const Faqs = () => fetchData('faqs');
-export const getfaqId = (id) => fetchData(`get-faq/${id}`);
-
+export const faqcontent = () => fetchData('faq-content');
 export const Faqcategories = () => fetchData('faq-categories');  
 export const getfaqcategoryId = (id) => fetchData(`get-faq-category/${id}`);
+export const Faqs = () => fetchData('faqs');
+export const getfaqId = (id) => fetchData(`get-faq/${id}`);
 
 
 export const removeFaq = async (id) => {
@@ -77,7 +80,6 @@ export const removeFaqCategory = async (id) => {
 };
 
 
-
 const postData = async (endpoint, formData, isMultipart = false) => {
     try {
         const token = localStorage.getItem('token');
@@ -102,12 +104,16 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 };
 
 
-
 export const addHomeContent = (formData) => postData('home-content/add', formData, true);
 export const addAboutUsContent = (formData) => postData('about-us-content/add', formData, true);
 export const addStoreContent = (formData) => postData('store-content/add', formData, true);
-export const updateProduct = (formData) => postData('product/update', formData, true);
+export const addcustomerservicecontent = (formData) => postData('customer-service-content/add', formData, true);
+export const addfaqcontent = (formData) => postData('faq-content/add', formData, true);
+export const addworkshopcontent = (formData) => postData('workshop-content/add', formData, true);
+export const addcontactuscontent = (formData) => postData('contact-us-content/add', formData, true);
+
 export const addfaqcategory = (formData) => postData('faq-category/add', formData, true);
 export const addfaq = (formData) => postData('faq/add', formData, true);
 
+export const updateProduct = (formData) => postData('product/update', formData, true);
 export const removeProduct = (id) => postData(`product/remove/${id}`, {});

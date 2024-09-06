@@ -52,6 +52,15 @@ const SidebarComponent = ({ isSidebarCollapsed }) => {
           <MenuItem>
             <Link to="/admin-dashboard/storefront/site-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Site Content</Link>
           </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/storefront/customer-service-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Customer Service Content</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/storefront/contact-us-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Contact Us Content</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/admin-dashboard/storefront/faq-content" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Faq Content</Link>
+          </MenuItem>
           <SubMenu label="FAQs" icon={<FaQuestionCircle />} >
             <MenuItem>
               <Link to="/admin-dashboard/faq-categories" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Faq Category</Link>

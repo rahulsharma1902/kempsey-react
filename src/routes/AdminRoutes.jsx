@@ -24,6 +24,9 @@ import HomeContent from '../components/Admin/Storefront/HomeContent';
 import AboutUsContent from '../components/Admin/Storefront/AboutUsContent';
 import SiteContent from '../components/Admin/Storefront/SiteContent';
 
+import CustomerServiceContentAdd from '../components/Admin/Storefront/CustomerServiceContent';
+import ContactUsContentAdd from '../components/Admin/Storefront/ContactUsContent';
+import FaqContentAdd from '../components/Admin/Storefront/FaqContent';
 import FaqCategoriesAdd from '../components/Admin/Storefront/Faqs/faqcategory/FaqCategoryadd';
 import FaqCategoriesList from '../components/Admin/Storefront/Faqs/faqcategory/FaqCategoryList';
 import FaqCategoryUpdate from '../components/Admin/Storefront/Faqs/faqcategory/FaqCategoryUpdate';
@@ -196,6 +199,30 @@ const AdminRoutes = () => {
                 element={
                         <PrivateRoute roles={['admin']}>
                             <AboutUsContent />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/storefront/customer-service-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <CustomerServiceContentAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/storefront/faq-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqContentAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/storefront/contact-us-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ContactUsContentAdd />
                         </PrivateRoute>
                 } 
             />
