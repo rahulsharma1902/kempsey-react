@@ -3403,3 +3403,15 @@ table.product-detail-paymant {
     color: #fff;
     border-radius: 50%;
 }
+.form_control.is-invalid {
+    border-color: red;
+  }
+  
+.error-text {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+p.error-text {
+    color: red;
+}  

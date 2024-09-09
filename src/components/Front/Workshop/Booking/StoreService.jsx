@@ -18,7 +18,7 @@ const StoreService = ({storeId}) => {
                     if (response.data) {
                         const storeData = response?.data?.store_services;
                         setServices(storeData);
-                        console.log(services);
+                        // console.log(services);
 
                         // Sync the selected services with the newly fetched services
                         const storedBooking = JSON.parse(localStorage.getItem('booking')) || {};
@@ -93,7 +93,6 @@ const StoreService = ({storeId}) => {
                 {services.map((service, index) => (
                     
                     <div className='service_select_wrapper' key={service.service_id}>
-                        {console.log(service)}
                         <div
                             className='servicetoggle_head'
                             onClick={() => toggleSection(`major-${index}`)}

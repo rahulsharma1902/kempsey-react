@@ -51,6 +51,7 @@ import AddStore from '../components/Admin/Stores/AddStore';
 import StoreList from '../components/Admin/Stores/StoreList';
 import StoreUpdate from '../components/Admin/Stores/StoreUpdate';
 
+import BookingList from '../components/Admin/Bookings/BookingList';
 
 const AdminRoutes = () => {
     return (
@@ -393,6 +394,17 @@ const AdminRoutes = () => {
             />
 
             {/* store end here */}
+            {/* BookingList */}
+            <Route 
+                path="/bookings" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <BookingList />
+                        </PrivateRoute>
+                } 
+            />
+            {/* BookingList end here */}
+
         </Routes>
     );
 };

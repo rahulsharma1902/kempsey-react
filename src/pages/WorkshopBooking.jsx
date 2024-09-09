@@ -4,241 +4,137 @@ import { Link } from 'react-router-dom';
 import WorkshopStore from '../components/Front/Workshop/Booking/WorkshopStore';
 import StoreService from '../components/Front/Workshop/Booking/StoreService';
 import ServiceDate from '../components/Front/Workshop/Booking/ServiceDate';
-import DetailForm from '../components/Workshop/DetailForm';
+import DetailForm from '../components/Front/Workshop/Booking/DetailForm';
 import BikeDetailForm from '../components/Front/Workshop/Booking/BikeDetail';
-import CheckDetail from '../components/Workshop/Checkdetail';
-import BookingConfirm from '../components/Workshop/Bookingconfrm';
-
+import CheckDetail from '../components/Front/Workshop/Booking/Checkdetail';
+import BookingConfirm from '../components/Front/Workshop/Booking/Bookingconfrm';
 
 const WorkshopBooking = () => {
-    const [currentStep, setCurrentStep] = useState(1);
-    const [storeId , setStoreId] = useState(null);
-    const [Types , setTypes ] = useState(null);
-    const [error, setError] =useState(null);
-    const handleNext = (Data) => {
-        const bookingData = JSON.parse(localStorage.getItem('booking')) || {};
-        if(currentStep == 2){
-            if(!Array.isArray(bookingData.types) || bookingData.types.length == 0){
-                setError('At least one option is required..');
-                return false;
-            }
-        }
-        if(currentStep == 3){
-            if(bookingData.serviceDate  == ''){
-                setError('select a valid date for your service..');
-                return false;
-            }
-        }
-        if (currentStep === 4) {        
-            if (!bookingData.userDetails || 
-                !bookingData.userDetails.fname || 
-                !bookingData.userDetails.lname || 
-                !bookingData.userDetails.email || 
-                !bookingData.userDetails.phone || 
-                !bookingData.userDetails.hearAboutUs) {
-    
-                setError('All required fields are required.');
-                return false;
-            }
-        
-        }
-        
-        setCurrentStep((prevStep) => prevStep + 1);    
-        if (Data && typeof Data === 'number') { 
-            setStoreId(Data);
-        } 
-        console.log(currentStep);
-        if(currentStep == 5){
-            const bookingData = JSON.parse(localStorage.getItem('booking')) || {};
-            setTypes(bookingData.types || []);
-        }
-        // else {
-        //     console.log('Invalid Data: Not setting store ID');
-        // }
-    };
-    
+  const [currentStep, setCurrentStep] = useState(1);
+  const [storeId, setStoreId] = useState(null);
+  const [types, setTypes] = useState([]);
+  const [error, setError] = useState('');
+  const [confirmed, setConfirmed] = useState(false);
 
-    const handleBack = () => {
-        setCurrentStep(prevStep => prevStep - 1);
-    };
+  
 
-    const getProgressWidth = () => {
-        switch (currentStep) {
-            case 1:
-                return '16%';
-            case 2:
-                return '32%';
-            case 3:
-                return '48%';
-            case 4:
-                return '60%';
-            case 5:
-                return '80%';
-            case 6:
-                return '100%';
+  const validateStep = () => {
+    const bookingData = JSON.parse(localStorage.getItem('booking')) || {};
+    switch (currentStep) {
+      case 2:
+        if (!Array.isArray(bookingData.types) || bookingData.types.length === 0) {
+          setError('At least one service type is required.');
+          return false;
         }
-    };
+        break;
+      case 3:
+        if (!bookingData.serviceDate) {
+          setError('Select a valid date for your service.');
+          return false;
+        }
+        break;
+      case 4:
+        if (!bookingData.userDetails || 
+            !bookingData.userDetails.fname || 
+            !bookingData.userDetails.lname || 
+            !bookingData.userDetails.email || 
+            !bookingData.userDetails.phone || 
+            !bookingData.userDetails.hearAboutUs) {
+          setError('All user details are required.');
+          return false;
+        }
+        break;
+      case 5:
+        if (!bookingData.bikeDetails || 
+            !bookingData.bikeDetails.bikeBrand || 
+            !bookingData.bikeDetails.bikeType) {
+          setError('Bike brand and type are required.');
+          return false;
+        }
+        setTypes(bookingData.types || []);
+        break;
+      default:
+        break;
+    }
+    setError('');
+    return true;
+  };
 
-    return (
-        <Layout>
-            <div className='body_inner'>
-                <div className='page'>
-                    <div className='workshop_form_section p-130 light'>
-                        <div className='workshop_main'>
-                            <div className={`workshop_step step_1 ${currentStep === 1 ? 'active' : 'hidden'}`}>
-                                <div className='container'>
-                                    <div className='step_inner'>
-                                        <div className='section_head text-center'>
-                                            <div className='step_progress'>
-                                                <p>Select Your Shop</p>
-                                                <div className='custom_progress'>
-                                                    <div className='progress_thumb' style={{ width: getProgressWidth() }}></div>
-                                                </div>
-                                            </div>
-                                            <h2 className='size46'>Find Your Nearest Workshop</h2>
-                                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                                        </div>
-                                        <div className='store_wrapper'>
-                                            <WorkshopStore handleNext={handleNext} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>  
-                            <div className={`workshop_step store_service_step step_2 ${currentStep === 2 ? 'active' : 'hidden'}`}>
-                                <div className='container'>
-                                    <div className='step_inner'>
-                                        <div className='section_head text-center'>
-                                            <div className='step_progress'>
-                                                <p>Services</p>
-                                                <div className='custom_progress'>
-                                                    <div className='progress_thumb' style={{ width: getProgressWidth() }}></div>
-                                                </div>
-                                            </div>
-                                            <h2 className='size46'>Which Services Would You Like To Book?</h2>
-                                        </div>
+  const handleNext = (data) => {
+    if (!validateStep()) return;
+    if (data && typeof data === 'number') setStoreId(data);
+    console.log(currentStep);
+    if(currentStep === 6){
+        setConfirmed(true);
+        console.log('here is your 6th final step you can update you code here if you want ...');
+    }
+    setCurrentStep((prevStep) => prevStep + 1);
+  };
 
-                                        <div className='store_wrapper'>
-                                            <StoreService storeId={storeId} />
-                                            <p className='error-text'>{error?? ''}</p>
-                                        </div>
-                                        
-                                        <div className='button_flex text-center mt-60'>
-                                            <Link to="#" onClick={handleBack} className='cta step_back'>Back</Link>
-                                            <Link to="#" onClick={handleNext} className='cta step_next'>Next</Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> 
-                            <div className={`workshop_step calender_step step_3 ${currentStep === 3 ? 'active' : 'hidden'}`}>
-                                <div className='container'>
-                                    <div className='step_inner'>
-                                        <div className='section_head text-center'>
-                                            <div className='step_progress'>
-                                                <p>Select Service Date</p>
-                                                <div className='custom_progress'>
-                                                    <div className='progress_thumb' style={{ width: getProgressWidth() }}></div>
-                                                </div>
-                                            </div>
-                                            <h2 className='size46'>Select A Service Date</h2>
-                                        </div>
-                                        <div className='store_wrapper'>
-                                            <ServiceDate />
-                                        </div>
-                                        <div className='button_flex text-center mt-60'>
-                                        <Link to="#" onClick={handleBack} className='cta step_back'>Back</Link>
-                                        <Link to="#" onClick={handleNext} className='cta step_next'>Next</Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> 
-                            <div className={`workshop_step detailform_step  step_4 ${currentStep === 4 ? 'active' : 'hidden'}`}>
-                                <div className='container'>
-                                    <div className='step_inner'>
-                                        <div className='section_head text-center'>
-                                            <div className='step_progress'>
-                                                <p>Your Details</p>
-                                                <div className='custom_progress'>
-                                                    <div className='progress_thumb' style={{ width: getProgressWidth() }}></div>
-                                                </div>
-                                            </div>
-                                            <h2 className='size46'>Your Details</h2>
-                                        </div>
-                                        <div className='store_wrapper'>
-                                            <DetailForm/>
-                                            <p className='error-text'>{error?? ''}</p>
-                                        </div>
-                                        <div className='button_flex text-center mt-60'>
-                                        <Link to="#" onClick={handleBack} className='cta step_back'>Back</Link>
-                                        <Link to="#" onClick={handleNext} className='cta step_next'>Next</Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={`workshop_step bikedetailform_step  step_5 ${currentStep === 5 ? 'active' : 'hidden'}`}>
-                                <div className='container'>
-                                    <div className='step_inner'>
-                                        <div className='section_head text-center'>
-                                            <div className='step_progress'>
-                                                <p>Bike Details</p>
-                                                <div className='custom_progress'>
-                                                    <div className='progress_thumb' style={{ width: getProgressWidth() }}></div>
-                                                </div>
-                                            </div>
-                                            <h2 className='size46'>Bike Details</h2>
-                                        </div>
-                                        <div className='store_wrapper'>
-                                            <BikeDetailForm />
-                                        </div>
-                                        <div className='button_flex text-center mt-60'>
-                                        <Link to="#" onClick={handleBack} className='cta step_back'>Back</Link>
-                                        <Link to="#" onClick={handleNext} className='cta step_next'>Next</Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={`workshop_step summary_step  step_6 ${currentStep === 6 ? 'active' : 'hidden'}`}>
-                                <div className='container'>
-                                    <div className='step_inner'>
-                                        <div className='section_head text-center'>
-                                            <div className='step_progress'>
-                                                <p>Summary</p>
-                                                <div className='custom_progress'>
-                                                    <div className='progress_thumb' style={{ width: getProgressWidth() }}></div>
-                                                </div>
-                                            </div>                                            
-                                        </div>
-                                        <div className="summary_step-box">
-                                            {/* <h2 className='size46'>Check Details And Confirm</h2>                                         */}
-                                            <div className='store_wrapper'>
-                                                <CheckDetail Types={Types} />
+  const handleBack = () => {
+    setError('');
+    setCurrentStep((prevStep) => prevStep - 1)
+};
 
-                                            </div>
-                                        </div>
-                                        <div className='button_flex text-center mt-60'>
-                                        <Link to="#" onClick={handleBack} className='cta step_back'>Back</Link>
-                                        <Link to="#" onClick={handleNext} className='cta step_next'>Next</Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>  
-                            <div className={`workshop_step confrm_step  step_7 ${currentStep === 7 ? 'active' : 'hidden'}`}>
-                                <div className='container'>
-                                    <div className='step_inner'>
-                                        <div className="confrm_step-box">
-                                            {/* <h2 className='size46'>Check Details And Confirm</h2>                                         */}
-                                            <div className='store_wrapper'>
-                                                <BookingConfirm/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>  
-                        </div> 
+  const getProgressWidth = () => `${(currentStep / 6) * 100}%`;
+
+  const steps = [
+    { component: <WorkshopStore handleNext={handleNext} />, title: "Find Your Nearest Workshop", description: "Select Your Shop" },
+    { component: <StoreService storeId={storeId} />, title: "Which Services Would You Like To Book?", description: "Services" },
+    { component: <ServiceDate />, title: "Select A Service Date", description: "Select Service Date" },
+    { component: <DetailForm />, title: "Your Details", description: "Your Details" },
+    { component: <BikeDetailForm />, title: "Bike Details", description: "Bike Details" },
+    { component: <CheckDetail Types={types} />, title: "Check Details And Confirm", description: "Summary" },
+    { component: <BookingConfirm confirmed={confirmed} />, title: "", description: "Confirm" }
+  ];
+
+  return (
+    <Layout>
+      <div className='body_inner'>
+        <div className='page'>
+          <div className='workshop_form_section p-130 light'>
+            <div className='workshop_main'>
+              {steps.map((step, index) => (
+                <div
+                  key={index}
+                  className={`workshop_step step_${index + 1} ${currentStep === index + 1 ? 'active' : 'hidden'}`}
+                >
+                  <div className='container'>
+                    <div className='step_inner'>
+                      <div className='section_head text-center'>
+                        <div className='step_progress'>
+                          <p>{step.description}</p>
+                          <div className='custom_progress'>
+                            <div className='progress_thumb' style={{ width: getProgressWidth() }}></div>
+                          </div>
+                        </div>
+                        {step.title && <h2 className='size46'>{step.title}</h2>}
+                      </div>
+                      <div className='store_wrapper'>
+                        {step.component}
+                        
+                      </div>
+                      <div className='error_wrap'>
+                        {error && <p className='error-text'>{error}</p>}
+                      </div>
+                      {index < steps.length - 1 && (
+                        <div className='button_flex text-center mt-60'>
+                          {currentStep > 1 && (
+                            <Link to="#" onClick={handleBack} className='cta step_back'>Back</Link>
+                          )}
+                          <Link to="#" onClick={() => handleNext()} className='cta step_next'>Next</Link>
+                        </div>
+                      )}
                     </div>
+                  </div>
                 </div>
+              ))}
             </div>
-        </Layout>
-    );
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
 };
 
 export default WorkshopBooking;

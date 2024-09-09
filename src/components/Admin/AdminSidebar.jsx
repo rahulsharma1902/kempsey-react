@@ -8,6 +8,7 @@ import '../../assets/Admin.css';
 import { Box } from '@mui/material';
 import { RiCustomerServiceFill } from "react-icons/ri";
 import { IoStorefrontSharp } from "react-icons/io5";
+import { SlCalender } from "react-icons/sl";
 
 const SidebarComponent = ({ isSidebarCollapsed }) => {
   return (
@@ -92,6 +93,11 @@ const SidebarComponent = ({ isSidebarCollapsed }) => {
           </MenuItem>
         </SubMenu>
         </SubMenu>
+
+        <MenuItem icon={<SlCalender />}>
+          <Link to="/admin-dashboard/bookings" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Bookings</Link>
+        </MenuItem>
+
       </Menu>
     </Sidebar>
   );
