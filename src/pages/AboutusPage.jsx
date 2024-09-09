@@ -22,7 +22,7 @@ const AboutusPage = () => {
                 <WhyShopsection />
                 <Outdoorcloset />
                 <Reviewsection />
-            </div>
+            </div> 
         </div>
         </Layout>
     );
