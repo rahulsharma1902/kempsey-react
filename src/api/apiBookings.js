@@ -25,7 +25,9 @@ const fetchData = async (endpoint) => {
 
 export const Bookings = () => fetchData('bookings');
 export const getStoreById = (id) => fetchData(`get-store/${id}`);
+export const completeBooking = (id) => fetchData(`complete-booking/${id}`);
 
+export const removeBooking = (id) => fetchData(`remove-booking/${id}`);
 
 
 const postData = async (endpoint, formData, isMultipart = false) => {
@@ -53,7 +55,6 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 
 
-export const completeBooking = (id) => postData(`complete-booking/${id}`, {});
 
 
 export const addBooking = (formData) => postData('service-booking/add', formData, true);
