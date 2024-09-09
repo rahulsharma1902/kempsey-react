@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { contactuscontent, faqcontent ,customerservicecontent} from '../api/apiStorefront';
+import { contactuscontent, faqcontent ,customerservicecontent,workshopcontent,sitecontent} from '../api/apiStorefront';
 
 const StorefrontContext = createContext();
 
@@ -11,6 +11,8 @@ export const StoreFrontProvider = ({ children }) => {
         contactUs: null,
         faq: null,
         CSdata: null,
+        workshopContent: null,
+        siteContentdata: null,
         loading: true,
     });
 
@@ -18,11 +20,13 @@ export const StoreFrontProvider = ({ children }) => {
      
         const fetchContent = async () => {
             try {
-                const [contactResponse, faqResponse,CSresponse] = await Promise.all([contactuscontent(), faqcontent(),customerservicecontent()]);
+                const [contactResponse, faqResponse,CSresponse,workshopResponse,siteContentResponse] = await Promise.all([contactuscontent(), faqcontent(),customerservicecontent() ,workshopcontent(),sitecontent()]);
                 setContent({
                     contactUs: contactResponse.data,
                     faq: faqResponse.data,
                     CSdata: CSresponse.data,
+                    workshopContent: workshopResponse.data,
+                    siteContentdata: siteContentResponse.data,
                     loading: false,
                 });
             } catch (error) {
@@ -31,6 +35,8 @@ export const StoreFrontProvider = ({ children }) => {
                     contactUs: [],
                     faq: [],
                     CSdata:[],
+                    workshopContent:[],
+                    siteContentdata:[],
                     loading: false,
                 });
             }

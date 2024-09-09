@@ -5,17 +5,29 @@ import instacard3 from '../images/insta_post5.png';
 import instacard4 from '../images/insta_post4.png';
 import instacard5 from '../images/insta_post3.png';
 import instacard6 from '../images/insta_post2.png';
+import {useStorefrontContent } from '../contexts/StoreFrontContext.js';
 
-const instagramPosts = [
-    instacard1,
-    instacard2,
-    instacard3,
-    instacard4,
-    instacard5,
-    instacard6,
-];
+
 
 const Instagrammodule = () => {
+    const { siteContentdata, loading } = useStorefrontContent();
+
+    let instagramPosts;
+
+    if (siteContentdata?.footer_instagram_images && JSON.parse(siteContentdata.footer_instagram_images).length > 0) {
+        instagramPosts = JSON.parse(siteContentdata.footer_instagram_images);
+    } else {
+        instagramPosts = [
+            instacard1,
+            instacard2,
+            instacard3,
+            instacard4,
+            instacard5,
+            instacard6,
+        ];
+    }
+
+
     return (
         <div>
             <div className='instagram_section'>
@@ -24,7 +36,7 @@ const Instagrammodule = () => {
                         <div className='section_head text-center'>
                             <div className='insta_head'>
                                 <div className='insta_icon'><i className="fa-brands fa-instagram"></i></div>
-                                <p>@KempseyOutdoors</p>
+                                <p>{ siteContentdata?.footer_instagram_name ?? '@KempseyOutdoors'}</p>
                             </div>
                         </div>
                         <div className='insta_flex'>

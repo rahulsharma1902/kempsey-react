@@ -11,12 +11,16 @@ import chat from '../images/chat.png';
 import easy from '../images/easy.png';
 import Instagrammodule from '../components/Instagrammodule';
 import Newsletter from '../components/Newsletter'
+import {useStorefrontContent } from '../contexts/StoreFrontContext.js';
 
 
 const Footer = () => {
+    const { siteContentdata, loading } = useStorefrontContent();
+
+    const fallbackhtml = ` <p> Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>`;
     return (
         <footer>
-            <Newsletter />
+            <Newsletter data={{ 'text': siteContentdata?.footer_contact_title }}/>
             <Instagrammodule />
             <div className="footer-content">
                 <div className="footer_links">
@@ -47,23 +51,23 @@ const Footer = () => {
                                             <h5>Follow on</h5>
                                             <ul>
                                                 <li>
-                                                    <Link to="#"><i className="fa-brands fa-facebook-f"></i> Facebook</Link>
+                                                    <Link to={siteContentdata?.footer_facebook_link ?? '#'}><i className="fa-brands fa-facebook-f"></i> Facebook</Link>
                                                 </li>
                                                 <li>
-                                                    <Link to="#"><i className="fa-brands fa-instagram"></i> Instagram</Link>
+                                                    <Link to={siteContentdata?.footer_instagram_link ?? '#'}><i className="fa-brands fa-instagram"></i> Instagram</Link>
                                                 </li>
                                                 <li>
-                                                    <Link to="#"><i className="fa-brands fa-twitter"></i> Twitter</Link>
+                                                    <Link to={siteContentdata?.footer_twitter_link ?? '#'}><i className="fa-brands fa-twitter"></i> Twitter</Link>
                                                 </li>
                                             </ul>
                                         </div>
                                     </div>
                                     <div className="footer_rt_txt">
-                                        <p>
-                                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                                            when an unknown printer took a galley of type and scrambled it to make a type
-                                            specimen book.
-                                        </p>
+                                       <p 
+                                            dangerouslySetInnerHTML={{
+                                                __html: siteContentdata?.footer_description ?? fallbackhtml,
+                                            }}
+                                       />
                                     </div>
                                 </div>
                             </div>
@@ -72,10 +76,19 @@ const Footer = () => {
                                     <ul>
                                         <li>
                                             <strong>Address:</strong>
-                                            8975 W Charleston Blvd. Suite 190 Las Vegas, NV 89117
+                                            { siteContentdata?.address ?? '8975 W Charleston Blvd. Suite 190 Las Vegas, NV 89117'}
                                         </li>
-                                        <li><strong>Phone:</strong> <a href="tel:01234567890">0 123 4567 890</a></li>
-                                        <li><strong>Email:</strong> <a href="mailto:contact@KempseyOutdoors.com">contact@KempseyOutdoors.com</a></li>
+                                        <li>
+                                            <strong>Phone:</strong>  
+                                            <a href={`tel:${siteContentdata?.phone ?? '01234567890'}`}>
+                                                {siteContentdata?.phone ?? '0 123 4567 890'}
+                                            </a>
+                                        </li>
+                                        <li><strong>Email:</strong> 
+                                            <a href={`mailto:${siteContentdata?.email ?? 'contact@KempseyOutdoors.com'}`}>
+                                                {siteContentdata?.email ?? 'contact@KempseyOutdoors.com'}
+                                            </a>
+                                        </li>
                                     </ul>
                                     <ul className="cards">
                                         <li>
@@ -112,10 +125,10 @@ const Footer = () => {
                     <div className="container">
                         <div className="marquee">
                             <div className="marq-img">
-                                <img src={easy} alt="Easy" />
+                                <img src={ siteContentdata?.footer_slider_image ?? easy} alt="Easy" />
                             </div>
                             <div className="marq-img">
-                                <img src={easy} alt="Easy" />
+                                <img src={ siteContentdata?.footer_slider_image ?? easy} alt="Easy" />
                             </div>
                         </div>
                     </div>
@@ -123,7 +136,7 @@ const Footer = () => {
                 <div className="footer_btm">
                     <div className="container">
                         <div className="cpy_rgt">
-                            <p>© 2024 Kempsey Outdoors, All rights reserved.</p>
+                            <p>{ siteContentdata?.footer_policy ?? '© 2024 Kempsey Outdoors, All rights reserved.'}</p>
                             <ul className="footer_bt_rt">
                                 <li><Link to="#">Privacy Policy</Link></li>
                                 <li><Link to="#">Terms & Conditions</Link></li>
