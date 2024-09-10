@@ -28,6 +28,7 @@ export const getProductById = (id) => fetchData(`get-product/${id}`);
 export const products = () => fetchData(`products`);
 
 
+export const getProductByCategory = (id) => fetchData(`get-products/${id}`);
 
 
 const postData = async (endpoint, formData, isMultipart = false) => {

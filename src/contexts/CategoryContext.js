@@ -1,6 +1,6 @@
 // CategoryContext.js
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { activeParentCategories } from '../api/apiCategories';
+import { activeParentCategories,categories } from '../api/apiCategories';
 
 const CategoryContext = createContext();
 
@@ -10,6 +10,7 @@ export const useCategories = () => {
 
 export const CategoryProvider = ({ children }) => {
     const [ParentCategories, setParentCategories] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -30,9 +31,27 @@ export const CategoryProvider = ({ children }) => {
 
         fetchCategories();
     }, []);
+    useEffect(() => {
+        const fetchAllCategories = async () => {
+            try {
+                const response = await categories();
+                if (Array.isArray(response.data)) {
+                    setCategories(response.data);
+                } else {
+                    console.error('Unexpected response format:', response.data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch Parent Categories:', error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAllCategories();
+    }, []);
 
     return (
-        <CategoryContext.Provider value={{ ParentCategories, loading }}>
+        <CategoryContext.Provider value={{ ParentCategories, categories,loading }}>
             {children}
         </CategoryContext.Provider>
     );

@@ -14,7 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import Logout from './components/Auth/Logout';
 // import Footer from './components/Footer';
 import Home from './pages/HomePage';
-import ShopCamping from './pages/ShopCamping';
+import ShopPage from './pages/Shop';
 import ShopDetail from './pages/ShopDetail';
 import CartPage from './pages/CartPage';
 import Faq from './pages/Faq';
@@ -51,8 +51,9 @@ function App() {
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ForgotPassword />} />
           <Route path="/" element={<Home />} /> 
-          <Route path="/shop-camping" element={<ShopCamping />} />
-          <Route path="/shop-camping-detail" element={<ShopDetail />} />
+          <Route path="/shop/:category" element={<ShopPage />} />
+          {/* <Route path="/camping" element={<ShopCamping />} /> */}
+          <Route path="/camping-detail" element={<ShopDetail />} />
           <Route path="/about-us" element={<AboutusPage />} />
           <Route path="/cart" element={<CartPage />} /> 
           <Route path="/Contact-us" element={<Contact />} /> 

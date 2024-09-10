@@ -1,30 +1,77 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import { getProductById } from '../api/apiProducts';
+import { getCategoryById } from '../api/apiCategories';
+import { Brands } from '../api/apiBrands';
+import { getFilterByCategory } from '../api/apiFilters';
+import { useCategories } from '../contexts/CategoryContext';
 
-
-const categories = [
-    { id: 1, name: 'Camping', link: '/' },
-    { id: 2, name: 'Fishing', link: '/' },
-    { id: 3, name: 'Bike shop', link: '/' },
-    { id: 4, name: 'Gun Shop', link: '/' },
-    { id: 5, name: 'Accessories', link: '/' },
-    { id: 6, name: 'Workshop', link: '/' },
-];
+// const categories = [
+//     { id: 1, name: 'Camping', link: '/' },
+//     { id: 2, name: 'Fishing', link: '/' },
+//     { id: 3, name: 'Bike shop', link: '/' },
+//     { id: 4, name: 'Gun Shop', link: '/' },
+//     { id: 5, name: 'Accessories', link: '/' },
+//     { id: 6, name: 'Workshop', link: '/' },
+// ];
 
 const FilterSidebar = () => {
-    const [openBox, setOpenBox] = useState(null); // Track the currently open sidebar_box
-    const [priceRange, setPriceRange] = useState([0, 320]); // Initial price range [min, max]
+
+    const { category } = useParams();
+
+    const { ParentCategories, loading } = useCategories(); 
+
+    const [openBox, setOpenBox] = useState(null); 
+    const [products, setProducts] = useState(null); 
+    const [categories, setCategories] = useState([]); 
+    const [brands, setBrands] = useState([]); 
+    const [filters, setFilters] = useState([]); 
+    const [priceRange, setPriceRange] = useState([0, 320]); 
 
     const toggleSidebar = (boxId) => {
-        setOpenBox(openBox === boxId ? null : boxId); // Toggle the clicked sidebar_box
+        setOpenBox(openBox === boxId ? null : boxId);
     };
 
     const handleSliderChange = (value) => {
         setPriceRange(value);
     };
 
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const fetchedProducts = await getCategoryById(category);
+                setCategories(fetchedProducts?.data?.children)
+                setProducts(fetchedProducts); 
+            } catch (err) {
+                console.log('Failed to fetch products');
+            }
+        };
+        const fetchBrands = async () => {
+            try {
+                const response = await Brands();
+                setBrands(response?.data);
+                console.log(response?.data);
+            } catch (err) {
+                console.log('Failed to fetch products');
+            }
+        };
+        const fetchFilters = async () => {
+            try {
+                const response = await getFilterByCategory(category);
+                setFilters(response?.data);
+                console.log(response?.data);
+            } catch (err) {
+                console.log('Failed to fetch products');
+            }
+        };
+
+            fetchProducts();
+            fetchBrands();
+            // fetchFilters();
+    }, [category]);
     return (
         <div className="CategorySidebar">
             <div className='sidebar_wrapper'>
@@ -37,15 +84,19 @@ const FilterSidebar = () => {
                         <i className={`fa-solid ${openBox === 1 ? 'fa-chevron-down' : 'fa-chevron-right'}`}></i>
                     </div>
                     <div className={`sidebar_content ${openBox === 1 ? 'open' : ''}`}>
-                        <ul className="categories">
-                            {categories.map((category) => (
+                    <ul className="categories">
+                        {categories.length === 0 ? (
+                            <li>No category found here</li>
+                        ) : (
+                            categories.map((category) => (
                                 <li key={category.id}>
-                                    <Link to={category.link} className="dwn_arw">
+                                    <Link to={`/shop/${category.slug}`} className="dwn_arw">
                                         {category.name} 
                                     </Link>
                                 </li>
-                            ))}
-                        </ul>
+                            ))
+                        )}
+                    </ul>
                     </div>
                 </div>
                 <div className='sidebar_box'>
@@ -58,15 +109,25 @@ const FilterSidebar = () => {
                     </div>
                     <div className={`sidebar_content ${openBox === 2 ? 'open' : ''}`}>
                        <div className='filter_check_wrapper'>
+                        {brands.length === 0 ? (
+                                <li>No Brand found here</li>
+                            ) : (
+                                brands.map((brand) => (
+                                    <label className="form_check" key={brand.id}>
+                                        <input type="checkbox" name="Campfire"/>
+                                        <span className="check_custom">✔</span>{brand.name}
+                                    </label>
+                                ))
+                            )}
                             <label className="form_check">
                                 <input type="checkbox" name="Campfire"/>
                                 <span className="check_custom">✔</span>Campfire
                             </label>
-                            <label className="form_check">
+                            {/* <label className="form_check">
                                 <input type="checkbox" name="Companion"/>
                                 <span className="check_custom">✔</span> Companion
-                            </label>
-                            <label className="form_check">
+                            </label> */}
+                            {/* <label className="form_check">
                                 <input type="checkbox" name="Darche"/>
                                 <span className="check_custom">✔</span> Darche
                             </label>
@@ -89,7 +150,7 @@ const FilterSidebar = () => {
                             <label className="form_check">
                                 <input type="checkbox" name="OZtrail"/>
                                 <span className="check_custom">✔</span> OZtrail
-                            </label>
+                            </label> */}
                         </div>
                     </div>
                 </div>
