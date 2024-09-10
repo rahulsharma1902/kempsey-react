@@ -56,4 +56,4 @@ const AboutMainsection = () => {
     );
 };
 
-export default AboutMainsection;
+export default AboutMainsection; 
