@@ -31,6 +31,7 @@ import {HomeContentProvider} from './contexts/HomeContentContext';
 import {AboutContentProvider} from './contexts/AboutContentContext';
 import {ServiceContentProvider} from './contexts/WorkshopContext';
 import {StoreFrontProvider} from './contexts/StoreFrontContext';
+import {ProductProvider} from './contexts/ShopContext';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
       <ServiceContentProvider>
       <StoreFrontProvider>
       <CategoryProvider>
+        <ProductProvider>
       <Router>
         {/* <Header /> */}
         <Routes>
@@ -69,6 +71,7 @@ function App() {
       </Router>
 
       <ToastContainer />
+      </ProductProvider>
       </CategoryProvider>
       </StoreFrontProvider>
       </ServiceContentProvider>

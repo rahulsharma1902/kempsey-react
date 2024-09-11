@@ -21,7 +21,6 @@ const Shop = () => {
       try {
         // Fetch the category using the API function
         const response = await getCategoryById(category);
-        console.log(response);
         if (response && response?.data?.name) {
           setTitle(response.data.name); 
         } else {

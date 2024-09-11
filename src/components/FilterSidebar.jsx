@@ -1,31 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import { getProductById } from '../api/apiProducts';
+import { getProductByCategory } from '../api/apiProducts';
 import { getCategoryById } from '../api/apiCategories';
 import { Brands } from '../api/apiBrands';
 import { getFilterByCategory } from '../api/apiFilters';
 import { useCategories } from '../contexts/CategoryContext';
-
-// const categories = [
-//     { id: 1, name: 'Camping', link: '/' },
-//     { id: 2, name: 'Fishing', link: '/' },
-//     { id: 3, name: 'Bike shop', link: '/' },
-//     { id: 4, name: 'Gun Shop', link: '/' },
-//     { id: 5, name: 'Accessories', link: '/' },
-//     { id: 6, name: 'Workshop', link: '/' },
-// ];
+import { useProductContext } from '../contexts/ShopContext'; // Import the context hook
 
 const FilterSidebar = () => {
-
     const { category } = useParams();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [selectedBrands, setSelectedBrands] = useState([]);
+    const [selectedFilters, setSelectedFilters] = useState({});
 
     const { ParentCategories, loading } = useCategories(); 
+    const { updateProducts } = useProductContext(); // Destructure updateProducts
 
     const [openBox, setOpenBox] = useState(null); 
-    const [products, setProducts] = useState(null); 
     const [categories, setCategories] = useState([]); 
+    const [products, setProducts] = useState([]); 
+    const [allProducts, setAllProducts] = useState([]); 
     const [brands, setBrands] = useState([]); 
     const [filters, setFilters] = useState([]); 
     const [priceRange, setPriceRange] = useState([0, 320]); 
@@ -36,216 +33,252 @@ const FilterSidebar = () => {
 
     const handleSliderChange = (value) => {
         setPriceRange(value);
+        updateURL('price', value.join(','));
     };
 
+    const fetchData = async () => {
+        try {
+            const [categoriesResponse, brandsResponse, filtersResponse] = await Promise.all([
+                getCategoryById(category),
+                Brands(),
+                getFilterByCategory(category),
+            ]);
+            
+            setCategories(categoriesResponse?.data?.children || []);
+            setBrands(brandsResponse?.data || []);
+            setFilters(filtersResponse?.data || []);
+        } catch (err) {
+            console.log('Failed to fetch data', err);
+        }
+    };
+    
+    useEffect(() => {
+        fetchData();
+    }, [category]);
+    
+    useEffect(() => {
+        const getProductData = async () => {
+            try {
+                const response = await getProductByCategory(category);
+                if (response.data && Array.isArray(response.data)) {
+                    setAllProducts(response.data);
+                    ProductFilterCng(response.data);
+                } else {
+                    console.error('Unexpected response format:', response.data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch products:', error.message);
+            }
+        };
+      
+        getProductData();
+    }, [category]);
+    
+    const handleBrandChange = (brand) => {
+        const updatedBrands = selectedBrands.includes(brand)
+            ? selectedBrands.filter((b) => b !== brand)
+            : [...selectedBrands, brand];
+
+        setSelectedBrands(updatedBrands);
+        updateURL('brands', updatedBrands);
+    };
+
+    const handleFilterChange = (filterId, optionId) => {
+        const updatedFilters = { ...selectedFilters };
+        
+        if (!updatedFilters[filterId]) {
+            updatedFilters[filterId] = [optionId];
+        } else if (updatedFilters[filterId].includes(optionId)) {
+            updatedFilters[filterId] = updatedFilters[filterId].filter((o) => o !== optionId);
+        } else {
+            updatedFilters[filterId].push(optionId);
+        }
+
+        setSelectedFilters(updatedFilters);
+        updateURL(filterId, updatedFilters[filterId]);
+    };
+
+    const updateURL = (filterName, filterValues) => {
+        const searchParams = new URLSearchParams(location.search);
+        if (Array.isArray(filterValues) && filterValues.length > 0) {
+            searchParams.set(filterName, filterValues.join(','));
+        } else {
+            searchParams.delete(filterName);
+        }
+
+        navigate(`?${searchParams.toString()}`);
+    };
+
+    const ProductFilterCng = (products) => {
+        const searchParams = new URLSearchParams(location.search);
+        const brandsParam = searchParams.get('brands');
+        const priceParam = searchParams.get('price');
+        let filteredProducts = products;
+    
+        // Filter by brands
+        if (brandsParam) {
+            const selectedBrandIds = brandsParam.split(',').map(Number);
+            filteredProducts = filteredProducts.filter(product => selectedBrandIds.includes(product.brand_id));
+        }
+    
+        // Filter by price range
+        if (priceParam) {
+            const [minPrice, maxPrice] = priceParam.split(',').map(Number);
+            filteredProducts = filteredProducts.filter(product => product.price >= minPrice && product.price <= maxPrice);
+        }
+    
+        // Filter by other selected filters
+        Object.keys(selectedFilters).forEach(filterId => {
+            const filterValues = selectedFilters[filterId];
+    
+            filteredProducts = filteredProducts.filter(product => {
+                let productFilterOptions = [];
+                
+                try {
+                    // Parse the filter options as JSON
+                    const option = JSON.parse(product.selected_filters_options) || [];
+                    const optionTo = JSON.parse(option) || [];
+                    
+                    // Flatten the optionTo array if it's an object
+                    if (Array.isArray(optionTo)) {
+                        productFilterOptions = optionTo;
+                    } else if (typeof optionTo === 'object') {
+                        productFilterOptions = Object.values(optionTo).flat();
+                    } else {
+                        console.warn('Unexpected format for filter options:', optionTo);
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON for filterId', filterId, ':', error);
+                }
+    
+                // Ensure that filterValues and productFilterOptions are arrays before comparison
+                return Array.isArray(filterValues) && Array.isArray(productFilterOptions) &&
+                    filterValues.every(value => productFilterOptions.includes(value));
+            });
+        });
+    
+        setProducts(filteredProducts);
+        updateProducts(filteredProducts);
+    };
+    
+    
+    
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const fetchedProducts = await getCategoryById(category);
-                setCategories(fetchedProducts?.data?.children)
-                setProducts(fetchedProducts); 
-            } catch (err) {
-                console.log('Failed to fetch products');
-            }
-        };
-        const fetchBrands = async () => {
-            try {
-                const response = await Brands();
-                setBrands(response?.data);
-                console.log(response?.data);
-            } catch (err) {
-                console.log('Failed to fetch products');
-            }
-        };
-        const fetchFilters = async () => {
-            try {
-                const response = await getFilterByCategory(category);
-                setFilters(response?.data);
-                console.log(response?.data);
-            } catch (err) {
-                console.log('Failed to fetch products');
-            }
-        };
+        ProductFilterCng(allProducts);
+    }, [selectedBrands, selectedFilters, priceRange]);
 
-            fetchProducts();
-            fetchBrands();
-            // fetchFilters();
-    }, [category]);
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const brandsParam = searchParams.get('brands');
+        if (brandsParam) {
+            setSelectedBrands(brandsParam.split(',').map(Number));
+        }
+
+        const priceParam = searchParams.get('price');
+        if (priceParam) {
+            setPriceRange(priceParam.split(',').map(Number));
+        }
+
+        filters.forEach((filter) => {
+            const filterParam = searchParams.get(filter.id);
+            if (filterParam) {
+                setSelectedFilters((prevFilters) => ({
+                    ...prevFilters,
+                    [filter.id]: filterParam.split(',').map(Number),
+                }));
+            }
+        });
+    }, [location.search, filters]);
+
     return (
         <div className="CategorySidebar">
             <div className='sidebar_wrapper'>
                 <div className='sidebar_box'>
                     <div 
                         className={`sidebar_header ${openBox === 1 ? 'open' : ''}`} 
-                        onClick={() => toggleSidebar(1)} // Attach the toggleSidebar function here
+                        onClick={() => toggleSidebar(1)} 
                     >
                         <h5>Filter by Categories</h5>  
                         <i className={`fa-solid ${openBox === 1 ? 'fa-chevron-down' : 'fa-chevron-right'}`}></i>
                     </div>
                     <div className={`sidebar_content ${openBox === 1 ? 'open' : ''}`}>
-                    <ul className="categories">
-                        {categories.length === 0 ? (
-                            <li>No category found here</li>
-                        ) : (
-                            categories.map((category) => (
-                                <li key={category.id}>
-                                    <Link to={`/shop/${category.slug}`} className="dwn_arw">
-                                        {category.name} 
-                                    </Link>
-                                </li>
-                            ))
-                        )}
-                    </ul>
+                        <ul className="categories">
+                            {categories.length === 0 ? (
+                                <li>No category found here</li>
+                            ) : (
+                                categories.map((category) => (
+                                    <li key={category.id}>
+                                        <Link to={`/shop/${category.slug}`} className="dwn_arw">
+                                            {category.name} 
+                                        </Link>
+                                    </li>
+                                ))
+                            )}
+                        </ul>
                     </div>
                 </div>
                 <div className='sidebar_box'>
                     <div 
                         className={`sidebar_header ${openBox === 2 ? 'open' : ''}`} 
-                        onClick={() => toggleSidebar(2)} // Attach the toggleSidebar function here
+                        onClick={() => toggleSidebar(2)} 
                     >
                         <h5>Brand</h5>  
                         <i className={`fa-solid ${openBox === 2 ? 'fa-chevron-down' : 'fa-chevron-right'}`}></i>
                     </div>
                     <div className={`sidebar_content ${openBox === 2 ? 'open' : ''}`}>
-                       <div className='filter_check_wrapper'>
-                        {brands.length === 0 ? (
+                        <div className='filter_check_wrapper'>
+                            {brands.length === 0 ? (
                                 <li>No Brand found here</li>
                             ) : (
                                 brands.map((brand) => (
                                     <label className="form_check" key={brand.id}>
-                                        <input type="checkbox" name="Campfire"/>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={selectedBrands.includes(brand.id)}
+                                            onChange={() => handleBrandChange(brand.id)}
+                                        />
                                         <span className="check_custom">✔</span>{brand.name}
                                     </label>
                                 ))
                             )}
-                            <label className="form_check">
-                                <input type="checkbox" name="Campfire"/>
-                                <span className="check_custom">✔</span>Campfire
-                            </label>
-                            {/* <label className="form_check">
-                                <input type="checkbox" name="Companion"/>
-                                <span className="check_custom">✔</span> Companion
-                            </label> */}
-                            {/* <label className="form_check">
-                                <input type="checkbox" name="Darche"/>
-                                <span className="check_custom">✔</span> Darche
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Everclear"/>
-                                <span className="check_custom">✔</span> Everclear
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Igloo"/>
-                                <span className="check_custom">✔</span> Igloo
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Nitro"/>
-                                <span className="check_custom">✔</span> Nitro
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Outdoor Equipped"/>
-                                <span className="check_custom">✔</span> Outdoor Equipped
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="OZtrail"/>
-                                <span className="check_custom">✔</span> OZtrail
-                            </label> */}
                         </div>
                     </div>
                 </div>
-                <div className='sidebar_box'>
-                    <div 
-                        className={`sidebar_header ${openBox === 3 ? 'open' : ''}`} 
-                        onClick={() => toggleSidebar(3)} // Attach the toggleSidebar function here
-                    >
-                        <h5>Range Name</h5>  
-                        <i className={`fa-solid ${openBox === 3 ? 'fa-chevron-down' : 'fa-chevron-right'}`}></i>
-                    </div>
-                    <div className={`sidebar_content ${openBox === 3 ? 'open' : ''}`}>
-                       <div className='filter_check_wrapper'>
-                            <label className="form_check">
-                                <input type="checkbox" name="Acadia"/>
-                                <span className="check_custom">✔</span>Acadia
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Celsius"/>
-                                <span className="check_custom">✔</span> Celsius
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Cooling Towel"/>
-                                <span className="check_custom">✔</span> Cooling Towel
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Drink Cooler"/>
-                                <span className="check_custom">✔</span> Drink Cooler
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Drinkware 12oz"/>
-                                <span className="check_custom">✔</span> Drinkware 12oz
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Drinkware 20oz"/>
-                                <span className="check_custom">✔</span> Drinkware 20oz
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Drinkware 30oz"/>
-                                <span className="check_custom">✔</span> Drinkware 30oz
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="Kettle 2.5l"/>
-                                <span className="check_custom">✔</span> Kettle 2.5l
-                            </label>
+                {filters.map((filter) => (
+                    <div key={filter.id} className="sidebar_box">
+                        <div
+                            className={`sidebar_header ${openBox === filter.id ? 'open' : ''}`}
+                            onClick={() => toggleSidebar(filter.id)}
+                        >
+                            <h5>{filter.name}</h5>
+                            <i
+                                className={`fa-solid ${
+                                    openBox === filter.id ? 'fa-chevron-down' : 'fa-chevron-right'
+                                }`}
+                            ></i>
+                        </div>
+                        <div className={`sidebar_content ${openBox === filter.id ? 'open' : ''}`}>
+                            <div className="filter_check_wrapper">
+                                {filter.filter_options.length > 0 ? (
+                                    filter.filter_options.map((option) => (
+                                        <label className="form_check" key={option.id}>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedFilters[filter.id]?.includes(option.id)}
+                                                onChange={() => handleFilterChange(filter.id, option.id)}
+                                            />
+                                            <span className="check_custom">✔</span>{option.name}
+                                        </label>
+                                    ))
+                                ) : (
+                                    <li>No filters found here</li>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className='sidebar_box'>
-                    <div 
-                        className={`sidebar_header ${openBox === 4 ? 'open' : ''}`} 
-                        onClick={() => toggleSidebar(4)} // Attach the toggleSidebar function here
-                    >
-                        <h5>Capacity</h5>  
-                        <i className={`fa-solid ${openBox === 4 ? 'fa-chevron-down' : 'fa-chevron-right'}`}></i>
-                    </div>
-                    <div className={`sidebar_content ${openBox === 4 ? 'open' : ''}`}>
-                       <div className='filter_check_wrapper'>
-                            <label className="form_check">
-                                <input type="checkbox" name="1.5l"/>
-                                <span className="check_custom">✔</span>1.5l
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="10oz"/>
-                                <span className="check_custom">✔</span> 10oz
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="11.4l"/>
-                                <span className="check_custom">✔</span> 11.4l
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="12oz"/>
-                                <span className="check_custom">✔</span> 12oz
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="14.5/6A Output"/>
-                                <span className="check_custom">✔</span> 14.5/6A Output
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="15.1l"/>
-                                <span className="check_custom">✔</span> 15.1l
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="15l"/>
-                                <span className="check_custom">✔</span> 15l
-                            </label>
-                            <label className="form_check">
-                                <input type="checkbox" name="18l/2l"/>
-                                <span className="check_custom">✔</span> 18l/2l
-                            </label>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div className='sidebar_box'>
+                ))}
+               <div className='sidebar_box'>
                     <div 
                         className={`sidebar_header ${openBox === 5 ? 'open' : ''}`} 
                         onClick={() => toggleSidebar(5)}
@@ -268,30 +301,21 @@ const FilterSidebar = () => {
                                     value={priceRange[1]} 
                                     onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
                                     min={priceRange[0]}
-                                    max="320"
-                                />
-                                <button className="apply_button">Apply</button>
-                            </div>
-                            <div className="slider_wrapper">
-                                <Slider
-                                    range
-                                    min={0}
-                                    max={320}
-                                    step={1}
-                                    value={priceRange}
-                                    onChange={handleSliderChange}
-                                    trackStyle={[{ backgroundColor: '#65B5AF' }]}
-                                    handleStyle={[
-                                        { borderColor: '#65B5AF' },
-                                        { borderColor: '#65B5AF' }
-                                    ]}
-                                    railStyle={{ backgroundColor: '#ddd' }}
+                                    max="1000"
                                 />
                             </div>
+                            <Slider 
+                                range 
+                                min={0} 
+                                max={1000} 
+                                value={priceRange} 
+                                onChange={handleSliderChange}
+                                allowCross={false}
+                            />
                         </div>
                     </div>
                 </div>
-            </div>        
+            </div>
         </div>
     );
 };

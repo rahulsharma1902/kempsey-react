@@ -4,7 +4,7 @@ import FilterSidebar from '../components/FilterSidebar.jsx';
 import { useParams } from 'react-router-dom';
 
 const ProductsectionShop = () => {
-  const { category } = useParams(); // Get the category from the URL
+  const { category } = useParams(); 
 
   return (
     <section className="category-sec p-130">
@@ -17,7 +17,7 @@ const ProductsectionShop = () => {
           </div>
           <div className="categry-rgt">
             {/* Pass category prop to fetch the products */}
-            <ProdcutModuleShop category={category} />
+            <ProdcutModuleShop />
           </div>
         </div>
       </div>
