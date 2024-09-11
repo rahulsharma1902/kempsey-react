@@ -29,11 +29,11 @@ const ProductList = () => {
           return (
             <div key={product.id} className='product_box'>
               <div className="prdt">
-                <Link to={`/shop-camping-detail/${product.slug}`} className="prdt-img">
+                <Link to={`/shop-detail/${product.slug}`} className="prdt-img">
                   <img src={imageSrc} alt={product.slug} />
                 </Link>
                 <div className="prdt-info">
-                  <h6><Link to={`/shop-camping-detail/${product.slug}`}>{product?.name}</Link></h6>
+                  <h6><Link to={`/shop-detail/${product.slug}`}>{product?.name}</Link></h6>
                   <div className="btm-info">
                     <div className='prodcut_category'>{product?.category?.name}</div>
                     <div className='price'>${product.price}</div>
