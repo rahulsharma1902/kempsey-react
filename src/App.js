@@ -62,6 +62,9 @@ function App() {
       }
     } 
     else {
+      // if(tempId){
+
+      // }
       setTempId('');
       localStorage.removeItem('user_temp_id');
     }

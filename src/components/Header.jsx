@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../images/logo.svg';
 import workshopicon from '../images/wrk_shop.svg';
 import contacticon from '../images/contact_icon.svg';
 import usericon from '../images/icon_user.svg';
+import logout from '../images/logout1.svg';
 import hearticon from '../images/icon_heart.svg';
 import carticon from '../images/icon_cart.svg';
 import { useCategories } from '../contexts/CategoryContext';
-
+import { AuthContext} from '../contexts/AuthContext';
 const Header = () => {
+    const { user } = useContext(AuthContext); 
+
     const [searchQuery, setSearchQuery] = useState('');
     const [navOpen, setNavOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false); // State for search bar toggle
@@ -82,8 +85,20 @@ const Header = () => {
                         </div>
                         <div className='icon_links_col'>
                             <div className='icon_links'>
-                                <Link to="/login" className="icon_link"><img src={usericon} alt="icon" /></Link>
-                                <Link to="/" className="icon_link fav_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link>
+                            {user ? (
+                                <Link to="#" onClick={logout} className="icon_link">
+                                    <img style={{ height: '33px', marginTop: '5px'}} src={logout} alt="logout icon" />
+                                </Link>
+                            ) : (
+                                <Link to="/login" className="icon_link">
+                                    <img src={usericon} alt="login icon" />
+                                </Link>
+                            )}
+                                {/* <Link to="/login" className="icon_link"><img src={usericon} alt="icon" /></Link>
+                                <Link to="/logout" className="icon_link">
+                                    <img style={{ height: '35px' }} src={logout} alt="icon" />
+                                </Link> */}
+                                {/* <Link to="/" className="icon_link fav_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link> */}
                                 <Link to="/cart" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span></Link>
                             </div>
                         </div>
@@ -115,9 +130,9 @@ const Header = () => {
                                     </li>
                                 </ul>
                             </div>
-                            <div className='navigation_button_col'>
+                            {/* <div className='navigation_button_col'>
                                 <Link to="/GiftCertificates" className='blue_link'>Gift Certificate</Link>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

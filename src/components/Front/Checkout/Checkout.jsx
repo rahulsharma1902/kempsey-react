@@ -10,7 +10,7 @@ import iconzip from '../../../images/zip-payment.svg';
 import iconafpay from '../../../images/afterpay.svg';
 import defaultImage from '../../../images/default.jpeg';
 import { ShippingMethods } from '../../../api/apiShippingMethods';
-
+import {getCartById} from '../../../api/apiCarts';
 
 
 const CheckoutSection = () => {
@@ -40,36 +40,54 @@ const CheckoutSection = () => {
     const [selectedShippingMethod, setSelectedShippingMethod] = useState('');
     const [selectedShippingMethodPrice, setSelectedShippingMethodPrice] = useState('');
     const [errors, setErrors] = useState({});
+    const [tempId, setTempId] = useState(localStorage.getItem('user_temp_id') || '');
 
     //  fetching  user carts
+    // useEffect(() => {
+    //     const fetchCartItems = async () => {
+    //         try {
+    //             const tempId = localStorage.getItem('user_temp_id');      
+    //             if (!tempId) {
+    //                 throw new Error('Temporary ID not found.');  
+    //             }
+    //             const response = await fetch('https://sagmetic.site/2023/laravel/kempsey/public/api/get-cart?temp_id='+tempId, {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //             });
+    //             if (!response.ok) {
+    //                 throw new Error('Network response was not ok');
+    //             }
+    
+    //             const data = await response.json();
+    //             setCartItems(data.data); 
+    //         } catch (err) {
+    //           console.log(err);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     fetchCartItems();
+    // }, []);
     useEffect(() => {
         const fetchCartItems = async () => {
-            try {
-                const tempId = localStorage.getItem('user_temp_id');      
-                if (!tempId) {
-                    throw new Error('Temporary ID not found.');  
-                }
-                const response = await fetch('https://sagmetic.site/2023/laravel/kempsey/public/api/get-cart?temp_id='+tempId, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-    
-                const data = await response.json();
-                setCartItems(data.data); 
-            } catch (err) {
-              console.log(err);
-            } finally {
-                setLoading(false);
+          try {
+            const response = await getCartById(tempId);
+            if (response.data) {
+              setCartItems(response.data);
+            } else {
+              // Handle fetch error
             }
+          } catch (error) {
+            setError('Failed to load cart items.');
+          } finally {
+            setLoading(false);
+          }
         };
+    
         fetchCartItems();
-    }, []);
-
+      }, [tempId]);
     //Fetching shipping methods
     useEffect(() => {
         const getShippingMethodData = async () => {
