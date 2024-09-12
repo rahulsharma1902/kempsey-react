@@ -98,6 +98,12 @@ const SidebarComponent = ({ isSidebarCollapsed }) => {
           <Link to="/admin-dashboard/bookings" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Bookings</Link>
         </MenuItem>
 
+      <SubMenu label="Marketing" icon={<RiCustomerServiceFill />} >
+            <MenuItem>
+              <Link to="/admin-dashboard/marketing/coupons" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Coupons Code</Link>
+            </MenuItem>
+            
+          </SubMenu>
       </Menu>
     </Sidebar>
   );

@@ -1,9 +1,9 @@
 import React from 'react';
-import ProdcutModuleShop from '../components/ProdcutModuleShop.jsx';
-import FilterSidebar from '../components/FilterSidebar.jsx';
+import ProdcutModuleShop from './ProdcutModuleShop.jsx';
+import FilterSidebar from './FilterSidebar.jsx';
 import { useParams } from 'react-router-dom';
 
-const ProductsectionShop = () => {
+const ProductsectionShop = ({title}) => {
   const { category } = useParams(); 
 
   return (
@@ -16,8 +16,7 @@ const ProductsectionShop = () => {
             </div>
           </div>
           <div className="categry-rgt">
-            {/* Pass category prop to fetch the products */}
-            <ProdcutModuleShop />
+            <ProdcutModuleShop title={title ?? ''} />
           </div>
         </div>
       </div>

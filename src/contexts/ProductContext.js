@@ -1,43 +1,34 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { Services} from '../api/apiService';
-import { products } from '../api/apiProducts';
+import React, { useState, useEffect, createContext, useContext } from 'react';
+import { getProductByCategory } from '../api/apiProducts';
 
-// Create a context for service content
 const ProductContext = createContext();
 
-// Custom hook for using the service content context
-export const useProductContext = () => {
-    return useContext(ProductContext);
-};
+export const useProductContext = () => useContext(ProductContext);
 
-// Provider component to manage service data
-export const ServiceContentProvider = ({ children }) => {
-    const [products, setProducts] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+export const ProductContentProvider = ({ children }) => {
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
-    // Function to fetch service data
-    const fetchProducts = async () => {
-        try {
-            setLoading(true);
-            const response = await products();
-            setProducts(response); 
-        } catch (error) {
-            console.error('Failed to fetch service content:', error.message);
-            setProducts([]);
-            setError(error.message); 
-        } finally {
-            setLoading(false);
-        }
+    const updateProducts = (newProducts) => {
+        setProducts(newProducts);
+        setFilteredProducts(newProducts); // Ensure that filteredProducts is also updated
     };
-    
 
     useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await getProductByCategory();
+                setProducts(response.data || []);
+                setFilteredProducts(response.data || []);
+            } catch (error) {
+                console.error('Failed to fetch products:', error.message);
+            }
+        };
         fetchProducts();
     }, []);
 
     return (
-        <ProductContext.Provider value={{ products,storeContent,serviceTypes, loading, error}}>
+        <ProductContext.Provider value={{ products, filteredProducts, updateProducts }}>
             {children}
         </ProductContext.Provider>
     );

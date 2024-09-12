@@ -53,6 +53,10 @@ import StoreUpdate from '../components/Admin/Stores/StoreUpdate';
 
 import BookingList from '../components/Admin/Bookings/BookingList';
 
+// coupon code
+import AddCoupon from '../components/Admin/Marketing/CouponCode/AddCoupon';
+import ListCoupon from '../components/Admin/Marketing/CouponCode/ListCoupon';
+
 const AdminRoutes = () => {
     return (
         <Routes>
@@ -404,7 +408,25 @@ const AdminRoutes = () => {
                 } 
             />
             {/* BookingList end here */}
+            {/* ListCoupon AddCoupon */}
+            <Route 
+                path="/marketing/coupons/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <AddCoupon />
+                        </PrivateRoute>
+                } 
+            />
+            {/* <Route 
+                path="/marketing/coupons" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ListCoupon />
+                        </PrivateRoute>
+                } 
+            /> */}
 
+            {/* end coup[on] */}
         </Routes>
     );
 };

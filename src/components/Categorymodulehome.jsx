@@ -1,5 +1,5 @@
 import React from 'react';
-import ProductList from '../components/ProductList.jsx';
+import ProductList from '../components/Front/Shop/ProductList.jsx';
 
 
 const Categorymodulehome = () => {

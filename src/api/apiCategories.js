@@ -14,7 +14,7 @@ export const fetchData = async (endpoint) => {
         return response.data;
     } catch (error) {
         const errorMessage = error.response?.data?.message || 'Failed to fetch data.';
-        toast.error(errorMessage);
+        // toast.error(errorMessage);
         throw new Error(errorMessage);
     }
 };
@@ -57,7 +57,7 @@ export const removeCategory = async (id) => {
                 }
             }
         );
-        console.log(response);
+        // console.log(response);
         return response.data;
     } catch (error) {
         console.log(error);

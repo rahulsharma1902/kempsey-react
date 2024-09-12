@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout.jsx';
-import ProductsectionShop from '../components/ProductsectionShop.jsx';
+import ProductsectionShop from '../components/Front/Shop/ProductsectionShop.jsx';
 import InnerpageBanner from '../components/InnerpageBanner.jsx';
 import { useParams, Navigate } from 'react-router-dom'; // Import Navigate for redirection
 import CircularProgress from '@mui/material/CircularProgress';
-import { getCategoryById } from '../api/apiCategories.js'; // Import the API function
+import { getCategoryById } from '../api/apiCategories.js';
 
 const Shop = () => {
   const { category } = useParams(); 
@@ -16,7 +16,7 @@ const Shop = () => {
     const fetchCategory = async () => {
       setLoading(true);
       setError(null);
-      setTitle('');
+      setTitle('Not Found');
 
       try {
         // Fetch the category using the API function
@@ -24,10 +24,11 @@ const Shop = () => {
         if (response && response?.data?.name) {
           setTitle(response.data.name); 
         } else {
-          setError('Category not found');
+          setTitle('Not Found')
+          // setError('Category not found');
         }
       } catch (err) {
-        setError('An error occurred while fetching the category');
+        // setError('An error occurred while fetching the category');
       } finally {
         setLoading(false);
       }
@@ -58,9 +59,9 @@ const Shop = () => {
       <div className='body_inner'>
         <div className='page'>
           <div className='banner_section'>
-            <InnerpageBanner data={{ 'heading': title }} />
+            <InnerpageBanner data={{ 'heading': title}} />
           </div>
-          <ProductsectionShop />
+          <ProductsectionShop title={title} />
         </div>
       </div>
     </Layout>

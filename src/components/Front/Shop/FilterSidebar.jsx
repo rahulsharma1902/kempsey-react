@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import { getProductByCategory } from '../api/apiProducts';
-import { getCategoryById } from '../api/apiCategories';
-import { Brands } from '../api/apiBrands';
-import { getFilterByCategory } from '../api/apiFilters';
-import { useCategories } from '../contexts/CategoryContext';
-import { useProductContext } from '../contexts/ShopContext'; // Import the context hook
+import { getProductByCategory } from '../../../api/apiProducts';
+import { getCategoryById } from '../../../api/apiCategories';
+import { Brands } from '../../../api/apiBrands';
+import { getFilterByCategory } from '../../../api/apiFilters';
+import { useCategories } from '../../../contexts/CategoryContext';
+import { useProductContext } from '../../../contexts/ShopContext'; // Import the context hook
 
 const FilterSidebar = () => {
     const { category } = useParams();
@@ -31,10 +31,7 @@ const FilterSidebar = () => {
         setOpenBox(openBox === boxId ? null : boxId);
     };
 
-    const handleSliderChange = (value) => {
-        setPriceRange(value);
-        updateURL('price', value.join(','));
-    };
+ 
 
     const fetchData = async () => {
         try {
@@ -73,7 +70,11 @@ const FilterSidebar = () => {
       
         getProductData();
     }, [category]);
-    
+    const handleSliderChange = (value) => {
+        updateURL('price', value);
+        setPriceRange(value);
+        
+    };
     const handleBrandChange = (brand) => {
         const updatedBrands = selectedBrands.includes(brand)
             ? selectedBrands.filter((b) => b !== brand)
@@ -118,48 +119,63 @@ const FilterSidebar = () => {
         // Filter by brands
         if (brandsParam) {
             const selectedBrandIds = brandsParam.split(',').map(Number);
-            filteredProducts = filteredProducts.filter(product => selectedBrandIds.includes(product.brand_id));
+            filteredProducts = filteredProducts.filter(product => selectedBrandIds.includes(Number(product.brand_id)));
         }
     
         // Filter by price range
         if (priceParam) {
+            console.log('cng,,,');
             const [minPrice, maxPrice] = priceParam.split(',').map(Number);
             filteredProducts = filteredProducts.filter(product => product.price >= minPrice && product.price <= maxPrice);
         }
     
-        // Filter by other selected filters
-        Object.keys(selectedFilters).forEach(filterId => {
-            const filterValues = selectedFilters[filterId];
+        const filterValuesByFilter = Object.keys(selectedFilters).reduce((acc, filterId) => {
+            const filterValues = selectedFilters[filterId].map(String);
+            if (filterValues.length > 0) { 
+                acc[filterId] = filterValues;
+            }
+            return acc;
+        }, {});
     
+        const hasFilters = Object.keys(filterValuesByFilter).length > 0;
+    
+        if (hasFilters) {
             filteredProducts = filteredProducts.filter(product => {
                 let productFilterOptions = [];
-                
+    
                 try {
-                    // Parse the filter options as JSON
                     const option = JSON.parse(product.selected_filters_options) || [];
                     const optionTo = JSON.parse(option) || [];
-                    
-                    // Flatten the optionTo array if it's an object
+    
                     if (Array.isArray(optionTo)) {
-                        productFilterOptions = optionTo;
-                    } else if (typeof optionTo === 'object') {
-                        productFilterOptions = Object.values(optionTo).flat();
+                        productFilterOptions = optionTo.map(String); 
+                    } else if (typeof optionTo === 'object' && optionTo !== null) {
+                        productFilterOptions = Object.values(optionTo).flat().map(String); 
                     } else {
                         console.warn('Unexpected format for filter options:', optionTo);
+                        return false; 
                     }
-                } catch (error) {
-                    console.error('Error parsing JSON for filterId', filterId, ':', error);
+                } catch (e) {
+                    console.warn('Invalid JSON format for filter options:', product.selected_filters_options);
+                    return false;
                 }
+                console.warn('productFilterOptions:', productFilterOptions);
     
-                // Ensure that filterValues and productFilterOptions are arrays before comparison
-                return Array.isArray(filterValues) && Array.isArray(productFilterOptions) &&
-                    filterValues.every(value => productFilterOptions.includes(value));
+                return Object.keys(filterValuesByFilter).every(filterId => {
+                    const selectedValues = filterValuesByFilter[filterId];
+                    return selectedValues.some(value => productFilterOptions.includes(value));
+                });
             });
-        });
+        }
     
         setProducts(filteredProducts);
         updateProducts(filteredProducts);
     };
+    
+    
+    
+    
+    
     
     
     
@@ -179,7 +195,7 @@ const FilterSidebar = () => {
         if (priceParam) {
             setPriceRange(priceParam.split(',').map(Number));
         }
-
+        
         filters.forEach((filter) => {
             const filterParam = searchParams.get(filter.id);
             if (filterParam) {
