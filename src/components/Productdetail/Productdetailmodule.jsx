@@ -5,10 +5,11 @@ import eyeicon from '../../images/eyedvg.svg';
 import itmsoldicon from '../../images/item_soldvg.svg';
 import { Link } from 'react-router-dom';
 import { addCart } from '../../api/apiCarts';
+import { toast } from 'react-toastify';
 
 const Productdetailmodule = (data) => {
     const [quantity, setQuantity] = useState(1);
-    const [tempId, setTempId] = useState(sessionStorage.getItem('user_temp_id') || '');
+    const [tempId, setTempId] = useState(localStorage.getItem('user_temp_id') || '');
 
 
     useEffect(() => {
@@ -18,7 +19,7 @@ const Productdetailmodule = (data) => {
                 const result = await response.json();
                 const newTempId = result.temp_id;
                 setTempId(newTempId);
-                sessionStorage.setItem('user_temp_id', newTempId);
+                localStorage.setItem('user_temp_id', newTempId);
             } catch (error) {
                 console.error('Failed to fetch temporary ID:', error);
             }
@@ -38,13 +39,13 @@ const Productdetailmodule = (data) => {
             });
 
             if (response.success) {
-                alert(response.message);
+                toast.success('Product successfully added to cart');
             } else {
-                alert(response.message);
+                toast.error('Failed to add product to cart');
             }
         } catch (error) {
             console.error('Error adding product to cart:', error);
-            alert('An error occurred while adding the product to the cart.');
+            toast.error('Something went wrong.');
         }
     };
 

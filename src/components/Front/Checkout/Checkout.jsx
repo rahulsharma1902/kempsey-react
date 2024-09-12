@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Link } from 'react-router-dom';
+// import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
 import iconshop from '../../../images/shoppay-img.svg';
 import iconpaypal from '../../../images/paypal-img.svg';
 import icongpay from '../../../images/gpay-img.svg';
@@ -7,11 +8,18 @@ import iconcard from '../../../images/card-payment.svg';
 import iconpp from '../../../images/paypal-payment.svg';
 import iconzip from '../../../images/zip-payment.svg';
 import iconafpay from '../../../images/afterpay.svg';
-import prdtimg from '../../../images/prdt-img1.png';
-import prdtimg2 from '../../../images/prdt-img2.png';
+import defaultImage from '../../../images/default.jpeg';
+import CustomPaymentForm from './CardPaymentForm';
+
 
 
 const CheckoutSection = () => {
+    // const stripe = useStripe();
+    // const elements = useElements();
+    const [cartItems, setCartItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -22,6 +30,34 @@ const CheckoutSection = () => {
     const [showBillingAddress, setShowBillingAddress] = useState(false);
 
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        const fetchCartItems = async () => {
+            try {
+                const tempId = localStorage.getItem('user_temp_id');      
+                if (!tempId) {
+                    throw new Error('Temporary ID not found.');  
+                }
+                const response = await fetch('https://sagmetic.site/2023/laravel/kempsey/public/api/get-cart?temp_id='+tempId, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const data = await response.json();
+                setCartItems(data.data); 
+            } catch (err) {
+              console.log(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCartItems();
+    }, []);
 
     const handleBillingAddressChange = (e) => {
         setShowBillingAddress(e.target.id === 'diffss-addrs');
@@ -54,6 +90,8 @@ const CheckoutSection = () => {
             setErrors(validationErrors);
         }
     };
+
+    const totalAmount = cartItems?.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 
     return (
 
@@ -256,43 +294,21 @@ const CheckoutSection = () => {
                                 <div class="same-billing-address">
                                     <div class="form-check">
                                         <div className="payment-check">
-                                            <input class="form-check-input address-radio-btn" type="radio" name="paymentRadioDefaul" id="ccpayment" data-gtm-form-interact-field-id="1" />
+                                            <input class="form-check-input address-radio-btn" type="radio" name="payment_method" value="paypal" id="ccpayment" data-gtm-form-interact-field-id="1" />
                                             <label class="form-check-label" for="ccpayment">
                                                 Credit card
                                             </label>
                                             <div className="payment-type-img">
                                                 <img src={iconcard} alt="card Icon" />
                                             </div>
-                                            <div class="payment-detail-form contact-form">
-                                                <form class="creditcard-form">
-                                                <div class="form-group">
-                                                    <input class="form_control" id="ccnumber" name="ccnumber" placeholder="Card Number" type="tel"  />
-                                                </div>
-                                                <div class="form-group">
-                                                    <input class="form_control" id="cardname" name="cardname" placeholder="Name On Card" type="text"  />
-                                                </div>
-                                                <div class="row">
-                                                    <div class="form-group col-6">
-                                                        <input class="form_control" id="ccexp" name="ccexp" placeholder="Expiration Date(MM/YY)" type="tel"  />
-                                                    </div>
-                                                    <div class="form-group col-6">
-                                                        <input class="form_control" id="cvv" name="cvv" placeholder="Security Code" type="tel"  />
-                                                        <div data-tooltip="true" id="phone_tooltip" class="tooltip-container">
-                                                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Your card security code ">
-                                                                ?
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                </form>
-                                            </div>
+                                           <CustomPaymentForm />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="diff-billing-address">
                                     <div class="form-check">
                                         <div className="payment-check">
-                                            <input class="form-check-input address-radio-btn" type="radio" name="paymentRadioDefaul" id="pppayment" data-gtm-form-interact-field-id="0" />
+                                            <input class="form-check-input address-radio-btn" type="radio" name="payment_method" value="paypal" id="pppayment" data-gtm-form-interact-field-id="0" />
                                             <label class="form-check-label" for="pppayment">
                                                 PayPal
                                             </label>
@@ -306,7 +322,7 @@ const CheckoutSection = () => {
 
                                     </div>
                                 </div>
-                                <div class="diff-billing-address">
+                                {/* <div class="diff-billing-address">
                                     <div class="form-check">
                                         <div className="payment-check">
                                             <input class="form-check-input address-radio-btn" type="radio" name="paymentRadioDefaul" id="zippayment" data-gtm-form-interact-field-id="2" />
@@ -339,7 +355,7 @@ const CheckoutSection = () => {
                                         </div>
 
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         <div className="checkout-form">
@@ -504,43 +520,52 @@ const CheckoutSection = () => {
 
                         <button class="checkout-pay ">PAY NOW</button>
                     </div>
+                    {/* Product and Price Section */}
                     <div class="CheckoutSection-col checkout-items">
                         <div className="checkout-items-detail">
-                            <table className='product-detail-paymant'>
-                                <tbody>
-                                    <tr className='product-dd'>
-                                        <td className='product-img'>
-                                        <img src={prdtimg} alt="card Icon" />
-                                        <span className='product-items-number'>1</span>
-                                        </td>
-                                        <td>Product Name 01</td>
-                                        <td class="product-price">$149.00</td>
-                                    </tr>
-                                    <tr className='product-dd'>
-                                        <td className='product-img'>
-                                        <img src={prdtimg2} alt="card Icon" />
-                                        <span className='product-items-number'>1</span>
-                                        </td>
-                                        <td>Product Name 02</td>
-                                        <td class="product-price">$149.00</td>
-                                    </tr>
-                                    <tr className='product-pp'>
-                                        <td>Subtotal</td>
-                                        <td></td>
-                                        <td class="product-price">$298.00</td>
-                                    </tr>
-                                    <tr className='product-pp'>
-                                        <td>Shipping</td>
-                                        <td></td>
-                                        <td class="product-price">$13</td>
-                                    </tr>
-                                    <tr className='product-total'>
-                                        <td>Order Total</td>
-                                        <td></td>
-                                        <td class="product-price">$311.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        {cartItems?.length > 0 ? (
+                            <>
+                                <table className='product-detail-paymant'>
+                                    <tbody>
+                                        {cartItems?.map(item => (
+                                            <>
+                                                <tr className='product-dd'>
+                                                    <td className='product-img'>
+                                                        <img  src={
+                                                                item.product.images && item.product.thumbnail_index !== null 
+                                                                ? JSON.parse(item.product.images)[item.product.thumbnail_index] ||  defaultImage
+                                                                : defaultImage
+                                                            } 
+                                                            alt={item.product.name} 
+                                                        />
+                                                        <span className='product-items-number'>{ item.quantity ?? '1'}</span>
+                                                    </td>
+                                                    <td>{item.product?.name}</td>
+                                                    <td class="product-price">${(item.product.price * item.quantity).toFixed(2)}</td>
+                                                </tr>
+                                            </>
+                                        ))}
+                                        <tr className='product-pp'>
+                                            <td>Subtotal</td>
+                                            <td></td>
+                                            <td class="product-price">${ totalAmount }</td>
+                                        </tr>
+                                        <tr className='product-pp'>
+                                            <td>Shipping</td>
+                                            <td></td>
+                                            <td class="product-price">$00</td>
+                                        </tr>
+                                        <tr className='product-total'>
+                                            <td>Order Total</td>
+                                            <td></td>
+                                            <td class="product-price">${totalAmount}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </>
+                        ) : (
+                            <p>Please select product that you want to purchase.</p>
+                        )}
                         </div>
                     </div>
                 </div>

@@ -1,10 +1,10 @@
 import React, { useState ,useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout.jsx';
-import product1 from '../images/product1.png'; // Adjust the path
-import product2 from '../images/prodcut2.png'; // Adjust the path
-import {Carts , removeCart} from '../api/apiCarts.js';
-import axios from 'axios';
+// import product1 from '../images/product1.png'; // Adjust the path
+// import product2 from '../images/prodcut2.png'; // Adjust the path
+import { removeCart} from '../api/apiCarts.js';
+// import axios from 'axios';
 import defaultImage from '../images/default.jpeg';
 
 const CartPage = () => {
@@ -16,7 +16,7 @@ const CartPage = () => {
     useEffect(() => {
       const fetchCartItems = async () => {
           try {
-              const tempId = sessionStorage.getItem('user_temp_id');      
+              const tempId = localStorage.getItem('user_temp_id');      
               // console.log(tempId);
               if (!tempId) {
                   throw new Error('Temporary ID not found.');  
@@ -28,7 +28,6 @@ const CartPage = () => {
                       'Content-Type': 'application/json',
                   },
               });
-
   
               if (!response.ok) {
                   throw new Error('Network response was not ok');
@@ -48,7 +47,7 @@ const CartPage = () => {
       fetchCartItems();
   }, []);
 
-  console.log(cartItems);
+  // console.log(cartItems);
 
     if (loading) return <p>Loading...</p>;
     // if (error) return <p>{error}</p>;
@@ -59,13 +58,13 @@ const CartPage = () => {
 
   const handleIncrement = (id) => {
     setCartItems(cartItems.map(item =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      item.id === id ? { ...item, quantity: parseInt(item.quantity) + 1 } : item
     ));
   };
 
   const handleDecrement = (id) => {
     setCartItems(cartItems.map(item =>
-      item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+      item.id === id && item.quantity > 1 ? { ...item, quantity: parseInt(item.quantity) - 1 } : item
     ));
   };
 

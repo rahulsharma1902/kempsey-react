@@ -4,6 +4,10 @@ import './css/style.css';
 import './css/responsive.css';
 import AdminRoutes from './routes/AdminRoutes';
 // import FrontRoutes from './routes/AdminRoutes';
+
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPassword from './pages/ForgotPassword';
@@ -32,6 +36,8 @@ import {AboutContentProvider} from './contexts/AboutContentContext';
 import {ServiceContentProvider} from './contexts/WorkshopContext';
 import {StoreFrontProvider} from './contexts/StoreFrontContext';
 import {ProductProvider} from './contexts/ShopContext';
+
+const stripePromise = loadStripe('your-stripe-public-key');
 
 function App() {
   return (
@@ -65,8 +71,15 @@ function App() {
           <Route path="/Workshop" element={<Workshop/>}/>
           <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
           <Route path="/workshop-booking" element={<WorkshopBooking/>}/>
-          <Route path="/checkout" element={<Checkout/>}/>
-          
+          <Route
+              path="/checkout"
+              element={
+                <Elements stripe={stripePromise}>
+                  <Checkout />
+                </Elements>
+              }
+            />
+
         </Routes>
       </Router>
 
