@@ -102,7 +102,9 @@ const SidebarComponent = ({ isSidebarCollapsed }) => {
             <MenuItem>
               <Link to="/admin-dashboard/marketing/coupons" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Coupons Code</Link>
             </MenuItem>
-            
+            <MenuItem>
+              <Link to="/admin-dashboard/marketing/shipping" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Shipping</Link>
+            </MenuItem>
           </SubMenu>
       </Menu>
     </Sidebar>

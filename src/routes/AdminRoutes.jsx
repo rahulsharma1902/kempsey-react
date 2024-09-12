@@ -57,6 +57,11 @@ import BookingList from '../components/Admin/Bookings/BookingList';
 import AddCoupon from '../components/Admin/Marketing/CouponCode/AddCoupon';
 import ListCoupon from '../components/Admin/Marketing/CouponCode/ListCoupon';
 
+
+import AddShiping from '../components/Admin/Marketing/Shipping/AddShiping';
+import ListShiping from '../components/Admin/Marketing/Shipping/ListShiping';
+import ShipingUpdate from '../components/Admin/Marketing/Shipping/ShippingUpdate';
+
 const AdminRoutes = () => {
     return (
         <Routes>
@@ -427,6 +432,32 @@ const AdminRoutes = () => {
             />
 
             {/* end coup[on] */}
+            {/* shipping */}
+            <Route 
+                path="/marketing/shipping/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <AddShiping />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/marketing/shipping" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ListShiping />
+                        </PrivateRoute>
+                } 
+            />
+             <Route 
+                path="/marketing/shipping/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ShipingUpdate />
+                        </PrivateRoute>
+                } 
+            />
+            {/* end shipping */}
         </Routes>
     );
 };
