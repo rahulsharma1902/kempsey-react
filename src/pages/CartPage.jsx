@@ -1,14 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout.jsx';
 import product1 from '../images/product1.png'; // Adjust the path
 import product2 from '../images/prodcut2.png'; // Adjust the path
+import {Carts , removeCart} from '../api/apiCarts.js';
+import axios from 'axios';
+import defaultImage from '../images/default.jpeg';
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: 'Product Name 01', price: 149.00, quantity: 1, image: product1 },
-    { id: 2, name: 'Product Name 02', price: 149.00, quantity: 1, image: product2 }
-  ]);
+    const [cartItems, setCartItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+
+    useEffect(() => {
+      const fetchCartItems = async () => {
+          try {
+              const tempId = sessionStorage.getItem('user_temp_id');      
+              // console.log(tempId);
+              if (!tempId) {
+                  throw new Error('Temporary ID not found.');  
+              }
+  
+              const response = await fetch('https://sagmetic.site/2023/laravel/kempsey/public/api/get-cart?temp_id='+tempId, {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+              });
+
+  
+              if (!response.ok) {
+                  throw new Error('Network response was not ok');
+              }
+  
+              const data = await response.json();
+              console.log(data);
+              setCartItems(data.data); 
+          } catch (err) {
+            console.log(err);
+              // setError('Failed to load cart items.');
+          } finally {
+              setLoading(false);
+          }
+      };
+  
+      fetchCartItems();
+  }, []);
+
+  console.log(cartItems);
+
+    if (loading) return <p>Loading...</p>;
+    // if (error) return <p>{error}</p>;
+  // const [cartItems, setCartItems] = useState([
+  //   { id: 1, name: 'Product Name 01', price: 149.00, quantity: 1, image: product1 },
+  //   { id: 2, name: 'Product Name 02', price: 149.00, quantity: 1, image: product2 }
+  // ]);
 
   const handleIncrement = (id) => {
     setCartItems(cartItems.map(item =>
@@ -31,11 +78,16 @@ const CartPage = () => {
     }
   };
 
-  const handleDelete = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  const handleDelete =async (id)  => {
+    const data = await removeCart(id); 
+    if(data.success){
+      setCartItems(cartItems.filter(item => item.id !== id));
+    } else {
+      alert(data.message);
+    }
   };
 
-  const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const totalAmount = cartItems?.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 
   return (
     <Layout>
@@ -46,11 +98,11 @@ const CartPage = () => {
               <div className="cart_content">
                 <h4>Your Cart</h4>
                 <div className="cart-container">
-                  {cartItems.length > 0 ? (
+                  {cartItems?.length > 0 ? (
                     <>
                       <div className="cart-items">
                         <p className="cart_order">
-                          YOUR ORDER (<span>{cartItems.length}</span> ITEM{cartItems.length > 1 ? 'S' : ''})
+                          YOUR ORDER (<span>{cartItems?.length}</span> ITEM{cartItems?.length > 1 ? 'S' : ''})
                         </p>
                         <table className='cart_table'>
                           <thead>
@@ -62,15 +114,21 @@ const CartPage = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {cartItems.map(item => (
+                            {cartItems?.map(item => (
                               <tr key={item.id}>
                                 <td data-title="Product Detail">
                                   <div className="product-info">
                                     <div className="prdt-img">
-                                      <img src={item.image} alt={item.name} />
+                                    <img  src={
+                                        item.product.images && item.product.thumbnail_index !== null 
+                                          ? JSON.parse(item.product.images)[item.product.thumbnail_index] ||  defaultImage
+                                          : defaultImage
+                                      } 
+                                      alt={item.product.name} 
+                                    />
                                     </div>
                                     <div className='prod_info_text'>
-                                      <p>{item.name}</p>
+                                      <p>{item.product?.name}</p>
                                     </div>
                                   </div>
                                 </td>
@@ -91,7 +149,7 @@ const CartPage = () => {
                                     </span>
                                   </div>
                                 </td>
-                                <td data-title="Price"><strong>${item.price.toFixed(2)}</strong></td>
+                                <td data-title="Price"><strong>${(item.product.price * item.quantity).toFixed(2)}</strong></td>
                                 <td data-title="Delete"><Link className="delete-btn" onClick={() => handleDelete(item.id)}><i className="fa-solid fa-xmark"></i></Link></td>
                               </tr>
                             ))}
