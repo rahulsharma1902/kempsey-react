@@ -21,7 +21,7 @@ const fetchData = async (endpoint) => {
 };
 
 
-export const Filters = () => fetchData('filters');
+export const Coupons = () => fetchData('coupons');
 
 export const getFilterById = (id) => fetchData(`get-filter/${id}`);
 export const getFilterByCategory = (slug) => fetchData(`get-filter-by-categroy/${slug}`);
@@ -56,4 +56,4 @@ export const addCoupon = (formData) => postData('coupon/add', formData, true);
 
 export const updateFilter = (formData) => postData('filter/update', formData, true);
 
-export const removeFilter = (id) => postData(`filter/remove/${id}`, {});
+export const removeCoupon = (id) => postData(`coupon/remove/${id}`, {});

@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import CheckoutSection from '../components/Checkout/Checkout';
+import CheckoutSection from '../components/Front/Checkout/Checkout';
 
 const Checkout = () => {
 

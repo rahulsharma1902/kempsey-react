@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import iconshop from '../../images/shoppay-img.svg';
-import iconpaypal from '../../images/paypal-img.svg';
-import icongpay from '../../images/gpay-img.svg';
-import iconcard from '../../images/card-payment.svg';
-import iconpp from '../../images/paypal-payment.svg';
-import iconzip from '../../images/zip-payment.svg';
-import iconafpay from '../../images/afterpay.svg';
-import prdtimg from '../../images/prdt-img1.png';
-import prdtimg2 from '../../images/prdt-img2.png';
+import iconshop from '../../../images/shoppay-img.svg';
+import iconpaypal from '../../../images/paypal-img.svg';
+import icongpay from '../../../images/gpay-img.svg';
+import iconcard from '../../../images/card-payment.svg';
+import iconpp from '../../../images/paypal-payment.svg';
+import iconzip from '../../../images/zip-payment.svg';
+import iconafpay from '../../../images/afterpay.svg';
+import prdtimg from '../../../images/prdt-img1.png';
+import prdtimg2 from '../../../images/prdt-img2.png';
 
 
 const CheckoutSection = () => {
@@ -19,9 +19,13 @@ const CheckoutSection = () => {
         email: '',
         message: '',
     });
+    const [showBillingAddress, setShowBillingAddress] = useState(false);
 
     const [errors, setErrors] = useState({});
 
+    const handleBillingAddressChange = (e) => {
+        setShowBillingAddress(e.target.id === 'diffss-addrs');
+      };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -338,36 +342,166 @@ const CheckoutSection = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class='checkout-form-list shipping-method'>
-                            <div className="checkout-form-list-head">
+                        <div className="checkout-form">
+                            <div className="checkout-form-list shipping-method">
+                                <div className="checkout-form-list-head">
                                 <h4>Billing Address</h4>
-                            </div>
-                            <p>Select the address that matches your card or payment method.</p>
+                                </div>
+                                <p>Select the address that matches your card or payment method.</p>
 
-                            <div class="billing-address-detail">
-                                <div class="same-billing-address">
-                                    <div class="form-check">
-                                        <div className="shipping-method-check">
-                                            <input class="form-check-input address-radio-btn" type="radio" name="baRadioDefaul" id="samess-addrs" data-gtm-form-interact-field-id="1" />
-                                            <label class="form-check-label" for="samess-addrs">
-                                            Same as shipping address
-                                            </label>
-                                        </div>
-
+                                <div className="billing-address-detail">
+                                <div className="same-billing-address">
+                                    <div className="form-check">
+                                    <div className="shipping-method-check">
+                                        <input
+                                        className="form-check-input address-radio-btn"
+                                        type="radio"
+                                        name="baRadioDefault"
+                                        id="samess-addrs"
+                                        data-gtm-form-interact-field-id="1"
+                                        onChange={handleBillingAddressChange}
+                                        checked={!showBillingAddress}
+                                        />
+                                        <label className="form-check-label" htmlFor="samess-addrs">
+                                        Same as shipping address
+                                        </label>
+                                    </div>
                                     </div>
                                 </div>
-                                <div class="diff-billing-address">
-                                    <div class="form-check">
-                                        <div className="shipping-method-check">
-                                            <input class="form-check-input address-radio-btn" type="radio" name="baRadioDefaul" id="diffss-addrs" data-gtm-form-interact-field-id="0" />
-                                            <label class="form-check-label" for="diffss-addrs">
-                                            Use as different billing address                                                
-                                            </label>
-                                        </div>
+                                <div className="diff-billing-address">
+                                    <div className="form-check">
+                                    <div className="shipping-method-check">
+                                        <input
+                                        className="form-check-input address-radio-btn"
+                                        type="radio"
+                                        name="baRadioDefault"
+                                        id="diffss-addrs"
+                                        data-gtm-form-interact-field-id="0"
+                                        onChange={handleBillingAddressChange}
+                                        checked={showBillingAddress}
+                                        />
+                                        <label className="form-check-label" htmlFor="diffss-addrs">
+                                        Use as different billing address
+                                        </label>
+                                    </div>
                                     </div>
                                 </div>
+                                </div>
                             </div>
-                        </div>
+
+                            {/* Conditionally Render Billing Address Form */}
+                            {showBillingAddress && (
+                                <div className="contact_col checkout-form-list">
+                                <h4>Billing Address</h4>
+                                <div className="contact_form">
+                                    <form onSubmit={handleSubmit}>
+                                    <div className="form_row">
+                                        <div className={`form_group w-50 ${errors.firstName ? 'error' : ''}`}>
+                                        <input
+                                            className="form_control"
+                                            type="text"
+                                            name="firstName"
+                                            placeholder="First Name*"
+                                            value={formData.firstName}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                        {errors.firstName && <p className="error_message">{errors.firstName}</p>}
+                                        </div>
+                                        <div className={`form_group w-50 ${errors.lastName ? 'error' : ''}`}>
+                                        <input
+                                            className="form_control"
+                                            type="text"
+                                            name="lastName"
+                                            placeholder="Last Name*"
+                                            value={formData.lastName}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                        {errors.lastName && <p className="error_message">{errors.lastName}</p>}
+                                        </div>
+                                    </div>
+                                    <div className={`form_group ${errors.phoneNumber ? 'error' : ''}`}>
+                                        <input
+                                        className="form_control"
+                                        type="tel"
+                                        name="phoneNumber"
+                                        placeholder="Phone Number*"
+                                        value={formData.phoneNumber}
+                                        onChange={handleInputChange}
+                                        required
+                                        />
+                                        {errors.phoneNumber && <p className="error_message">{errors.phoneNumber}</p>}
+                                    </div>
+                                    <div className={`form_group ${errors.email ? 'error' : ''}`}>
+                                        <input
+                                        className="form_control"
+                                        type="email"
+                                        name="email"
+                                        placeholder="Enter your address here*"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        required
+                                        />
+                                        {errors.email && <p className="error_message">{errors.email}</p>}
+                                    </div>
+                                    <div className={`form_group ${errors.message ? 'error' : ''}`}>
+                                        <input
+                                        className="form_control"
+                                        name="message"
+                                        placeholder="Apt, Suite, Floor etc."
+                                        value={formData.message}
+                                        onChange={handleInputChange}
+                                        required
+                                        />
+                                        {errors.message && <p className="error_message">{errors.message}</p>}
+                                    </div>
+                                    <div className={`form_group ${errors.city ? 'error' : ''}`}>
+                                        <input
+                                        className="form_control"
+                                        name="city"
+                                        placeholder="City"
+                                        value={formData.city}
+                                        onChange={handleInputChange}
+                                        required
+                                        />
+                                        {errors.city && <p className="error_city">{errors.city}</p>}
+                                    </div>
+                                    <div className="form_row">
+                                        <div className="form_group">
+                                        <select id="hear-aboutus" className="form_control">
+                                            <option selected>State</option>
+                                            <option>LA</option>
+                                            <option>Las Vegas</option>
+                                            <option>California</option>
+                                            <option>Texas</option>
+                                        </select>
+                                        </div>
+                                        <div className={`form_group w-50 ${errors.Postalcode ? 'error' : ''}`}>
+                                        <input
+                                            className="form_control"
+                                            type="text"
+                                            name="Postalcode"
+                                            placeholder="Postal Code*"
+                                            value={formData.Postalcode}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                        {errors.Postalcode && <p className="error_message">{errors.Postalcode}</p>}
+                                        </div>
+                                    </div>
+                                    <div className="form_group">
+                                        <label>
+                                        <input name="save-information" type="checkbox" />
+                                        Save this information for next time
+                                        </label>
+                                    </div>
+                                    </form>
+                                </div>
+                                </div>
+                            )}
+                            </div>
+
                         <button class="checkout-pay ">PAY NOW</button>
                     </div>
                     <div class="CheckoutSection-col checkout-items">

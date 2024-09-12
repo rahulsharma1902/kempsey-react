@@ -155,7 +155,7 @@ const CartPage = () => {
                             ))}
                           </tbody>
                         </table>
-                        <Link className="add-more cta">Add More Items</Link>
+                        <Link to="/checkout" className="add-more cta">Proceed To Checkout</Link>
                       </div>
                       <div className="cart-summary dark">
                         <div className='cart_summery_box'>

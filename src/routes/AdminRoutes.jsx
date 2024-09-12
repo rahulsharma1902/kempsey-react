@@ -417,14 +417,14 @@ const AdminRoutes = () => {
                         </PrivateRoute>
                 } 
             />
-            {/* <Route 
+            <Route 
                 path="/marketing/coupons" 
                 element={
                         <PrivateRoute roles={['admin']}>
                             <ListCoupon />
                         </PrivateRoute>
                 } 
-            /> */}
+            />
 
             {/* end coup[on] */}
         </Routes>
