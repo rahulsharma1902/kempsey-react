@@ -37,7 +37,7 @@ import {ServiceContentProvider} from './contexts/WorkshopContext';
 import {StoreFrontProvider} from './contexts/StoreFrontContext';
 import {ProductProvider} from './contexts/ShopContext';
 
-const stripePromise = loadStripe('your-stripe-public-key');
+const stripePromise = loadStripe('pk_test_51OQ5lXSHuCTN4d6J0eysWWMeFXsyJBKreckgJD5oP9bYVvTrxZFU3FmlByyKSamJVb2BF8n6KrE4HQJmP7MZDRvQ00tpNTRse7');
 
 function App() {
   return (
