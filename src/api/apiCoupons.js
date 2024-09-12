@@ -51,6 +51,8 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 };
 
 
+export const applyCoupon = (formData) => postData('coupon/apply', formData, true);
+
 
 export const addCoupon = (formData) => postData('coupon/add', formData, true);
 

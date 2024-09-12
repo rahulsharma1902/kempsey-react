@@ -12,23 +12,23 @@ const Productdetailmodule = (data) => {
     const [tempId, setTempId] = useState(localStorage.getItem('user_temp_id') || '');
 
 
-    useEffect(() => {
-        const fetchTempId = async () => {
-            try {
-                const response = await fetch('https://sagmetic.site/2023/laravel/kempsey/public/api/generate-temp-id');
-                const result = await response.json();
-                const newTempId = result.temp_id;
-                setTempId(newTempId);
-                localStorage.setItem('user_temp_id', newTempId);
-            } catch (error) {
-                console.error('Failed to fetch temporary ID:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchTempId = async () => {
+    //         try {
+    //             const response = await fetch('https://sagmetic.site/2023/laravel/kempsey/public/api/generate-temp-id');
+    //             const result = await response.json();
+    //             const newTempId = result.temp_id;
+    //             setTempId(newTempId);
+    //             localStorage.setItem('user_temp_id', newTempId);
+    //         } catch (error) {
+    //             console.error('Failed to fetch temporary ID:', error);
+    //         }
+    //     };
 
-        if (!tempId) {
-            fetchTempId();
-        }
-    }, [tempId]);
+    //     if (!tempId) {
+    //         fetchTempId();
+    //     }
+    // }, [tempId]);
 
     const handleAddToCart = async () => {
         try {

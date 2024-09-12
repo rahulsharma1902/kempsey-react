@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './css/style.css';
 import './css/responsive.css';
@@ -13,7 +13,7 @@ import RegisterPage from './pages/RegisterPage';
 import ForgotPassword from './pages/ForgotPassword';
 // import HomePage from './pages/HomePage';
 // import Header from './components/Header';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider , AuthContext} from './contexts/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import Logout from './components/Auth/Logout';
 // import Footer from './components/Footer';
@@ -40,6 +40,33 @@ import {ProductProvider} from './contexts/ShopContext';
 const stripePromise = loadStripe('your-stripe-public-key');
 
 function App() {
+  const { user } = useContext(AuthContext); 
+  const [tempId, setTempId] = useState(localStorage.getItem('user_temp_id') || '');
+
+  useEffect(() => {
+    const fetchTempId = async () => {
+      try {
+        const response = await fetch('https://sagmetic.site/2023/laravel/kempsey/public/api/generate-temp-id');
+        const result = await response.json();
+        const newTempId = result.temp_id;
+        setTempId(newTempId);
+        localStorage.setItem('user_temp_id', newTempId);
+      } catch (error) {
+        console.error('Failed to fetch temporary ID:', error);
+      }
+    };
+
+    if (!user) {
+      if (!tempId) {
+        fetchTempId();
+      }
+    } 
+    else {
+      setTempId('');
+      localStorage.removeItem('user_temp_id');
+    }
+  }, [user,tempId]);
+
   return (
     <AuthProvider>
       <HomeContentProvider>

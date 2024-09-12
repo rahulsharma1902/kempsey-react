@@ -11,7 +11,7 @@ const fetchData = async (endpoint) => {
                 'Authorization': `Bearer ${token}`,
             }
         });
-        // console.log(response.data);
+        console.log(response);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -20,6 +20,7 @@ const fetchData = async (endpoint) => {
         throw new Error(errorMessage);
     }
 };
+export const getCartById = (tempId) => fetchData(`get-cart?temp_id=${tempId}`);
 
 
 export const Carts = () => fetchData('get-cart');
@@ -57,4 +58,5 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 
 export const addCart = (formData) => postData('cart/add', formData, true);
+
 
