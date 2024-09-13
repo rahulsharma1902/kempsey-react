@@ -29,11 +29,22 @@ const CheckoutSection = () => {
         address: '',
         additional_address: '',
         city: '',
-        city: '',
+        state: '',
         Postalcode: '',
         save_for_future: '',
+        shipping_method: '',
         payment_method: '',
-        payment_token: ''
+        payment_token: '',
+        bfirstName: '',
+        blastName: '',
+        bphoneNumber: '',
+        bemail: '',
+        baddress: '',
+        badditional_address: '',
+        bcity: '',
+        bstate: '',
+        bPostalcode: '',
+        cart_ids: '',
 
     });
     const [showBillingAddress, setShowBillingAddress] = useState(false);
