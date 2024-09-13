@@ -38,7 +38,7 @@ import {StoreFrontProvider} from './contexts/StoreFrontContext';
 import {ProductProvider} from './contexts/ShopContext';
 import {CartProvider} from './contexts/CartContext';
 
-const stripePromise = loadStripe('pk_test_51OQ5lXSHuCTN4d6J0eysWWMeFXsyJBKreckgJD5oP9bYVvTrxZFU3FmlByyKSamJVb2BF8n6KrE4HQJmP7MZDRvQ00tpNTRse7');
+const stripePromise = loadStripe('pk_test_51O4JlISHTa61PzN8pNFAWjxMHk8MejtNaaC54b9nSLkW2rFjOhHWnxHYnCQaZj8RTyNiL9WamgSGwV9GgHi1k8LF00N1SGCLzG');
 
 function App() {
   const { user } = useContext(AuthContext); 

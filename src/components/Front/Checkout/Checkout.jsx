@@ -142,6 +142,7 @@ const CheckoutSection = () => {
                 const form = new FormData();
                 form.append('code', code);
                 form.append('tempId', tempId);
+                console.log(form);
                 try {
                     const response = await applyCoupon(form);
                     console.log(response);
