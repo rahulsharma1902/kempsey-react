@@ -9,8 +9,11 @@ import hearticon from '../images/icon_heart.svg';
 import carticon from '../images/icon_cart.svg';
 import { useCategories } from '../contexts/CategoryContext';
 import { AuthContext} from '../contexts/AuthContext';
+import { CartContext } from '../contexts/CartContext';
+
 const Header = () => {
     const { user } = useContext(AuthContext); 
+    const { cartCount } = useContext(CartContext);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [navOpen, setNavOpen] = useState(false);
@@ -86,7 +89,7 @@ const Header = () => {
                         <div className='icon_links_col'>
                             <div className='icon_links'>
                             {user ? (
-                                <Link to="#" onClick={logout} className="icon_link">
+                                <Link to="/logout" className="icon_link">
                                     <img style={{ height: '33px', marginTop: '5px'}} src={logout} alt="logout icon" />
                                 </Link>
                             ) : (
@@ -99,7 +102,7 @@ const Header = () => {
                                     <img style={{ height: '35px' }} src={logout} alt="icon" />
                                 </Link> */}
                                 {/* <Link to="/" className="icon_link fav_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link> */}
-                                <Link to="/cart" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>50</span></span></Link>
+                                <Link to="/cart" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>{cartCount}</span></span></Link>
                             </div>
                         </div>
                     </div>

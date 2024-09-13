@@ -36,6 +36,7 @@ import {AboutContentProvider} from './contexts/AboutContentContext';
 import {ServiceContentProvider} from './contexts/WorkshopContext';
 import {StoreFrontProvider} from './contexts/StoreFrontContext';
 import {ProductProvider} from './contexts/ShopContext';
+import {CartProvider} from './contexts/CartContext';
 
 const stripePromise = loadStripe('pk_test_51OQ5lXSHuCTN4d6J0eysWWMeFXsyJBKreckgJD5oP9bYVvTrxZFU3FmlByyKSamJVb2BF8n6KrE4HQJmP7MZDRvQ00tpNTRse7');
 
@@ -73,52 +74,54 @@ function App() {
   return (
     <AuthProvider>
       <HomeContentProvider>
-      <AboutContentProvider>
-      <ServiceContentProvider>
-      <StoreFrontProvider>
-      <CategoryProvider>
-        <ProductProvider>
-      <Router>
-        {/* <Header /> */}
-        <Routes>
-          <Route path="/admin-dashboard/*" element={<AdminRoutes />} />
-          {/* <Route path="/*" element={<FrontRoutes />} /> */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/sign-up" element={<RegisterPage />} />
-          <Route path="/reset-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ForgotPassword />} />
-          <Route path="/" element={<Home />} /> 
-          <Route path="/shop/:category" element={<ShopPage />} />
-          {/* <Route path="/camping" element={<ShopCamping />} /> */}
-          <Route path="/shop-detail/:slug" element={<ShopDetail />} />
-          <Route path="/about-us" element={<AboutusPage />} />
-          <Route path="/cart" element={<CartPage />} /> 
-          <Route path="/Contact-us" element={<Contact />} /> 
-          <Route path="/Faq" element={<Faq/>}/>
-          <Route path="/GiftCertificates" element={<GiftCertificates/>}/>
-          <Route path="/customer-services" element={<CustomerServices/>}/>
-          <Route path="/Workshop" element={<Workshop/>}/>
-          <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
-          <Route path="/workshop-booking" element={<WorkshopBooking/>}/>
-          <Route
-              path="/checkout"
-              element={
-                <Elements stripe={stripePromise}>
-                  <Checkout />
-                </Elements>
-              }
-            />
+        <AboutContentProvider>
+          <ServiceContentProvider>
+            <StoreFrontProvider>
+              <CategoryProvider>
+                <ProductProvider>
+                  <CartProvider>
+                      <Router>
+                        {/* <Header /> */}
+                        <Routes>
+                          <Route path="/admin-dashboard/*" element={<AdminRoutes />} />
+                          {/* <Route path="/*" element={<FrontRoutes />} /> */}
+                          <Route path="/login" element={<LoginPage />} />
+                          <Route path="/logout" element={<Logout />} />
+                          <Route path="/sign-up" element={<RegisterPage />} />
+                          <Route path="/reset-password" element={<ForgotPassword />} />
+                          <Route path="/reset-password" element={<ForgotPassword />} />
+                          <Route path="/" element={<Home />} /> 
+                          <Route path="/shop/:category" element={<ShopPage />} />
+                          {/* <Route path="/camping" element={<ShopCamping />} /> */}
+                          <Route path="/shop-detail/:slug" element={<ShopDetail />} />
+                          <Route path="/about-us" element={<AboutusPage />} />
+                          <Route path="/cart" element={<CartPage />} /> 
+                          <Route path="/Contact-us" element={<Contact />} /> 
+                          <Route path="/Faq" element={<Faq/>}/>
+                          <Route path="/GiftCertificates" element={<GiftCertificates/>}/>
+                          <Route path="/customer-services" element={<CustomerServices/>}/>
+                          <Route path="/Workshop" element={<Workshop/>}/>
+                          <Route path="/privacy-policy" element={<PrivacyPolicy/>}/>
+                          <Route path="/workshop-booking" element={<WorkshopBooking/>}/>
+                          <Route
+                              path="/checkout"
+                              element={
+                                <Elements stripe={stripePromise}>
+                                  <Checkout />
+                                </Elements>
+                              }
+                            />
 
-        </Routes>
-      </Router>
+                        </Routes>
+                      </Router>
+                  </CartProvider>
 
-      <ToastContainer />
-      </ProductProvider>
-      </CategoryProvider>
-      </StoreFrontProvider>
-      </ServiceContentProvider>
-      </AboutContentProvider>
+                <ToastContainer />
+                </ProductProvider>
+              </CategoryProvider>
+            </StoreFrontProvider>
+          </ServiceContentProvider>
+        </AboutContentProvider>
       </HomeContentProvider>
     </AuthProvider>
 

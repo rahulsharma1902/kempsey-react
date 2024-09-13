@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import reviewstarimage from '../../images/reviews.png';
 import hearticon from '../../images/icon_heart.svg';
 import eyeicon from '../../images/eyedvg.svg';
@@ -6,8 +6,11 @@ import itmsoldicon from '../../images/item_soldvg.svg';
 import { Link } from 'react-router-dom';
 import { addCart } from '../../api/apiCarts';
 import { toast } from 'react-toastify';
+import { CartContext } from '../../contexts/CartContext.js';
 
 const Productdetailmodule = (data) => {
+    const { setCartCount } = useContext(CartContext);
+
     const [quantity, setQuantity] = useState(1);
     const [tempId, setTempId] = useState(localStorage.getItem('user_temp_id') || '');
 

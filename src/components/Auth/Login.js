@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate,useLocation } from 'react-router-dom';
 import emailicon from '../../images/ic_outline-email.svg';
 import lockicon from '../../images/mingcute_lock-line.svg';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -18,6 +18,7 @@ const Login = () => {
     const [formErrors, setFormErrors] = useState({});
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -53,8 +54,13 @@ const Login = () => {
             setFormErrors({});
             
             // Redirect based on user type
+            const to = location.search.split('to=')[1];
+
+            
             if (userData.user_type === 'admin') {
                 navigate('/admin-dashboard');
+            } else if (to) {
+                navigate(`/${to}`);
             } else {
                 navigate('/');
             }

@@ -1,5 +1,5 @@
-import React, { useState , useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState , useEffect,useContext } from 'react';
+import { Link , useParams,useLocation, useNavigate} from 'react-router-dom';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
 import iconshop from '../../../images/shoppay-img.svg';
 import iconpaypal from '../../../images/paypal-img.svg';
@@ -11,21 +11,30 @@ import iconafpay from '../../../images/afterpay.svg';
 import defaultImage from '../../../images/default.jpeg';
 import { ShippingMethods } from '../../../api/apiShippingMethods';
 import {getCartById} from '../../../api/apiCarts';
-
-
+import { applyCoupon } from '../../../api/apiCoupons';
+import { AuthContext} from '../../../contexts/AuthContext';
+import {checkout } from '../../../api/apiCheckout';
 const CheckoutSection = () => {
+    const { user } = useContext(AuthContext); 
+    const navigate = useNavigate();
+
     const stripe = useStripe();
     const elements = useElements();
     const [cartItems, setCartItems] = useState([]);
     const [shippingMethods, setShippingMethods] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const code = query.get('code');
+      const [discount, setDiscount] = useState(0);
 
     const [formData, setFormData] = useState({
+        email: '',
+        news_and_offers:false,
         firstName: '',
         lastName: '',
         phoneNumber: '',
-        email: '',
         address: '',
         additional_address: '',
         city: '',
@@ -33,7 +42,20 @@ const CheckoutSection = () => {
         Postalcode: '',
         save_for_future: '',
         payment_method: '',
-        payment_token: ''
+        payment_token: '',
+        billingAddressSameAsShipping: true,
+        //for billing
+        bfirstName: '',
+        blastName: '',
+        bphoneNumber: '',
+        bemail: '',
+        baddress: '',
+        badditional_address: '',
+        bcity: '',
+        bcity: '',
+        bPostalcode: '',
+        // shipping
+        shipping_method:'',
 
     });
     const [showBillingAddress, setShowBillingAddress] = useState(false);
@@ -41,7 +63,9 @@ const CheckoutSection = () => {
     const [selectedShippingMethodPrice, setSelectedShippingMethodPrice] = useState('');
     const [errors, setErrors] = useState({});
     const [tempId, setTempId] = useState(localStorage.getItem('user_temp_id') || '');
-
+    const [cardNumberError, setCardNumberError] = useState('');
+    const [expiryError, setExpiryError] = useState('');
+    const [cvcError, setCvcError] = useState('');
     //  fetching  user carts
     // useEffect(() => {
     //     const fetchCartItems = async () => {
@@ -112,25 +136,74 @@ const CheckoutSection = () => {
         getShippingMethodData();
     }, []);
 
+    // Apply coupon code 
+    useEffect(() => {
+            const fetchCouponDiscount = async () => {
+                const form = new FormData();
+                form.append('code', code);
+                form.append('tempId', tempId);
+                try {
+                    const response = await applyCoupon(form);
+                    console.log(response);
+                    if (response.data) {
+                        setDiscount(response.data.discount);
+
+                    } else {
+                    // Handle fetch error
+                    }
+                } catch (error) {
+                    setError('Failed to load cart items.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+        
+        if(code){
+            console.log('wokring');
+        fetchCouponDiscount();
+        }else{
+            console.log('code-not-found');
+        }
+    }, [code, tempId]);
+
+
     const handleShippingMethodChange = (e) => {
+        
         const selectedValue = e.target.value;
+        setFormData({
+            ...formData,
+            shipping_method: selectedValue ,
+          });
         const selectedPrice = e.target.getAttribute('data-price');
 
         setSelectedShippingMethod(selectedValue);
         setSelectedShippingMethodPrice(selectedPrice);
     };
-
     const handleBillingAddressChange = (e) => {
-        setShowBillingAddress(e.target.id === 'diffss-addrs');
-      };
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const isDifferentAddress = e.target.id === 'diffss-addrs';
+        setShowBillingAddress(isDifferentAddress);
         setFormData({
-            ...formData, 
-            [name]: value,
+          ...formData,
+          billingAddressSameAsShipping: !isDifferentAddress, // Update the selection field
         });
-    };
-
+      };
+    // const handleBillingAddressChange = (e) => {
+    //     setShowBillingAddress(e.target.id === 'diffss-addrs');
+    //   };
+    // const handleInputChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setFormData({
+    //         ...formData, 
+    //         [name]: value,
+    //     });
+    // };
+    const handleInputChange = (e) => {
+        const { name, type, checked, value } = e.target;
+        setFormData({
+          ...formData,
+          [name]: type === 'checkbox' ? checked : value,
+        });
+      };
     const validateForm = async () => {
         
         const errors = {};
@@ -143,11 +216,14 @@ const CheckoutSection = () => {
         if (!formData.address) errors.address = 'Address is required';
         if (!formData.city) errors.city = 'City is required';
         if (!formData.Postalcode) errors.Postalcode = 'Postalcode is required';
+        
 
         if(!formData.payment_method ) errors.payment_method = 'Please select payment method';
 
         if(formData.payment_method == 'stripe') {
-           
+            if (cardNumberError) errors.cardNumber = cardNumberError;
+            if (expiryError) errors.expiry = expiryError;
+            if (cvcError) errors.cvc = cvcError;
             if (!stripe || !elements) {
                 errors.email = "don't have element";
             }
@@ -161,29 +237,87 @@ const CheckoutSection = () => {
 
             setFormData({
                 ...formData, 
-                ['payment_token']: paymentMethod.id,
+                ['payment_token']: paymentMethod?.id,
             });
             // formData.append('payment_token',paymentMethod);
         }
-        
+        if(formData.billingAddressSameAsShipping !== true){
+            if (!formData.bfirstName) errors.bfirstName = 'First name is required';
+            if (!formData.blastName) errors.blastName = 'Last name is required';
+            if (!formData.bphoneNumber) errors.bphoneNumber = 'Phone number is required';
+            if (!formData.bemail) errors.bemail = 'Email is required';
+            if (!formData.baddress) errors.baddress = 'Address is required';
+            if (!formData.bcity) errors.bcity = 'City is required';
+            if (!formData.bPostalcode) errors.bPostalcode = 'Postalcode is required';
+        }
         
         return errors;
     };
 
 
-    const handleSubmit =  (e) => {
-        // console.log("enter");
-        e.preventDefault();
-        const validationErrors = validateForm();
-        if (Object.keys(validationErrors).length === 0) {
 
-            
-            console.log('Form submitted:', formData);
+    const handleCardNumberChange = (event) => {
+        const isCardNumberValid = event.complete && event.error === undefined;
+      
+        if (!isCardNumberValid) {
+          setCardNumberError('Please enter a valid Card Number');
         } else {
-            setErrors(validationErrors);
+          setCardNumberError('');
         }
-    };
+      };
+      
+      const handleCardExpiryChange = (event) => {
+        const isCardExpiryValid = event.complete && event.error === undefined;
+      
+        if (!isCardExpiryValid) {
+          setExpiryError('Card Expire');
+        } else {
+          setExpiryError('');
+        }
+      };
+      
+      const handleCardCvcChange = (event) => {
+        const isCardCvcValid = event.complete && event.error === undefined;
+      
+        if (!isCardCvcValid) {
+          setCvcError('Please enter a valid CVC');
+        } else {
+          setCvcError('');
+        }
+      };
 
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (user) {
+          const validationErrors = await validateForm();
+          if (Object.keys(validationErrors).length === 0) {
+            // console.log('Form submitted:', formData);
+
+            try {
+                const response = await checkout(formData);
+                console.log(response);
+                // if (response.data) {
+                //   setBrandsData(response.data);
+                // } else {
+                //   console.error('Unexpected response format:', response.data);
+                // }
+              } catch (error) {
+                console.error('Failed to fetch Brands:', error.message);
+              } finally {
+                // setLoading(false);
+              }
+          } else {
+            setErrors(validationErrors);
+          }
+        } else {
+          navigate({
+            pathname: '/login',
+            search: `?to=checkout?code=${code}`,
+          });
+        }
+      };
     const totalAmount = cartItems?.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 
     return (
@@ -209,7 +343,12 @@ const CheckoutSection = () => {
                         <div className="checkout-form-list login-checkout">
                             <h4>Contact</h4>
                             <div class={`form_group ${errors.email ? 'error' : ''}`}>
-                                <a class="checkout-login" href='/login'>Log In</a>
+                                {/* <a class="checkout-login" href='/login'>Log In</a> */}
+                                {user ? null : (
+                                    <Link to="/login" className="checkout-login">
+                                        Log In
+                                    </Link>
+                                    )}
                                 <input
                                     class="form_control"
                                     type="email"
@@ -219,11 +358,22 @@ const CheckoutSection = () => {
                                     onChange={handleInputChange}
                                     required
                                 />
-                                {errors.email && <p class="error_message">{errors.email}</p>}
+                                {errors.email && <p class="error-text">{errors.email}</p>}
                             </div>
-                            <div className="form_group">
+                            {/* <div className="form_group">
                                 <label>
                                     <input type="checkbox" />
+                                    Email me with news and offers
+                                </label>
+                            </div> */}
+                            <div className="form_group">
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        name="news_and_offers" 
+                                        checked={formData.news_and_offers} 
+                                        onChange={handleInputChange} 
+                                    />
                                     Email me with news and offers
                                 </label>
                             </div>
@@ -244,7 +394,7 @@ const CheckoutSection = () => {
                                                 onChange={handleInputChange}
                                                 required
                                             />
-                                            {errors.firstName && <p class="error_message">{errors.firstName}</p>}
+                                            {errors.firstName && <p class="error-text">{errors.firstName}</p>}
                                         </div>
                                         <div class={`form_group w-50 ${errors.lastName ? 'error' : ''}`}>
                                             <input
@@ -256,7 +406,7 @@ const CheckoutSection = () => {
                                                 onChange={handleInputChange}
                                                 required
                                             />
-                                            {errors.lastName && <p class="error_message">{errors.lastName}</p>}
+                                            {errors.lastName && <p class="error-text">{errors.lastName}</p>}
                                         </div>
                                     </div>
                                     <div class={`form_group ${errors.phoneNumber ? 'error' : ''}`}>
@@ -269,7 +419,7 @@ const CheckoutSection = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
-                                        {errors.phoneNumber && <p class="error_message">{errors.phoneNumber}</p>}
+                                        {errors.phoneNumber && <p class="error-text">{errors.phoneNumber}</p>}
                                     </div>
                                     <div class={`form_group ${errors.address ? 'error' : ''}`}>
                                         <input
@@ -281,7 +431,7 @@ const CheckoutSection = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
-                                        {errors.address && <p class="error_message">{errors.address}</p>}
+                                        {errors.address && <p class="error-text">{errors.address}</p>}
                                     </div>
                                     <div class={`form_group ${errors.additional_address ? 'error' : ''}`}>
                                         <input
@@ -292,7 +442,7 @@ const CheckoutSection = () => {
                                             onChange={handleInputChange}
                                             required
                                         />
-                                        {errors.additional_address && <p class="error_message">{errors.additional_address}</p>}
+                                        {errors.additional_address && <p class="error-text">{errors.additional_address}</p>}
                                     </div>
                                     <div class={`form_group ${errors.city ? 'error' : ''}`}>
                                         <input
@@ -325,7 +475,7 @@ const CheckoutSection = () => {
                                                 onChange={handleInputChange}
                                                 required
                                             />
-                                            {errors.Postalcode && <p class="error_message">{errors.Postalcode}</p>}
+                                            {errors.Postalcode && <p class="error-text">{errors.Postalcode}</p>}
                                         </div>
                                     </div>
                                     <div class="form_group">
@@ -392,39 +542,44 @@ const CheckoutSection = () => {
                                                 <img src={iconcard} alt="card Icon" />
                                             </div>
                                             <div class="payment-detail-form contact-form">
-                                                {/* <form class="creditcard-form"> */}
-                                                    <div class="form-group">
-                                                        <input class="form_control" id="cardname" name="cardname" placeholder="Name On Card" type="text"  />
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="form-check-label" for="card-number">
-                                                            Card Number:
-                                                        </label>
-                                                        {/* <input class="form_control" id="ccnumber" name="ccnumber" placeholder="Card Number" type="tel"  /> */}
-                                                        <CardNumberElement className="input" id="card-number" />
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="form-group col-6">
-                                                            <label class="form-check-label" for="card-exp">
-                                                                Card Expirey:
-                                                            </label>
-                                                            {/* <input class="form_control" id="ccexp" name="ccexp" placeholder="Expiration Date(MM/YY)" type="tel"  /> */}
-                                                            <CardExpiryElement className="input" id="card-exp"/>
-                                                        </div>
-                                                        <div class="form-group col-6">
-                                                            <label class="form-check-label" for="card-cvv">
-                                                                CVV:
-                                                            </label>
-                                                            {/* <input class="form_control" id="cvv" name="cvv" placeholder="Security Code" type="tel"  /> */}
-                                                            <CardCvcElement className="input" id="card-cvv"/>
-                                                            {/* <div data-tooltip="true" id="phone_tooltip" class="tooltip-container">
-                                                                <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Your card security code ">
-                                                                    ?
-                                                                </button>
-                                                            </div> */}
-                                                        </div>
-                                                    </div>
-                                                {/* </form> */}
+                                                <div class="form-group">
+                                                <input class="form_control" id="cardname" name="cardname" placeholder="Name On Card" type="text"  />
+                                                </div>
+                                                <div class="form-group">
+                                                <label class="form-check-label" for="card-number">
+                                                    Card Number:
+                                                </label>
+                                                <CardNumberElement 
+                                                    className="input" 
+                                                    id="card-number" 
+                                                    onChange={handleCardNumberChange}
+                                                />
+                                                {cardNumberError && <div className='error-text'>{cardNumberError}</div>}
+                                                </div>
+                                                <div class="row">
+                                                <div class="form-group col-6">
+                                                    <label class="form-check-label" for="card-exp">
+                                                    Card Expirey:
+                                                    </label>
+                                                    <CardExpiryElement 
+                                                    className="input" 
+                                                    id="card-exp" 
+                                                    onChange={handleCardExpiryChange}
+                                                    />
+                                                    {expiryError && <div className='error-text'>{expiryError}</div>}
+                                                </div>
+                                                <div class="form-group col-6">
+                                                    <label class="form-check-label" for="card-cvv">
+                                                    CVV:
+                                                    </label>
+                                                    <CardCvcElement 
+                                                    className="input" 
+                                                    id="card-cvv" 
+                                                    onChange={handleCardCvcChange}
+                                                    />
+                                                    {cvcError && <div className='error-text'>{cvcError}</div>}
+                                                </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -535,6 +690,18 @@ const CheckoutSection = () => {
                                     <div className="contact_form">
                                         <form onSubmit={handleSubmit}>
                                             <div className="form_row">
+                                                {/* <div className={`form_group w-50 ${errors.bfirstName ? 'error' : ''}`}>
+                                                    <input
+                                                        className="form_control"
+                                                        type="text"
+                                                        name="bfirstName"
+                                                        placeholder="First Name*"
+                                                        value={formData.bfirstName}
+                                                        onChange={handleInputChange}
+                                                        required
+                                                    />
+                                                    {errors.bfirstName && <p className="error-text">{errors.bfirstName}</p>}
+                                                </div> */}
                                                 <div className={`form_group w-50 ${errors.bfirstName ? 'error' : ''}`}>
                                                     <input
                                                         className="form_control"
@@ -545,7 +712,7 @@ const CheckoutSection = () => {
                                                         onChange={handleInputChange}
                                                         required
                                                     />
-                                                    {errors.bfirstName && <p className="error_message">{errors.bfirstName}</p>}
+                                                    {errors.bfirstName && <p className="error-text">{errors.bfirstName}</p>}
                                                 </div>
                                                 <div className={`form_group w-50 ${errors.blastName ? 'error' : ''}`}>
                                                     <input
@@ -557,7 +724,7 @@ const CheckoutSection = () => {
                                                         onChange={handleInputChange}
                                                         required
                                                     />
-                                                    {errors.blastName && <p className="error_message">{errors.blastName}</p>}
+                                                    {errors.blastName && <p className="error-text">{errors.blastName}</p>}
                                                 </div>
                                             </div>
                                             <div className={`form_group ${errors.bphoneNumber ? 'error' : ''}`}>
@@ -570,7 +737,7 @@ const CheckoutSection = () => {
                                                     onChange={handleInputChange}
                                                     required
                                                 />
-                                                {errors.bphoneNumber && <p className="error_message">{errors.bphoneNumber}</p>}
+                                                {errors.bphoneNumber && <p className="error-text">{errors.bphoneNumber}</p>}
                                             </div>
                                             <div className={`form_group ${errors.bemail ? 'error' : ''}`}>
                                                 <input
@@ -582,7 +749,7 @@ const CheckoutSection = () => {
                                                     onChange={handleInputChange}
                                                     required
                                                 />
-                                                {errors.bemail && <p className="error_message">{errors.bemail}</p>}
+                                                {errors.bemail && <p className="error-text">{errors.bemail}</p>}
                                             </div>
                                             <div className={`form_group ${errors.baddress ? 'error' : ''}`}>
                                                 <input
@@ -593,7 +760,7 @@ const CheckoutSection = () => {
                                                     onChange={handleInputChange}
                                                     required
                                                 />
-                                                {errors.baddress && <p className="error_message">{errors.baddress}</p>}
+                                                {errors.baddress && <p className="error-text">{errors.baddress}</p>}
                                             </div>
                                             <div className={`form_group ${errors.bcity ? 'error' : ''}`}>
                                                 <input
@@ -626,7 +793,7 @@ const CheckoutSection = () => {
                                                         onChange={handleInputChange}
                                                         required
                                                     />
-                                                    {errors.bPostalcode && <p className="error_message">{errors.bPostalcode}</p>}
+                                                    {errors.bPostalcode && <p className="error-text">{errors.bPostalcode}</p>}
                                                 </div>
                                             </div>
                                             {/* <div className="form_group">
@@ -684,10 +851,19 @@ const CheckoutSection = () => {
                                             <td></td>
                                             <td class="product-price">${selectedShippingMethodPrice}</td>
                                         </tr>
+                                        {discount > 0 && 
+                                        
+                                        <tr className='product-pp'>
+                                            <td>Discount</td>
+                                            <td></td>
+                                            <td class="product-price">${discount.toFixed(2)}</td>
+                                        </tr>
+                                        
+                                        }
                                         <tr className='product-total'>
                                             <td>Order Total</td>
                                             <td></td>
-                                            <td class="product-price">${totalAmount + parseInt(selectedShippingMethodPrice)}</td>
+                                            <td class="product-price">${totalAmount + parseInt(selectedShippingMethodPrice) - parseInt(discount)}</td>
                                         </tr>
                                     </tbody>
                                 </table>

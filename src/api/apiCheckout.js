@@ -11,6 +11,7 @@ const fetchData = async (endpoint) => {
                 'Authorization': `Bearer ${token}`,
             }
         });
+        console.log(response);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -19,15 +20,14 @@ const fetchData = async (endpoint) => {
         throw new Error(errorMessage);
     }
 };
+export const getCartById = (tempId) => fetchData(`get-cart?temp_id=${tempId}`);
 
 
-export const ShippingMethods = () => fetchData('shipping-methods');
-export const ShippingMethodCart = () => fetchData('shipping-method');
+export const Carts = () => fetchData('get-cart');
+// export const getStoreById = (id) => fetchData(`get-store/${id}`);
+// export const completeBooking = (id) => fetchData(`complete-booking/${id}`);
 
-export const getShippingMethodById = (id) => fetchData(`get-shipping-method/${id}`);
-export const getFilterByCategory = (slug) => fetchData(`get-filter-by-categroy/${slug}`);
-
-
+export const removeCart = (id) => fetchData(`cart/remove/${id}`);
 
 
 const postData = async (endpoint, formData, isMultipart = false) => {
@@ -35,6 +35,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
         const token = localStorage.getItem('token');
         const headers = {
             'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
         };
         if (isMultipart) {
             headers['Content-Type'] = 'multipart/form-data';
@@ -42,6 +43,7 @@ const postData = async (endpoint, formData, isMultipart = false) => {
         const response = await axios.post(`${API_URL}/${endpoint}`, formData, {
             headers
         });
+        console.log(response);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -53,7 +55,8 @@ const postData = async (endpoint, formData, isMultipart = false) => {
 
 
 
-export const addShippingMethod = (formData) => postData('shipping-method/add', formData, true);
 
 
-export const removeShippingMethod = (id) => postData(`shipping-method/remove/${id}`, {});
+export const checkout = (formData) => postData('checkout', formData, true);
+
+

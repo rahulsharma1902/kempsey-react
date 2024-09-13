@@ -1,17 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout.jsx';
 import { addCart, removeCart, getCartById } from '../api/apiCarts.js';
 import defaultImage from '../images/default.jpeg';
 import { Skeleton, Box, Typography } from '@mui/material';
 import { applyCoupon } from '../api/apiCoupons.js';
-
+import { ShippingMethodCart } from '../api/apiShippingMethods.js';
+import { CartContext } from '../contexts/CartContext.js';
 const CartPage = () => {
+  const { fetchCartCount } = useContext(CartContext);
+
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [couponCode, setCouponCode] = useState('');
   const [tempId, setTempId] = useState(localStorage.getItem('user_temp_id') || '');
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [discountText, setDiscountText] = useState('');
+  const [successMessage, setSuccessMessage] = useState(''); // State for success message
+  const [errorMessage, setErrorMessage] = useState(''); // State for error message
+  const [shippingMethodPrice, setShippingMethodPrice] = useState(0);
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -28,8 +37,24 @@ const CartPage = () => {
         setLoading(false);
       }
     };
+    const fetchShippingMethod = async () => {
+      try {
+        const response = await ShippingMethodCart(tempId);
+        console.log(response);
+        if (response.data) {
+          setShippingMethodPrice(response.data.price);
+        } else {
+          // Handle fetch error
+        }
+      } catch (error) {
+        setError('Failed to load cart items.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchCartItems();
+    fetchShippingMethod();
   }, [tempId]);
 
   const handleQuantityChange = async (id, change) => {
@@ -52,12 +77,16 @@ const CartPage = () => {
           setCartItems(cartItems.map(item =>
             item.id === id ? { ...item, quantity: newQuantity } : item
           ));
+          setDiscount(0);
+          setSuccessMessage('');
+          // await fetchCartCount();
         } else {
           alert(response.message);
         }
       } catch (error) {
         setError("Failed to update cart.");
       }
+      // setCartCount(newCartCount);
     }
   };
 
@@ -74,20 +103,26 @@ const CartPage = () => {
 
   const handleApplyCouponCode = async () => {
     const form = new FormData();
-    form.append('coupon_code', couponCode);
+    form.append('code', couponCode);
     form.append('tempId', tempId);
 
     try {
       const data = await applyCoupon(form);
+      console.log(data);
       if (data.success) {
-        alert('Coupon applied successfully!');
-        // Update the cart total or any related state here if needed
+        setDiscount(data.data.discount);
+        setTotalAmount(parseInt(data.data.total) - parseInt(data.data.discount));
+        setSuccessMessage('Coupon applied successfully!'); // Set success message
+        setErrorMessage(''); // Clear error message
       } else {
-        alert(data.message || 'Failed to apply the coupon code.');
+        setErrorMessage(data.message || 'Failed to apply the coupon code.'); // Set error message
+        setSuccessMessage(''); // Clear success message
       }
     } catch (error) {
+      console.log(error.message);
+      setErrorMessage(error.message || 'Failed to apply the coupon code.');
+      setSuccessMessage(''); // Clear success message
       console.error("Error applying coupon:", error);
-      setError("Failed to apply coupon code.");
     }
   };
 
@@ -95,12 +130,17 @@ const CartPage = () => {
     const data = await removeCart(id);
     if (data.success) {
       setCartItems(cartItems.filter(item => item.id !== id));
+      setDiscount(0);
+      setSuccessMessage('');
     } else {
       alert(data.message);
     }
   };
 
-  const totalAmount = cartItems?.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const totalAmounts = cartItems?.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  // setTotalAmount(totalAmounts);
+  // setTotalAmount(cartItems?.reduce((acc, item) => acc + item.product.price * item.quantity, 0));
+
 
   if (loading) {
     return (
@@ -206,8 +246,15 @@ const CartPage = () => {
                             ))}
                           </tbody>
                         </table>
-                        <Link to="/checkout" className="add-more cta">Proceed To Checkout</Link>
-                      </div>
+                        {couponCode ? (
+                          <Link to={`/checkout?code=${couponCode}`} className="add-more cta">
+                            Proceed To Checkout
+                          </Link>
+                        ) : (
+                          <Link to="/checkout" className="add-more cta">
+                            Proceed To Checkout
+                          </Link>
+                        )}                      </div>
                       <div className="cart-summary dark">
                         <div className='cart_summery_box'>
                           <h6>Coupon Code</h6>
@@ -221,18 +268,24 @@ const CartPage = () => {
                             />
                             <button onClick={handleApplyCouponCode} className="cta light">Apply</button>
                           </div>
+                          {successMessage && <div className="success-message">{successMessage}</div>}
+                          {errorMessage && <div className="error-text">{errorMessage}</div>}
                           <div className="amnt_detail">
                             <span className="title">Estimate Shipping</span>
                             <ul>
-                              <li>Subtotal<strong>${totalAmount.toFixed(2)}</strong></li>
-                              <li>Shipping<strong>$0.00</strong></li>
+                              <li>Subtotal<strong>${totalAmounts.toFixed(2)}</strong></li>
+                             {shippingMethodPrice > 0 && <li>Shipping<strong>${shippingMethodPrice}</strong></li>}
+                              {discount > 0 && <li><span>Discount:</span> <span>${discount.toFixed(2)}</span></li>}
+
                               <li>Estimated taxes<strong>$0.00</strong></li>
                             </ul>
                             <span className="ad_info">Additional taxes and fees will be calculated at checkout</span>
                           </div>
                           <div className="total-amount">
                             <p>Estimated Order Total</p>
-                            <p>${totalAmount.toFixed(2)}</p>
+                            {/* <p>${totalAmount.toFixed(2)}</p> */}
+                            <p>${(totalAmounts - discount + parseInt(shippingMethodPrice)).toFixed(2)  }</p>
+
                           </div>
                         </div>
                       </div>
