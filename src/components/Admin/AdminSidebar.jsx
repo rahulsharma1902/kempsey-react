@@ -9,6 +9,7 @@ import { Box } from '@mui/material';
 import { RiCustomerServiceFill } from "react-icons/ri";
 import { IoStorefrontSharp } from "react-icons/io5";
 import { SlCalender } from "react-icons/sl";
+import { MdOutlineLocalGroceryStore } from "react-icons/md";
 
 const SidebarComponent = ({ isSidebarCollapsed }) => {
   return (
@@ -105,8 +106,16 @@ const SidebarComponent = ({ isSidebarCollapsed }) => {
             <MenuItem>
               <Link to="/admin-dashboard/marketing/shipping" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Shipping</Link>
             </MenuItem>
-          </SubMenu>
+      </SubMenu>
+
+      <MenuItem icon={<MdOutlineLocalGroceryStore />}>
+          <Link to="/admin-dashboard/orders" style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}>Orders</Link>
+      </MenuItem>
+
       </Menu>
+
+    
+
     </Sidebar>
   );
 };

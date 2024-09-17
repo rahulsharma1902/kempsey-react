@@ -62,6 +62,8 @@ import AddShiping from '../components/Admin/Marketing/Shipping/AddShiping';
 import ListShiping from '../components/Admin/Marketing/Shipping/ListShiping';
 import ShipingUpdate from '../components/Admin/Marketing/Shipping/ShippingUpdate';
 
+
+import Orders from '../components/Admin/Orders/Orders'
 const AdminRoutes = () => {
     return (
         <Routes>
@@ -458,6 +460,19 @@ const AdminRoutes = () => {
                 } 
             />
             {/* end shipping */}
+
+            {/* order route start from here */}
+
+            <Route 
+                path="/orders" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <Orders />
+                        </PrivateRoute>
+                } 
+            />
+
+            {/* order routes end here */}
         </Routes>
     );
 };

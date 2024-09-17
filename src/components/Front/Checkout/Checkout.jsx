@@ -1,6 +1,7 @@
 import React, { useState , useEffect,useContext } from 'react';
 import { Link , useParams,useLocation, useNavigate} from 'react-router-dom';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
+import { toast } from 'react-toastify';
 import iconshop from '../../../images/shoppay-img.svg';
 import iconpaypal from '../../../images/paypal-img.svg';
 import icongpay from '../../../images/gpay-img.svg';
@@ -38,7 +39,8 @@ const CheckoutSection = () => {
         address: '',
         additional_address: '',
         city: '',
-        city: '',
+        state: '',
+        country: 'US',
         Postalcode: '',
         save_for_future: '',
         payment_method: '',
@@ -52,12 +54,25 @@ const CheckoutSection = () => {
         baddress: '',
         badditional_address: '',
         bcity: '',
-        bcity: '',
+        bstate: '',
+        bcountry: 'US',
         bPostalcode: '',
         // shipping
         shipping_method:'',
+        code:'',
 
     });
+    const usStates = [
+        "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", 
+        "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", 
+        "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", 
+        "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", 
+        "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", 
+        "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", 
+        "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", 
+        "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", 
+        "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+      ];
     const [showBillingAddress, setShowBillingAddress] = useState(false);
     const [selectedShippingMethod, setSelectedShippingMethod] = useState('');
     const [selectedShippingMethodPrice, setSelectedShippingMethodPrice] = useState('');
@@ -112,29 +127,34 @@ const CheckoutSection = () => {
     
         fetchCartItems();
       }, [tempId]);
-    //Fetching shipping methods
-    useEffect(() => {
+      useEffect(() => {
         const getShippingMethodData = async () => {
-          try {
-            const response = await ShippingMethods();
-            if (Array.isArray(response.data)) {
-                setShippingMethods(response.data);
-                if (response.data.length > 0) {
-                    setSelectedShippingMethod(response.data[0].id);
-                    setSelectedShippingMethodPrice(response.data[0].price);
+            try {
+                const response = await ShippingMethods();
+                if (Array.isArray(response.data)) {
+                    setShippingMethods(response.data);
+                    if (response.data.length > 0) {
+                        // Automatically set the first shipping method as the default
+                        setFormData(prevFormData => ({
+                            ...prevFormData,
+                            shipping_method: response.data[0].id
+                        }));
+                        setSelectedShippingMethod(response.data[0].id);
+                        setSelectedShippingMethodPrice(response.data[0].price);
+                    }
+                } else {
+                    setShippingMethods([]);
+                    console.error('Unexpected response format:', response.data);
                 }
-            } else {
-                setShippingMethods([]);
-              console.error('Unexpected response format:', response.data);
+            } catch (error) {
+                console.error('Failed to fetch ShippingMethods:', error.message);
+            } finally {
+                setLoading(false);
             }
-          } catch (error) {
-            console.error('Failed to fetch ShippingMethods:', error.message);
-          } finally {
-            setLoading(false);
-          }
         };
         getShippingMethodData();
     }, []);
+    
 
     // Apply coupon code 
     useEffect(() => {
@@ -148,7 +168,10 @@ const CheckoutSection = () => {
                     console.log(response);
                     if (response.data) {
                         setDiscount(response.data.discount);
-
+                        setFormData((prevState) => ({
+                            ...prevState,
+                            code: code,
+                        }));
                     } else {
                     // Handle fetch error
                     }
@@ -169,17 +192,17 @@ const CheckoutSection = () => {
 
 
     const handleShippingMethodChange = (e) => {
-        
-        const selectedValue = e.target.value;
+        const selectedMethodId = e.target.value;
+        const selectedMethod = shippingMethods.find(method => method.id === selectedMethodId);
+    
         setFormData({
             ...formData,
-            shipping_method: selectedValue ,
-          });
-        const selectedPrice = e.target.getAttribute('data-price');
-
-        setSelectedShippingMethod(selectedValue);
-        setSelectedShippingMethodPrice(selectedPrice);
+            shipping_method: selectedMethodId,
+        });
+        setSelectedShippingMethod(selectedMethodId);
+        setSelectedShippingMethodPrice(selectedMethod?.price || 0);
     };
+    
     const handleBillingAddressChange = (e) => {
         const isDifferentAddress = e.target.id === 'diffss-addrs';
         setShowBillingAddress(isDifferentAddress);
@@ -188,16 +211,6 @@ const CheckoutSection = () => {
           billingAddressSameAsShipping: !isDifferentAddress, // Update the selection field
         });
       };
-    // const handleBillingAddressChange = (e) => {
-    //     setShowBillingAddress(e.target.id === 'diffss-addrs');
-    //   };
-    // const handleInputChange = (e) => {
-    //     const { name, value } = e.target;
-    //     setFormData({
-    //         ...formData, 
-    //         [name]: value,
-    //     });
-    // };
     const handleInputChange = (e) => {
         const { name, type, checked, value } = e.target;
         setFormData({
@@ -205,57 +218,7 @@ const CheckoutSection = () => {
           [name]: type === 'checkbox' ? checked : value,
         });
       };
-    const validateForm = async () => {
-        
-        const errors = {};
-
-        if (!formData.firstName) errors.firstName = 'First name is required';
-        // if (!formData.lastName) errors.lastName = 'Last name is required';
-        if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
-        if (!formData.email) errors.email = 'Email is required';
-        // if (!formData.additional_address) errors.additional_address = 'a is required';
-        if (!formData.address) errors.address = 'Address is required';
-        if (!formData.city) errors.city = 'City is required';
-        if (!formData.Postalcode) errors.Postalcode = 'Postalcode is required';
-        
-
-        if(!formData.payment_method ) errors.payment_method = 'Please select payment method';
-
-        if(formData.payment_method == 'stripe') {
-            if (cardNumberError) errors.cardNumber = cardNumberError;
-            if (expiryError) errors.expiry = expiryError;
-            if (cvcError) errors.cvc = cvcError;
-            if (!stripe || !elements) {
-                errors.email = "don't have element";
-            }
-            const { error, paymentMethod } = await stripe.createPaymentMethod({
-                type: 'card',
-                card: elements.getElement(CardNumberElement),
-                billing_details: {
-                    name: 'test',
-                },
-            });
-
-            setFormData({
-                ...formData, 
-                ['payment_token']: paymentMethod?.id,
-            });
-            // formData.append('payment_token',paymentMethod);
-        }
-        if(formData.billingAddressSameAsShipping !== true){
-            if (!formData.bfirstName) errors.bfirstName = 'First name is required';
-            if (!formData.blastName) errors.blastName = 'Last name is required';
-            if (!formData.bphoneNumber) errors.bphoneNumber = 'Phone number is required';
-            if (!formData.bemail) errors.bemail = 'Email is required';
-            if (!formData.baddress) errors.baddress = 'Address is required';
-            if (!formData.bcity) errors.bcity = 'City is required';
-            if (!formData.bPostalcode) errors.bPostalcode = 'Postalcode is required';
-        }
-        
-        return errors;
-    };
-
-
+  
 
     const handleCardNumberChange = (event) => {
         const isCardNumberValid = event.complete && event.error === undefined;
@@ -286,39 +249,181 @@ const CheckoutSection = () => {
           setCvcError('');
         }
       };
+    //   const validateForm = async () => {
+        
+    //     const errors = {};
+
+    //     if (!formData.firstName) errors.firstName = 'First name is required';
+    //     // if (!formData.lastName) errors.lastName = 'Last name is required';
+    //     if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
+    //     if (!formData.email) errors.email = 'Email is required';
+    //     // if (!formData.additional_address) errors.additional_address = 'a is required';
+    //     if (!formData.address) errors.address = 'Address is required';
+    //     if (!formData.city) errors.city = 'City is required';
+    //     if (!formData.Postalcode) errors.Postalcode = 'Postalcode is required';
+        
+
+    //     if(!formData.payment_method ) errors.payment_method = 'Please select payment method';
+
+    //     if(formData.payment_method == 'stripe') {
+    //         if (cardNumberError) errors.cardNumber = cardNumberError;
+    //         if (expiryError) errors.expiry = expiryError;
+    //         if (cvcError) errors.cvc = cvcError;
+    //         if (!stripe || !elements) {
+    //             errors.email = "don't have element";
+    //         }
+    //         const { error, paymentMethod } = await stripe.createPaymentMethod({
+    //             type: 'card',
+    //             card: elements.getElement(CardNumberElement),
+    //             billing_details: {
+    //                 name: 'test',
+    //             },
+    //         });
+
+    //         setFormData({
+    //             ...formData, 
+    //             ['payment_token']: paymentMethod?.id,
+    //         });
+    //         // formData.append('payment_token',paymentMethod);
+    //     }
+    //     if(formData.billingAddressSameAsShipping !== true){
+    //         if (!formData.bfirstName) errors.bfirstName = 'First name is required';
+    //         if (!formData.blastName) errors.blastName = 'Last name is required';
+    //         if (!formData.bphoneNumber) errors.bphoneNumber = 'Phone number is required';
+    //         if (!formData.bemail) errors.bemail = 'Email is required';
+    //         if (!formData.baddress) errors.baddress = 'Address is required';
+    //         if (!formData.bcity) errors.bcity = 'City is required';
+    //         if (!formData.bPostalcode) errors.bPostalcode = 'Postalcode is required';
+    //     }
+        
+    //     return errors;
+    // };
 
 
-
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+        
+    //     if (user) {
+    //       const validationErrors = await validateForm();
+    //       if (Object.keys(validationErrors).length === 0) {
+    //         console.log('Form submitted:', formData);
+    //         setLoading(true);
+    //         try {
+    //             const response = await checkout(formData);
+    //             console.log(response);
+    //             // if (response.data) {
+    //             //   setBrandsData(response.data);
+    //             // } else {
+    //             //   console.error('Unexpected response format:', response.data);
+    //             // }
+    //           } catch (error) {
+    //             console.error('Failed to fetch Brands:', error.message);
+    //           } finally {
+    //             setLoading(false);
+    //           }
+    //       } else {
+    //         setErrors(validationErrors);
+    //       }
+    //     } else {
+    //       navigate({
+    //         pathname: '/login',
+    //         search: `?to=checkout?code=${code}`,
+    //       });
+    //     }
+    //   };
+    
+    
+    const validateForm = () => {
+        const errors = {};
+    
+        if (!formData.firstName) errors.firstName = 'First name is required';
+        if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
+        if (!formData.email) errors.email = 'Email is required';
+        if (!formData.address) errors.address = 'Address is required';
+        if (!formData.city) errors.city = 'City is required';
+        if (!formData.Postalcode) errors.Postalcode = 'Postalcode is required';
+        if (!formData.payment_method) errors.payment_method = 'Please select payment method';
+    
+        if (formData.billingAddressSameAsShipping !== true) {
+            if (!formData.bfirstName) errors.bfirstName = 'First name is required';
+            if (!formData.blastName) errors.blastName = 'Last name is required';
+            if (!formData.bphoneNumber) errors.bphoneNumber = 'Phone number is required';
+            if (!formData.bemail) errors.bemail = 'Email is required';
+            if (!formData.baddress) errors.baddress = 'Address is required';
+            if (!formData.bcity) errors.bcity = 'City is required';
+            if (!formData.bPostalcode) errors.bPostalcode = 'Postalcode is required';
+        }
+    
+        return errors;
+    };
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
         if (user) {
-          const validationErrors = await validateForm();
-          if (Object.keys(validationErrors).length === 0) {
-            // console.log('Form submitted:', formData);
-
-            try {
-                const response = await checkout(formData);
-                console.log(response);
-                // if (response.data) {
-                //   setBrandsData(response.data);
-                // } else {
-                //   console.error('Unexpected response format:', response.data);
-                // }
-              } catch (error) {
-                console.error('Failed to fetch Brands:', error.message);
-              } finally {
-                // setLoading(false);
-              }
-          } else {
-            setErrors(validationErrors);
-          }
+            const validationErrors = validateForm();
+            if (Object.keys(validationErrors).length === 0) {
+                let paymentToken = formData.payment_token;
+    
+                try {
+                    // If payment method is stripe, generate the token before proceeding
+                    if (formData.payment_method === 'stripe') {
+                        if (!stripe || !elements) {
+                            console.error("Stripe elements are not loaded");
+                            return;
+                        }
+    
+                        const cardElement = elements.getElement(CardNumberElement);
+                        const { error, paymentMethod } = await stripe.createPaymentMethod({
+                            type: 'card',
+                            card: cardElement,
+                            billing_details: {
+                                name: `${formData.firstName} ${formData.lastName}`,
+                            },
+                        });
+    
+                        if (error) {
+                            console.error("Payment Method Error:", error);
+                            return;
+                        }
+    
+                        // Set the payment token to a local variable
+                        paymentToken = paymentMethod.id;
+                    }
+    
+                    // Include payment_token in the form data directly for submission
+                    const finalFormData = {
+                        ...formData,
+                        payment_token: paymentToken
+                    };
+    
+                    // Proceed with form submission after payment token is set
+                    console.log('Form submitted:', finalFormData);
+                    // return false;
+                    const response = await checkout(finalFormData);
+                    console.log(response);
+                    if(response.success == true ){
+                        navigate({
+                            pathname: '/',
+                        });
+                        toast.success('Your order has been booked.');
+                    }
+    
+                } catch (error) {
+                    console.error('Failed to submit form:', error.message);
+                }
+            } else {
+                setErrors(validationErrors);
+            }
         } else {
-          navigate({
-            pathname: '/login',
-            search: `?to=checkout?code=${code}`,
-          });
+            navigate({
+                pathname: '/login',
+                search: `?to=checkout?code=${code}`,
+            });
         }
-      };
+    };
+    
+    
     const totalAmount = cartItems?.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 
     return (
@@ -327,6 +432,7 @@ const CheckoutSection = () => {
             <div Class='container'>
                 <div class="CheckoutSection-row">
                     <div class="CheckoutSection-col">
+                        {/*
                         <div Class="checkout-express-head">
                             <h2 class="text-center">Express Checkout</h2>
                             <div Class="Express-Checkout-row">
@@ -341,6 +447,7 @@ const CheckoutSection = () => {
                                 </div>
                             </div>
                         </div>
+                        */}
                         <div className="checkout-form-list login-checkout">
                             <h4>Contact</h4>
                             <div class={`form_group ${errors.email ? 'error' : ''}`}>
@@ -457,15 +564,23 @@ const CheckoutSection = () => {
                                         {errors.city && <p class="error_city">{errors.city}</p>}
                                     </div>
                                     <div class="form_row">
-                                        <div class="form_group">
-                                            <select id="state" name="state"  value={formData.state} onChange={handleInputChange} class="form_control">
-                                                {/* <option selected>State</option> */}
-                                                <option value="LA">LA</option>
-                                                <option value="Las Vegas">Las Vegas</option>
-                                                <option value="California">California</option>
-                                                <option value="Texas">Texas</option>
-                                            </select>
-                                        </div>
+                                    <div className="form_group">
+                                        <select
+                                            id="state"
+                                            name="state"
+                                            value={formData.state}
+                                            onChange={handleInputChange}
+                                            className="form_control"
+                                        >
+                                            <option value="" disabled>Select State</option>
+                                            {usStates.map((state, index) => (
+                                                <option key={index} value={state}>
+                                                    {state}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
                                         <div class={`form_group w-50 ${errors.Postalcode ? 'error' : ''}`}>
                                             <input
                                                 class="form_control"
@@ -496,33 +611,34 @@ const CheckoutSection = () => {
                             <p>Select the address that matches your card or payment method.  </p>
                          
                             <div class="billing-address-detail">
-                            {shippingMethods.map(smethod => (
-                                <div key={smethod.id} className="same-billing-address">
-                                    <div className="form-check">
-                                        <div className="shipping-method-check">
-                                            <input 
-                                                className="form-check-input address-radio-btn" 
-                                                type="radio" 
-                                                name="shipping_method" 
-                                                id={`shipping-method-${smethod.id}`}  // Unique ID for each radio button
-                                                value={smethod.id} 
-                                                data-price={smethod.price}
-                                                checked={selectedShippingMethod == smethod.id}
-                                                onChange={handleShippingMethodChange}
-                                                data-gtm-form-interact-field-id="1" 
-                                            />
-                                            <label className="form-check-label" htmlFor={`shipping-method-${smethod.id}`}>
-                                                {smethod.type}
-                                                <span>{smethod.details}</span>
-                                            </label>
-                                            <div className="shipping-method-price">
-                                                <p>${smethod.price}</p>
+                                {shippingMethods.map(smethod => (
+                                    <div key={smethod.id} className="same-billing-address">
+                                        <div className="form-check">
+                                            <div className="shipping-method-check">
+                                                <input 
+                                                    className="form-check-input address-radio-btn" 
+                                                    type="radio" 
+                                                    name="shipping_method" 
+                                                    id={`shipping-method-${smethod.id}`}  // Unique ID for each radio button
+                                                    value={smethod.id} 
+                                                    data-price={smethod.price}
+                                                    checked={selectedShippingMethod == smethod.id}
+                                                    onChange={handleShippingMethodChange}
+                                                    data-gtm-form-interact-field-id="1" 
+                                                />
+                                                <label className="form-check-label" htmlFor={`shipping-method-${smethod.id}`}>
+                                                    {smethod.type}
+                                                    <span>{smethod.details}</span>
+                                                </label>
+                                                <div className="shipping-method-price">
+                                                    <p>${smethod.price}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                ))}
                                 </div>
-                            ))}
-                            </div>
+
                         </div>
 
                         <div class='checkout-form-list payment'>
@@ -585,6 +701,7 @@ const CheckoutSection = () => {
                                         </div>
                                     </div>
                                 </div>
+                                 {/*
                                 <div class="diff-billing-address">
                                     <div class="form-check">
                                         <div className="payment-check">
@@ -601,6 +718,7 @@ const CheckoutSection = () => {
                                         </div>
                                     </div>
                                 </div>
+                                */}
                                 {/* <div class="diff-billing-address">
                                     <div class="form-check">
                                         <div className="payment-check">
@@ -775,15 +893,22 @@ const CheckoutSection = () => {
                                                 {errors.bcity && <p className="error_city">{errors.bcity}</p>}
                                             </div>
                                             <div className="form_row">
-                                                <div className="form_group">
-                                                    <select id="hear-aboutus" onChange={handleInputChange} name="bstate" className="form_control">
-                                                        {/* <option selected>State</option> */}
-                                                        <option>LA</option>
-                                                        <option>Las Vegas</option>
-                                                        <option>California</option>
-                                                        <option>Texas</option>
-                                                    </select>
-                                                </div>
+                                            <div className="form_group">
+                                                <select
+                                                    id="bstate"
+                                                    name="bstate"
+                                                    value={formData.state}
+                                                    onChange={handleInputChange}
+                                                    className="form_control"
+                                                >
+                                                    <option value="" disabled>Select State</option>
+                                                    {usStates.map((state, index) => (
+                                                        <option key={index} value={state}>
+                                                            {state}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
                                                 <div className={`form_group w-50 ${errors.bPostalcode ? 'error' : ''}`}>
                                                     <input
                                                         className="form_control"
@@ -812,10 +937,11 @@ const CheckoutSection = () => {
                         <button
                             onClick={handleSubmit}  
                             className="checkout-pay"
-                            disabled={loading} 
+                            disabled={loading || cartItems.length === 0} // Disable if loading or no items in the cart
                         >
                             {loading ? 'Processing...' : 'PAY NOW'}
                         </button>
+
                     </div>
                     {/* Product and Price Section */}
                     <div class="CheckoutSection-col checkout-items">
