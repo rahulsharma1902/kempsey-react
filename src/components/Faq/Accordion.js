@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 
-const Accordion = ({ title, content, isOpen, onToggle }) => {
+const Accordion = ({key,id, title, content, isOpen, onToggle }) => {
     const contentRef = useRef(null);
     const [isContentVisible, setIsContentVisible] = useState(isOpen);
 
@@ -26,7 +26,7 @@ const Accordion = ({ title, content, isOpen, onToggle }) => {
                 className="accordion-title"
                 onClick={onToggle}
                 aria-expanded={isOpen}
-                aria-controls={`accordion-content-${title}`}
+                aria-controls={`accordion-content-${id}`}
             >
                 {title}
                 <span className={`tab-icon ${isOpen ? 'open' : ''}`}>
@@ -35,10 +35,11 @@ const Accordion = ({ title, content, isOpen, onToggle }) => {
             </button>
             <div
                 ref={contentRef}
-                id={`accordion-content-${title}`}
+                id={`accordion-content-${id}`}
                 className={`accordion-content ${isContentVisible ? 'visible' : 'hidden'}`}
+                style={{ maxHeight: isOpen ? '100px' : '0px' }}
             >
-                <p>{content}</p>
+                <span dangerouslySetInnerHTML={{ __html: content }} />
             </div>
         </div>
     );

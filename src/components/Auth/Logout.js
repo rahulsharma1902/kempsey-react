@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
+import {  toast } from 'react-toastify';
 
 const Logout = () => {
     const { logout } = useContext(AuthContext);
@@ -11,6 +12,7 @@ const Logout = () => {
             try {
                 await logout();
                 setLoggedOut(true);
+                toast.success('Logout successful!');
             } catch (err) {
                 console.error('Failed to logout:', err);
             }

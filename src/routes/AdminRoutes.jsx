@@ -23,7 +23,19 @@ import HomePageCarousel from '../components/Admin/Storefront/HomePageCarousel';
 import HomeContent from '../components/Admin/Storefront/HomeContent';
 import AboutUsContent from '../components/Admin/Storefront/AboutUsContent';
 import SiteContent from '../components/Admin/Storefront/SiteContent';
+import WorkshopContentAdd from '../components/Admin/Storefront/WorkshopContent';
 
+import CustomerServiceContentAdd from '../components/Admin/Storefront/CustomerServiceContent';
+import ContactUsContentAdd from '../components/Admin/Storefront/ContactUsContent';
+import FaqContentAdd from '../components/Admin/Storefront/FaqContent';
+import FaqCategoriesAdd from '../components/Admin/Storefront/Faqs/faqcategory/FaqCategoryadd';
+import FaqCategoriesList from '../components/Admin/Storefront/Faqs/faqcategory/FaqCategoryList';
+import FaqCategoryUpdate from '../components/Admin/Storefront/Faqs/faqcategory/FaqCategoryUpdate';
+
+import FaqsList from '../components/Admin/Storefront/Faqs/faqlist';
+import FaqsAdd from '../components/Admin/Storefront/Faqs/faqadd';
+import FaqsUpdate from '../components/Admin/Storefront/Faqs/faqupdate';
+ 
 
 import AddService from '../components/Admin/Servicing/AddService';
 import ServicesList from '../components/Admin/Servicing/ServicesList';
@@ -37,7 +49,21 @@ import ServiceOptionUpdate from '../components/Admin/Servicing/Options/ServiceOp
 // store 
 import AddStore from '../components/Admin/Stores/AddStore';
 import StoreList from '../components/Admin/Stores/StoreList';
+import StoreUpdate from '../components/Admin/Stores/StoreUpdate';
 
+import BookingList from '../components/Admin/Bookings/BookingList';
+
+// coupon code
+import AddCoupon from '../components/Admin/Marketing/CouponCode/AddCoupon';
+import ListCoupon from '../components/Admin/Marketing/CouponCode/ListCoupon';
+
+
+import AddShiping from '../components/Admin/Marketing/Shipping/AddShiping';
+import ListShiping from '../components/Admin/Marketing/Shipping/ListShiping';
+import ShipingUpdate from '../components/Admin/Marketing/Shipping/ShippingUpdate';
+
+
+import Orders from '../components/Admin/Orders/Orders'
 const AdminRoutes = () => {
     return (
         <Routes>
@@ -190,10 +216,91 @@ const AdminRoutes = () => {
                 } 
             />
             <Route 
+                path="/storefront/customer-service-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <CustomerServiceContentAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/storefront/faq-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqContentAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/storefront/contact-us-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ContactUsContentAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
                 path="/storefront/site-content" 
                 element={
                         <PrivateRoute roles={['admin']}>
                             <SiteContent />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/storefront/workshop-content" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <WorkshopContentAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faq-categories" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqCategoriesList />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faq-categories/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqCategoriesAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faq-categories/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqCategoryUpdate />
+                        </PrivateRoute>
+                } 
+            />
+
+            <Route 
+                path="/faqs" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqsList />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faqs/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqsAdd />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/faqs/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <FaqsUpdate />
                         </PrivateRoute>
                 } 
             />
@@ -288,7 +395,84 @@ const AdminRoutes = () => {
                 } 
             />
 
+            <Route 
+                path="/stores/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <StoreUpdate />
+                        </PrivateRoute>
+                } 
+            />
+
             {/* store end here */}
+            {/* BookingList */}
+            <Route 
+                path="/bookings" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <BookingList />
+                        </PrivateRoute>
+                } 
+            />
+            {/* BookingList end here */}
+            {/* ListCoupon AddCoupon */}
+            <Route 
+                path="/marketing/coupons/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <AddCoupon />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/marketing/coupons" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ListCoupon />
+                        </PrivateRoute>
+                } 
+            />
+
+            {/* end coup[on] */}
+            {/* shipping */}
+            <Route 
+                path="/marketing/shipping/add" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <AddShiping />
+                        </PrivateRoute>
+                } 
+            />
+            <Route 
+                path="/marketing/shipping" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ListShiping />
+                        </PrivateRoute>
+                } 
+            />
+             <Route 
+                path="/marketing/shipping/edit/:id" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <ShipingUpdate />
+                        </PrivateRoute>
+                } 
+            />
+            {/* end shipping */}
+
+            {/* order route start from here */}
+
+            <Route 
+                path="/orders" 
+                element={
+                        <PrivateRoute roles={['admin']}>
+                            <Orders />
+                        </PrivateRoute>
+                } 
+            />
+
+            {/* order routes end here */}
         </Routes>
     );
 };

@@ -1,12 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import reviewstarimage from '../../images/reviews.png';
 import hearticon from '../../images/icon_heart.svg';
 import eyeicon from '../../images/eyedvg.svg';
 import itmsoldicon from '../../images/item_soldvg.svg';
 import { Link } from 'react-router-dom';
+import { addCart } from '../../api/apiCarts';
+import { toast } from 'react-toastify';
+import { CartContext } from '../../contexts/CartContext.js';
 
-const Productdetailmodule = () => {
+const Productdetailmodule = (data) => {
+    const { setCartCount } = useContext(CartContext);
+
     const [quantity, setQuantity] = useState(1);
+    const [tempId, setTempId] = useState(localStorage.getItem('user_temp_id') || '');
+
+
+    // useEffect(() => {
+    //     const fetchTempId = async () => {
+    //         try {
+    //             const response = await fetch('https://sagmetic.site/2023/laravel/kempsey/public/api/generate-temp-id');
+    //             const result = await response.json();
+    //             const newTempId = result.temp_id;
+    //             setTempId(newTempId);
+    //             localStorage.setItem('user_temp_id', newTempId);
+    //         } catch (error) {
+    //             console.error('Failed to fetch temporary ID:', error);
+    //         }
+    //     };
+
+    //     if (!tempId) {
+    //         fetchTempId();
+    //     }
+    // }, [tempId]);
+
+    const handleAddToCart = async () => {
+        try {
+            const response = await addCart({
+                product_id: data?.data?.id || '',
+                quantity,
+                tempId,
+            });
+
+            if (response.success) {
+                toast.success('Product successfully added to cart');
+            } else {
+                toast.error('Failed to add product to cart');
+            }
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+            toast.error('Something went wrong.');
+        }
+    };
 
     const handleIncrement = () => {
         setQuantity(prevQuantity => prevQuantity + 1);
@@ -27,14 +71,14 @@ const Productdetailmodule = () => {
 
     return (
         <div className='Product_detail_component'>
-            <p className='category_text'>Camping</p>
-            <h2 className='size36 product_title'>Product Name 01</h2>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-            <div className='product_review'>
+            <p className='category_text'>{ data?.data?.category_name }</p>
+            <h2 className='size36 product_title'>{ data?.data?.name ??  'Product Name 01'}</h2>
+            <p dangerouslySetInnerHTML={{ __html: data?.data?.detail ?? '' }} />
+            {/* <div className='product_review'>
                 <img src={reviewstarimage} className='review_star' alt="Review Stars"/>
                 <p><span className='revies_count'>10</span> Reviews</p>
-            </div>
-            <div className='product_price'>$149.00</div>
+            </div> */}
+            <div className='product_price'>${ data?.data?.price ?? '149.00'}</div>
 
             <div className='quantity_cart_wrapper'>
                 <p className='quantity_label'>Quantity:</p>
@@ -57,7 +101,9 @@ const Productdetailmodule = () => {
                         </div>
                     </div>
                     <div className='cart_btn_wrapper'>
-                        <Link to="/cart" className='cta'>Add TO cART</Link>
+                        <button onClick={handleAddToCart} className='cta'>
+                            Add to Cart
+                        </button>
                     </div>
                     <div className='fav_col'>
                         <div className='fav_button'><img src={hearticon} /></div>

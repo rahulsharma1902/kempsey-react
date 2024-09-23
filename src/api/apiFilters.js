@@ -11,7 +11,6 @@ const fetchData = async (endpoint) => {
                 'Authorization': `Bearer ${token}`,
             }
         });
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -25,6 +24,7 @@ const fetchData = async (endpoint) => {
 export const Filters = () => fetchData('filters');
 
 export const getFilterById = (id) => fetchData(`get-filter/${id}`);
+export const getFilterByCategory = (slug) => fetchData(`get-filter-by-categroy/${slug}`);
 
 
 

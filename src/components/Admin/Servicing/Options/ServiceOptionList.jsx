@@ -3,13 +3,26 @@ import { Link } from 'react-router-dom';
 import { Typography, Box, IconButton, Menu, MenuItem } from '@mui/material';
 import DataTable from 'react-data-table-component';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { removeServiceOption } from '../../../../api/apiService'; // Ensure this path is correct
+import { removeServiceOption } from '../../../../api/apiService';
 import { toast } from 'react-toastify';
+
+const normalizeData = (serviceOptions) => {
+  if (Array.isArray(serviceOptions)) {
+    return serviceOptions; // It's already an array
+  } else if (typeof serviceOptions === 'object') {
+    return Object.values(serviceOptions); // Convert object to array
+  }
+  return [];
+};
 
 const ServiceOptionsTable = ({ data }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
-  const [servicesData, setServicesData] = useState(data.serviceOptions || []);
+  const [servicesData, setServicesData] = useState(normalizeData(data.serviceOptions));
+
+
+  console.log('Data:', typeof(servicesData));
+  console.log('Service Options:', data.serviceOptions);
 
   const handleClick = (event, id) => {
     setAnchorEl(event.currentTarget);
@@ -65,13 +78,15 @@ const ServiceOptionsTable = ({ data }) => {
   return (
     <Box>
       <Typography variant="h6">Service Options:</Typography>
-      {servicesData.length > 0 ? (
+      {servicesData ? (
+        <>
         <DataTable
           columns={columns}
           data={servicesData}
           pagination
           highlightOnHover
         />
+        </>
       ) : (
         <Typography>No service options available.</Typography>
       )}

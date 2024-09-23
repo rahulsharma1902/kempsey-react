@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import iconphone from '../../images/icon_phone.svg';
 import iconemail from '../../images/icon_emailk.svg';
 import iconaddress from '../../images/icon_address.svg';
+import {useStorefrontContent } from '../../contexts/StoreFrontContext.js';
 
 const ContactSection = () => {
+    const { contactUs, loading } = useStorefrontContent();
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -50,8 +53,8 @@ const ContactSection = () => {
                 <div className='contact_row'>
                     <div className='contact_col address_col'>
                         <div className='section_head'>
-                            <h2 className='size46'>Let’s See How We Can Help You!</h2>
-                            <p>To speak about how I can help capture your essence in film, get in touch.</p>
+                            <h2 className='size46'>{ contactUs?.content_heading ?? 'Let’s See How We Can Help You!'}</h2>
+                            <p>{ contactUs?.content_sub_heading ??  'To speak about how I can help capture your essence in film, get in touch.'}</p>
                         </div>
 
                         <div className='address_info'>

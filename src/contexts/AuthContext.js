@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const AuthContext = createContext();
@@ -24,13 +24,14 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            toast.success('Logout successful!');
+            toast.dismiss(); // Dismiss all previous toasters
+            // toast.success('Logout successful!');
         } catch (error) {
             console.error('Logout failed:', error);
+            toast.dismiss(); // Dismiss all previous toasters
             toast.error('Logout failed');
         }
     };
-
     const register = async (data) => {
         try {
             const response = await axios.post('https://sagmetic.site/2023/laravel/kempsey/public/api/register', data, {
@@ -47,7 +48,6 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{ user, login, logout, register }}>
             {children}
-            <ToastContainer />
         </AuthContext.Provider>
     );
 };

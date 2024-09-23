@@ -6,18 +6,32 @@ import productmainimage3 from '../../images/product_main3.png';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const ProductImages = () => {
+const ProductImages = (data) => {
     const [sliderReady, setSliderReady] = useState(false);
     const forSlider = useRef(null);
     const navSlider = useRef(null);
 
+    console.log(data);
+
+    let images;
+
+    if (data?.data.images && JSON.parse(data.data.images).length > 0) {
+        images = JSON.parse(data.data.images);
+    } else {
+        images = [
+            productmainimage,
+            productmainimage2,
+            productmainimage3,
+            productmainimage
+        ];
+    }
     // Array of image sources
-    const images = [
-        productmainimage,
-        productmainimage2,
-        productmainimage3,
-        productmainimage
-    ];
+    // const images = [
+    //     productmainimage,
+    //     productmainimage2,
+    //     productmainimage3,
+    //     productmainimage
+    // ];
 
     useEffect(() => {
         setSliderReady(true);
@@ -28,7 +42,8 @@ const ProductImages = () => {
         slidesToScroll: 1,
         arrows: false,
         fade: true,
-        asNavFor: sliderReady ? navSlider.current : null
+        asNavFor: sliderReady ? navSlider.current : null,
+        initialSlide: data?.data?.thumbnail_image, 
     };
 
     const settingsNav = {
@@ -41,6 +56,7 @@ const ProductImages = () => {
         vertical: true,
         infinite: false,
         verticalSwiping: true,
+        initialSlide: data?.data?.thumbnail_image, 
         responsive: [
             {
               breakpoint: 480, // For screens under 1024px
