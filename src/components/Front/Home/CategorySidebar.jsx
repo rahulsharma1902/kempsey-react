@@ -21,7 +21,7 @@ const CategorySidebar = () => {
           // Render actual categories when loaded
           ParentCategories.map((category) => (
             <li key={category?.id ?? ''}>
-              <Link to={category?.slug ?? ''} className="dwn_arw">
+              <Link to={`/shop/${category?.slug ?? ''}`} className="dwn_arw">
                 {category?.name ?? ''} <i className="fa-solid fa-chevron-right"></i>
               </Link>
             </li>

@@ -73,7 +73,7 @@ const AdminHeader = ({ onToggleSidebar }) => {
               </Box>
             </Box>
             <Divider />
-            <MenuItem onClick={handleClose}>
+            {/* <MenuItem onClick={handleClose}>
               <Button
                 component={Link}
                 to="/admin-dashboard/setting"
@@ -81,7 +81,7 @@ const AdminHeader = ({ onToggleSidebar }) => {
               >
                 Manage your Google Account
               </Button>
-            </MenuItem>
+            </MenuItem> */}
             <Divider />
             <MenuItem onClick={handleClose}>
               <Button

@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom';
 import iconphone from '../../images/icon_phone.svg';
 import iconemail from '../../images/icon_emailk.svg';
 import iconaddress from '../../images/icon_address.svg';
-import {useStorefrontContent } from '../../contexts/StoreFrontContext.js';
+import { toast } from 'react-toastify';
+import axios from 'axios'; // Assuming you are using axios for the API call
 
-const ContactSection = () => {
-    const { contactUs, loading } = useStorefrontContent();
-
+const ContactSection = ({ contactUs }) => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -17,6 +16,7 @@ const ContactSection = () => {
     });
 
     const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -36,12 +36,35 @@ const ContactSection = () => {
         return errors;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length === 0) {
-            console.log('Form submitted:', formData);
-            // Submit the form data to the server or perform other actions
+            setLoading(true);
+            toast.success('Your message has been sent successfully!');
+            setFormData({
+                        firstName: '',
+                        lastName: '',
+                        phoneNumber: '',
+                        email: '',
+                        message: '',
+                    });
+                    setLoading(false);
+            // try {
+            //     const response = await axios.post('/api/contact', formData);
+            //     setLoading(false);
+            //     toast.success('Your message has been sent successfully!');
+            //     setFormData({
+            //         firstName: '',
+            //         lastName: '',
+            //         phoneNumber: '',
+            //         email: '',
+            //         message: '',
+            //     });
+            // } catch (error) {
+            //     setLoading(false);
+            //     toast.error('Failed to send your message. Please try again.');
+            // }
         } else {
             setErrors(validationErrors);
         }
@@ -100,9 +123,9 @@ const ContactSection = () => {
                                             placeholder="First Name*"
                                             value={formData.firstName}
                                             onChange={handleInputChange}
-                                            required
+                                            
                                         />
-                                        {errors.firstName && <p className="error_message">{errors.firstName}</p>}
+                                        {errors.firstName && <p className="error_message error-text">{errors.firstName}</p>}
                                     </div>
                                     <div className={`form_group w-50 ${errors.lastName ? 'error' : ''}`}>
                                         <input
@@ -112,9 +135,9 @@ const ContactSection = () => {
                                             placeholder="Last Name*"
                                             value={formData.lastName}
                                             onChange={handleInputChange}
-                                            required
+                                            
                                         />
-                                        {errors.lastName && <p className="error_message">{errors.lastName}</p>}
+                                        {errors.lastName && <p className="error_message error-text">{errors.lastName}</p>}
                                     </div>
                                     <div className={`form_group ${errors.phoneNumber ? 'error' : ''}`}>
                                         <input
@@ -124,9 +147,9 @@ const ContactSection = () => {
                                             placeholder="Phone Number*"
                                             value={formData.phoneNumber}
                                             onChange={handleInputChange}
-                                            required
+                                            
                                         />
-                                        {errors.phoneNumber && <p className="error_message">{errors.phoneNumber}</p>}
+                                        {errors.phoneNumber && <p className="error_message error-text">{errors.phoneNumber}</p>}
                                     </div>
                                     <div className={`form_group ${errors.email ? 'error' : ''}`}>
                                         <input
@@ -136,9 +159,9 @@ const ContactSection = () => {
                                             placeholder="Email Id*"
                                             value={formData.email}
                                             onChange={handleInputChange}
-                                            required
+                                            
                                         />
-                                        {errors.email && <p className="error_message">{errors.email}</p>}
+                                        {errors.email && <p className="error_message error-text">{errors.email}</p>}
                                     </div>
                                     <div className={`form_group ${errors.message ? 'error' : ''}`}>
                                         <textarea
@@ -147,12 +170,14 @@ const ContactSection = () => {
                                             placeholder="Message*"
                                             value={formData.message}
                                             onChange={handleInputChange}
-                                            required
+                                            
                                         />
-                                        {errors.message && <p className="error_message">{errors.message}</p>}
+                                        {errors.message && <p className="error_message error-text">{errors.message}</p>}
                                     </div>
                                     <div className="form_group">
-                                        <button className="cta">Send</button>
+                                        <button className="cta" type="submit" disabled={loading}>
+                                            {loading ? 'Sending...' : 'Send'}
+                                        </button>
                                     </div>
                                 </div>
                             </form>

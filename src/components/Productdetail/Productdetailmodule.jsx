@@ -105,9 +105,11 @@ const Productdetailmodule = (data) => {
                             Add to Cart
                         </button>
                     </div>
-                    <div className='fav_col'>
-                        <div className='fav_button'><img src={hearticon} /></div>
-                    </div>
+                    {/* <div className='fav_col'>
+                        <div className='fav_button'>
+                            <img src={hearticon} />
+                        </div>
+                    </div> */}
                 </div>
             </div>
             <div className='share_product'>

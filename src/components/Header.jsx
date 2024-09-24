@@ -102,7 +102,16 @@ const Header = () => {
                                     <img style={{ height: '35px' }} src={logout} alt="icon" />
                                 </Link> */}
                                 {/* <Link to="/" className="icon_link fav_link"><img src={hearticon} alt="icon" /> <span className='value'><span className='value_text'>100</span></span></Link> */}
-                                <Link to="/cart" className="icon_link"><img src={carticon} alt="icon" /> <span className='value'><span className='value_text'>{cartCount}</span></span></Link>
+                                {/* <Link to="/cart" className="icon_link"><img src={carticon} alt="icon" />
+                                     <span className='value'><span className='value_text'>{cartCount}</span></span>
+                                </Link> */}
+                                {(!user || (user && user.user_type !== 'admin')) ? (
+                                    
+                                    <Link to="/cart" className="icon_link">
+                                        <img src={carticon} alt="icon" />
+                                        {/* <span className='value'><span className='value_text'>{cartCount}</span></span> */}
+                                    </Link>
+                                ) : null}
                             </div>
                         </div>
                     </div>
