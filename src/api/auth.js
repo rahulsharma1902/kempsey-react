@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
+const API_URL = process.env.REACT_APP_API_URL;
 export const login = async (email, password) => {
     // Retrieve tempId from local storage directly
     const tempId = localStorage.getItem('user_temp_id') || '';
 
     try {
-        const response = await axios.post('https://sagmetic.site/2023/laravel/kempsey/public/api/login', {
+        const response = await axios.post(`${API_URL}login`, {
             email,
             password,
             tempId

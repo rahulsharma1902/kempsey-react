@@ -2,12 +2,12 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const API_URL = 'https://sagmetic.site/2023/laravel/kempsey/public/api';
-
+// const API_URL = 'https://sagmetic.site/2023/laravel/kempsey/public/api';
+const API_URL = process.env.REACT_APP_API_URL;
 const fetchData = async (endpoint) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${API_URL}/${endpoint}`, {
+        const response = await axios.get(`${API_URL}${endpoint}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
             }
@@ -24,7 +24,7 @@ const fetchData = async (endpoint) => {
 
 
 export const Stores = () => fetchData('stores');
-export const getStoreById = (id) => fetchData(`get-store/${id}`);
+export const getStoreById = (id) => fetchData(`get-store${id}`);
 
 
 

@@ -2,6 +2,7 @@ import React, { createContext, useState } from 'react';
 import axios from 'axios';
 import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const AuthContext = createContext();
 
@@ -18,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await axios.post('https://sagmetic.site/2023/laravel/kempsey/public/api/logout', {}, {
+            await axios.post(`${API_URL}logout`, {}, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             setUser(null);

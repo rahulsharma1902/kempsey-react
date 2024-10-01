@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const API_URL = 'https://sagmetic.site/2023/laravel/kempsey/public/api';
-
+// const API_URL = 'https://sagmetic.site/2023/laravel/kempsey/public/api';
+const API_URL = process.env.REACT_APP_API_URL;
 export const fetchData = async (endpoint) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${API_URL}/${endpoint}`, {
+        const response = await axios.get(`${API_URL}${endpoint}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,                
             }
@@ -29,7 +29,7 @@ export const getBrandById = (id) => fetchData(`get-brand/${id}`);
 export const addBrand = async (formData) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.post(`${API_URL}/brand/add`, formData, {
+        const response = await axios.post(`${API_URL}brand/add`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'

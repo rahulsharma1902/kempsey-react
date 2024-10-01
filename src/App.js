@@ -37,17 +37,22 @@ import {ServiceContentProvider} from './contexts/WorkshopContext';
 import {StoreFrontProvider} from './contexts/StoreFrontContext';
 import {ProductProvider} from './contexts/ShopContext';
 import {CartProvider} from './contexts/CartContext';
+const API_URL = process.env.REACT_APP_API_URL;
+// const STRIPE_KEY = process.env.REACT_APP_STRIPE_KEY;
 
 const stripePromise = loadStripe('pk_test_51O4JlISHTa61PzN8pNFAWjxMHk8MejtNaaC54b9nSLkW2rFjOhHWnxHYnCQaZj8RTyNiL9WamgSGwV9GgHi1k8LF00N1SGCLzG');
+// const stripePromise = loadStripe(STRIPE_KEY);
 
 function App() {
+  // console.log('Stripe Key:', STRIPE_KEY);  // Add this line for debugging
+
   const { user } = useContext(AuthContext); 
   const [tempId, setTempId] = useState(localStorage.getItem('user_temp_id') || '');
 
   useEffect(() => {
     const fetchTempId = async () => {
       try {
-        const response = await fetch('https://sagmetic.site/2023/laravel/kempsey/public/api/generate-temp-id');
+        const response = await fetch(`${API_URL}generate-temp-id`);
         const result = await response.json();
         const newTempId = result.temp_id;
         setTempId(newTempId);

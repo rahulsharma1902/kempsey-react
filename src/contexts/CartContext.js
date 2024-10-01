@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const CartContext = createContext();
 
@@ -11,7 +12,7 @@ const CartProvider = ({ children }) => {
     const form = new FormData();
     form.append('tempId', tempId);
     try {
-        const response = await axios.get('https://sagmetic.site/2023/laravel/kempsey/public/api/cart/count', {
+        const response = await axios.get(`${API_URL}cart/count'`, {
             form
         }, {
             headers: {
