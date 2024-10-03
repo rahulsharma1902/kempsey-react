@@ -44,6 +44,7 @@ const stripePromise = loadStripe('pk_test_51O4JlISHTa61PzN8pNFAWjxMHk8MejtNaaC54
 // const stripePromise = loadStripe(STRIPE_KEY);
 
 function App() {
+  console.log(API_URL);
   // console.log('Stripe Key:', STRIPE_KEY);  // Add this line for debugging
 
   const { user } = useContext(AuthContext); 
